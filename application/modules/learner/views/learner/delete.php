@@ -16,7 +16,7 @@
             <h3 class="box-title">Preview Before Delete</h3>
         </div>
         <table class="table table-striped">
-	    <tr><td width="150">Batch Id</td><td width="5">:</td><td><?php echo $batch_id; ?></td></tr>
+	    <tr><td width="150">Batch</td><td width="5">:</td><td><?php echo $batch_id; ?></td></tr>
 	    <tr><td width="150">Name</td><td width="5">:</td><td><?php echo $name; ?></td></tr>
 	    <tr><td width="150">Dob</td><td width="5">:</td><td><?php echo $dob; ?></td></tr>
 	    <tr><td width="150">Nid</td><td width="5">:</td><td><?php echo $nid; ?></td></tr>
@@ -30,8 +30,7 @@
 	    <tr><td width="150">Is Resident</td><td width="5">:</td><td><?php echo $is_resident; ?></td></tr>
 	    <tr><td width="150">Photo</td><td width="5">:</td><td><?php echo $photo; ?></td></tr>
 	    <tr><td width="150">Remarks</td><td width="5">:</td><td><?php echo $remarks; ?></td></tr>
-	    <tr><td width="150">Created At</td><td width="5">:</td><td><?php echo $created_at; ?></td></tr>
-	    <tr><td width="150">Updated At</td><td width="5">:</td><td><?php echo $updated_at; ?></td></tr>
+	    <tr><td width="150">Created At</td><td width="5">:</td><td><?php echo bdDateFormat($created_at); ?></td></tr>	    
 	</table>
 	<div class="box-header">
 			 <?php echo anchor(site_url(Backend_URL .'learner/delete_action/'.$id),'<i class="fa fa-fw fa-trash"></i> Confrim Delete ', 'class="btn btn-danger" onclick="javasciprt: return confirm(\'Are You Sure ?\')"'); ?>

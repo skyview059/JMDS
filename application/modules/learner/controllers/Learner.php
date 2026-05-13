@@ -148,12 +148,13 @@ class Learner extends Admin_controller{
             $district_list = array('' => '-- Select District --');
             foreach($districts as $district) {
                 $district_list[$district->id] = $district->bn_name . ' (ID: ' . $district->id . ')';
-            }
+            }            
             
             $data = [
                 'button' => 'Update',
                 'action' => site_url( Backend_URL . 'learner/update_action'),
 				'id' => set_value('id', $learner->id),
+                'a_id' => set_value('id', $learner->id),
 				'batch_id' => set_value('batch_id', $learner->batch_id),
 				'batch_list' => $batch_list,
 				'name' => set_value('name', $learner->name),
@@ -171,6 +172,7 @@ class Learner extends Admin_controller{
 				'photo' => set_value('photo', $learner->photo),
 				'remarks' => set_value('remarks', $learner->remarks),
 		    ];
+
             $this->viewAdminContent('learner/learner/update', $data);
         } else {
             $this->session->set_flashdata('message', '<p class="ajax_error">Learner Not Found</p>');
@@ -179,9 +181,10 @@ class Learner extends Admin_controller{
     }
     
     public function update_action(){
+
         $this->_rules();
 
-        $id = $this->input->post('id', TRUE);
+        $id = $this->input->post('id', TRUE);        
         if ($this->form_validation->run() == FALSE) {
             $this->update( $id );
         } else {
@@ -189,7 +192,7 @@ class Learner extends Admin_controller{
 				'batch_id' => $this->input->post('batch_id',TRUE),
 				'name' => $this->input->post('name',TRUE),
 				'dob' => $this->input->post('dob',TRUE),
-				'nid' => $this->input->post('nid',TRUE),
+				'nid' => $this->input->post('nid',TRUE) ? $this->input->post('nid',TRUE) : null,
 				'father' => $this->input->post('father',TRUE),
 				'mother' => $this->input->post('mother',TRUE),
 				'district_id' => $this->input->post('district_id',TRUE),

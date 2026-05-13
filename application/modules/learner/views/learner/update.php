@@ -9,7 +9,9 @@
     </ol>
 </section>
 
-<section class="content"><?php echo learnerTabs($id, 'update'); ?><div class="box no-border">
+<section class="content">
+    <?php echo learnerTabs($id, 'update'); ?>
+    <div class="box no-border">
         <div class="box-header with-border">
             <h3 class="box-title">Update Learner</h3>
             <?php echo $this->session->flashdata('message'); ?>
@@ -18,7 +20,7 @@
         <div class="box-body">
             <form class="form-horizontal" action="<?php echo $action; ?>" method="post">
                 <div class="form-group">
-                    <label for="batch_id" class="col-sm-2 control-label">Batch Id :</label>
+                    <label for="batch_id" class="col-sm-2 control-label">Batch :</label>
                     <div class="col-sm-6">
                         <select class="form-control" name="batch_id" id="batch_id">
                             <?php foreach ($batch_list as $id => $name) { ?>
@@ -127,7 +129,7 @@
                 </div>
                 <div class="form-group">
                     <div class="col-sm-6 col-sm-offset-2">
-                        <input type="hidden" name="id" value="<?php echo $id; ?>" />
+                        <input type="hidden" name="id" value="<?php echo $a_id; ?>" />
                         <button type="submit" class="btn btn-success"><?php echo $button ?></button>
                         <a href="<?php echo site_url(Backend_URL . 'learner') ?>" class="btn btn-default">Cancel</a>
                     </div>
