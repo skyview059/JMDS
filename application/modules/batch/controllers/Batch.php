@@ -65,7 +65,7 @@ class Batch extends Admin_controller{
             'seat' => set_value('seat'),
             'date_start' => set_value('date_start'),
             'date_end' => set_value('date_end'),
-            'status' => 'Upcoming',
+            'status' => set_value('status', 'Upcoming'),
             'remarks' => set_value('remarks'),
         ];
         $this->viewAdminContent('batch/batch/create', $data);

@@ -22,7 +22,7 @@
 	    <tr><td width="150">Nid</td><td width="5">:</td><td><?php echo $nid; ?></td></tr>
 	    <tr><td width="150">Father</td><td width="5">:</td><td><?php echo $father; ?></td></tr>
 	    <tr><td width="150">Mother</td><td width="5">:</td><td><?php echo $mother; ?></td></tr>
-	    <tr><td width="150">Zila Id</td><td width="5">:</td><td><?php echo $zila_id; ?></td></tr>
+	    <tr><td width="150">District</td><td width="5">:</td><td><?php echo $district_id; ?></td></tr>
 	    <tr><td width="150">Primary Mobile</td><td width="5">:</td><td><?php echo $primary_mobile; ?></td></tr>
 	    <tr><td width="150">Blood Group</td><td width="5">:</td><td><?php echo $blood_group; ?></td></tr>
 	    <tr><td width="150">Second Contact Person</td><td width="5">:</td><td><?php echo $second_contact_person; ?></td></tr>

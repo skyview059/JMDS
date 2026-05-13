@@ -22,23 +22,23 @@ class Learner_model extends Fm_model{
 			$this->db->or_like('nid', $q);
 			$this->db->or_like('father', $q);
 			$this->db->or_like('mother', $q);
-			$this->db->or_like('zila_id', $q);
+			$this->db->or_like('district_id', $q);
 			$this->db->or_like('primary_mobile', $q);
 			$this->db->or_like('blood_group', $q);
-			$this->db->or_like('second_contact_person', $q);
-			$this->db->or_like('second_contact_mobile', $q);
 			$this->db->or_like('is_resident', $q);
-			$this->db->or_like('photo', $q);
 			$this->db->or_like('remarks', $q);
-			$this->db->or_like('created_at', $q);
-			$this->db->or_like('updated_at', $q);
 		}
 		$this->db->from($this->table);
+
         return $this->db->count_all_results();
     }
 
     // get data with limit and search
     function get_limit_data($limit, $start = 0, $q = NULL) {
+        $this->db->select('learners.*, batches.name as batch_name,  districts.bn_name as district_name');
+        $this->db->join('batches', 'batches.id = learners.batch_id', 'left');   
+        $this->db->join('districts', 'districts.id = learners.district_id', 'left');
+
         $this->db->order_by($this->id, $this->order);
         if($q){
         	$this->db->like('id', $q);
@@ -48,16 +48,11 @@ class Learner_model extends Fm_model{
 			$this->db->or_like('nid', $q);
 			$this->db->or_like('father', $q);
 			$this->db->or_like('mother', $q);
-			$this->db->or_like('zila_id', $q);
+			$this->db->or_like('district_id', $q);
 			$this->db->or_like('primary_mobile', $q);
 			$this->db->or_like('blood_group', $q);
-			$this->db->or_like('second_contact_person', $q);
-			$this->db->or_like('second_contact_mobile', $q);
 			$this->db->or_like('is_resident', $q);
-			$this->db->or_like('photo', $q);
 			$this->db->or_like('remarks', $q);
-			$this->db->or_like('created_at', $q);
-			$this->db->or_like('updated_at', $q);
 		}
 		$this->db->limit($limit, $start);
         return $this->db->get($this->table)->result();

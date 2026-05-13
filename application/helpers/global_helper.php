@@ -532,3 +532,24 @@ function bdMoneyFormat($amount = 0, $currency = '৳ ', $sufix = '') {
         return $currency . number_format($amount, 0) . $sufix;
     }
 }
+
+function getBloodGroupOptions($selected = '') {
+    $blood_groups = [
+        'A+' => 'A+',
+        'A-' => 'A-',
+        'B+' => 'B+',
+        'B-' => 'B-',
+        'AB+' => 'AB+',
+        'AB-' => 'AB-',
+        'O+' => 'O+',
+        'O-' => 'O-'
+    ];
+
+    $options = '<option value="">--Select Blood Group--</option>';
+    foreach ($blood_groups as $key => $value) {
+        $options .= '<option value="' . $key . '" ';
+        $options .= ($key == $selected) ? 'selected="selected"' : '';
+        $options .= '>' . $value . '</option>';
+    }
+    return $options;
+}
