@@ -43,8 +43,8 @@ class Batch extends Admin_controller{
             $data = [
 				'id' => $batch->id,
 				'name' => $batch->name,
-				'date_start' => $batch->date_start,
-				'date_end' => $batch->date_end,
+				'date_start' => date('Y-m-d', strtotime($batch->date_start)),
+				'date_end' => date('Y-m-d', strtotime($batch->date_end)),
 				'status' => $batch->status,
 				'remarks' => $batch->remarks,
 				'created_at' => $batch->created_at,
@@ -59,14 +59,12 @@ class Batch extends Admin_controller{
     public function create(){
         $data = [
             'button' => 'Create',
-            'action' => site_url( Backend_URL . 'batch/create_action'),
-			'id' => set_value('id'),
+            'action' => site_url( Backend_URL . 'batch/create_action'),			
 			'name' => set_value('name'),
 			'date_start' => set_value('date_start'),
 			'date_end' => set_value('date_end'),
-			'status' => set_value('status'),
+			'status' => 'Upcoming',
 			'remarks' => set_value('remarks'),
-			'created_at' => set_value('created_at'),
 			];
         $this->viewAdminContent('batch/batch/create', $data);
     }
@@ -83,7 +81,7 @@ class Batch extends Admin_controller{
 				'date_end' => $this->input->post('date_end',TRUE),
 				'status' => $this->input->post('status',TRUE),
 				'remarks' => $this->input->post('remarks',TRUE),
-				'created_at' => $this->input->post('created_at',TRUE),
+				'created_at' => date('Y-m-d H:i:s'),
 			    ];
 
             $this->Batch_model->insert($data);
@@ -101,11 +99,10 @@ class Batch extends Admin_controller{
                 'action' => site_url( Backend_URL . 'batch/update_action'),
 				'id' => set_value('id', $batch->id),
 				'name' => set_value('name', $batch->name),
-				'date_start' => set_value('date_start', $batch->date_start),
-				'date_end' => set_value('date_end', $batch->date_end),
+				'date_start' => set_value('date_start', date('Y-m-d', strtotime($batch->date_start))),
+				'date_end' => set_value('date_end', date('Y-m-d', strtotime($batch->date_end))),
 				'status' => set_value('status', $batch->status),
-				'remarks' => set_value('remarks', $batch->remarks),
-				'created_at' => set_value('created_at', $batch->created_at),
+				'remarks' => set_value('remarks', $batch->remarks),				
 		    ];
             $this->viewAdminContent('batch/batch/update', $data);
         } else {
@@ -127,7 +124,6 @@ class Batch extends Admin_controller{
 				'date_end' => $this->input->post('date_end',TRUE),
 				'status' => $this->input->post('status',TRUE),
 				'remarks' => $this->input->post('remarks',TRUE),
-				'created_at' => $this->input->post('created_at',TRUE),
 		    ];
 
             $this->Batch_model->update($id, $data);
@@ -142,8 +138,8 @@ class Batch extends Admin_controller{
             $data = [
 				'id' => $batch->id,
 				'name' => $batch->name,
-				'date_start' => $batch->date_start,
-				'date_end' => $batch->date_end,
+				'date_start' => date('Y-m-d', strtotime($batch->date_start)),
+				'date_end' => date('Y-m-d', strtotime($batch->date_end)),
 				'status' => $batch->status,
 				'remarks' => $batch->remarks,
 				'created_at' => $batch->created_at,
@@ -176,7 +172,6 @@ class Batch extends Admin_controller{
 		$this->form_validation->set_rules('date_end', 'date end', 'trim|required');
 		$this->form_validation->set_rules('status', 'status', 'trim|required');
 		$this->form_validation->set_rules('remarks', 'remarks', 'trim|required');
-		$this->form_validation->set_rules('created_at', 'created at', 'trim|required');
 
 		$this->form_validation->set_rules('id', 'id', 'trim');
 		$this->form_validation->set_error_delimiters('<span class="text-danger">', '</span>');
