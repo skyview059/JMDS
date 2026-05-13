@@ -25,6 +25,13 @@
                     </div>
                 </div>
                 <div class="form-group">
+                    <label for="seat" class="col-sm-2 control-label">Seat :</label>
+                    <div class="col-sm-10">
+                        <input type="number" class="form-control" name="seat" id="seat" placeholder="Seat" value="<?php echo $seat; ?>" />
+                        <?php echo form_error('seat') ?>
+                    </div>
+                </div>
+                <div class="form-group">
                     <label for="date_start" class="col-sm-2 control-label">Date Start :</label>
                     <div class="col-sm-10">
                         <div class="input-group">
@@ -36,8 +43,11 @@
                 </div>
                 <div class="form-group">
                     <label for="date_end" class="col-sm-2 control-label">Date End :</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" name="date_end" id="date_end" placeholder="Date End" value="<?php echo $date_end; ?>" />
+                    <div class="col-sm-10">                        
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                            <input type="text" class="form-control js_datepicker" autocomplete="off" name="date_end" id="date_end" placeholder="End Date" value="<?php echo $date_end; ?>" />
+                        </div>
                         <?php echo form_error('date_end') ?>
                     </div>
                 </div>

@@ -32,26 +32,37 @@
                     <thead>
                         <tr>
                             <th width="40">S/L</th>
-                            <th>Name</th>
+                            <th>Name</th>                            
                             <th>Date Start</th>
                             <th>Date End</th>
-                            <th>Status</th>
+                            <th>Duration</th>
+                            <th>Seat</th>
+                            <th>Booked</th>
+                            <th>Availablity</th>
+                            <th class="bg-success">Income</th>
+                            <th class="bg-danger">Expenses</th>
                             <th>Remarks</th>
-                            <th>Created At</th>
                             <th class="text-center" width="160">Action</th>
                         </tr>
                     </thead>
 
                     <tbody>
-                        <?php foreach ($batchs as $batch) { ?>
+                        <?php foreach ($batchs as $batch) { 
+                            $booked_seat = $this->Batch_model->get_booked_seat($batch->id);
+                            $available_seat = $batch->seat - $booked_seat;                            
+                        ?>
                             <tr>
                                 <td><?php echo ++$start ?></td>
                                 <td><?php echo $batch->name; ?></td>
                                 <td><?php echo bdDateFormat($batch->date_start); ?></td>
                                 <td><?php echo bdDateFormat($batch->date_end); ?></td>
-                                <td><?php echo $batch->status; ?></td>
+                                <td><?php echo get_difference_in_weeks($batch->date_start, $batch->date_end); ?></td>
+                                <td><?php echo $batch->seat; ?></td>
+                                <td><?php echo $booked_seat; ?></td>
+                                <td><?php echo $available_seat; ?></td>
+                                <td class="text-right bg-success"><?php echo bdMoneyFormat($this->Batch_model->get_total_income($batch->id)); ?></td>
+                                <td class="text-right bg-danger"><?php echo bdMoneyFormat($this->Batch_model->get_total_expenses($batch->id)); ?></td>
                                 <td><?php echo $batch->remarks; ?></td>
-                                <td><?php echo bdDateFormat($batch->created_at); ?></td>
                                 <td>
                                     <?php
                                     echo anchor(site_url(Backend_URL . 'batch/details/' . $batch->id), '<i class="fa fa-fw fa-external-link"></i> View', 'class="btn btn-xs btn-success"');

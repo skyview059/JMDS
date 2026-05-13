@@ -25,6 +25,13 @@
                 </div>
             </div>
             <div class="form-group">
+                <label for="seat" class="col-sm-2 control-label"><sup>*</sup>Seat :</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" name="seat" id="seat" placeholder="Seat" value="<?php echo $seat; ?>" />
+                    <?php echo form_error('seat') ?>
+                </div>
+            </div>
+            <div class="form-group">
                 <label for="date_start" class="col-sm-2 control-label"><sup>*</sup>Date Start :</label>
                 <div class="col-sm-6">
                     <div class="input-group">

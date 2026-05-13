@@ -505,3 +505,30 @@ function GetOptions($tbl, $column, $condition = NULL, $selected = 0) {
    
     return $html;
 }
+
+function get_difference_in_weeks($date1, $date2, $absolute = true) {
+    // Convert strings to DateTime objects if they aren't already
+    $datetime1 = ($date1 instanceof DateTime) ? $date1 : new DateTime($date1);
+    $datetime2 = ($date2 instanceof DateTime) ? $date2 : new DateTime($date2);
+
+    // Calculate difference
+    $interval = $datetime1->diff($datetime2);
+
+    // Get total days
+    $days = $interval->days;
+
+    // Handle negative values if absolute is false and date2 is in the past
+    if (!$absolute && $interval->invert) {
+        return (int) ceil($days / -7);
+    }
+
+    return (int) floor($days / 7) . ' weeks';
+}
+
+function bdMoneyFormat($amount = 0, $currency = '৳ ', $sufix = '') {
+    if (is_null($amount) or empty($amount)) {
+        return 0 . $sufix;
+    } else {
+        return $currency . number_format($amount, 0) . $sufix;
+    }
+}

@@ -19,6 +19,7 @@
         </div>
         <table class="table table-striped">
 	    <tr><td width="150">Name</td><td width="5">:</td><td><?php echo $name; ?></td></tr>
+	    <tr><td width="150">Seat</td><td width="5">:</td><td><?php echo $seat; ?></td></tr>
 	    <tr><td width="150">Date Start</td><td width="5">:</td><td><?php echo $date_start; ?></td></tr>
 	    <tr><td width="150">Date End</td><td width="5">:</td><td><?php echo $date_end; ?></td></tr>
 	    <tr><td width="150">Status</td><td width="5">:</td><td><?php echo $status; ?></td></tr>
