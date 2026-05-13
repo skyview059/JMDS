@@ -44,4 +44,25 @@ CREATE TABLE IF NOT EXISTS `donation_heads` (
   `status` enum('Active','Inactive') NOT NULL DEFAULT 'Active',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
+
+
+CREATE TABLE IF NOT EXISTS `batches` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `date_start` datetime DEFAULT NULL,
+  `date_end` datetime DEFAULT NULL,
+  `status` enum('Running','Close','Upcoming') NOT NULL DEFAULT 'Upcoming',
+  `remarks` varchar(255) DEFAULT NULL,
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB
+
+
+
+
+
+
+
+
+
 COMMIT;
