@@ -1,0 +1,29 @@
+KEY-vopgs3jyoe9tagdcmf2dvfqrmqrl3xrs,Q4k$OpsQswPLRAe1,SINGLE_SMS,TEXT,8801713900423,Hello Kanny How are you feeling 
+It's time 2:40 amKEY-vopgs3jyoe9tagdcmf2dvfqrmqrl3xrs,Q4k$OpsQswPLRAe1,SINGLE_SMS,UNICODE,8801713900423,হরে কৃষ্ণ। দণ্ডবৎ প্রনাম গ্রহণ করুন। আপনি শ্রী শ্রীরূপ-সনাতন স্মৃতি তীর্থের সেবা সংকল্প বিভাগে সম্মানিত সদস্য হিসেবে নিবন্ধিত হয়েছেন। নিবন্ধন নং: 97।  হরিবল।
+KEY-vopgs3jyoe9tagdcmf2dvfqrmqrl3xrs,Q4k$OpsQswPLRAe1,SINGLE_SMS,UNICODE,8801713900423,হরে কৃষ্ণ। শ্রীশ্রী রূপ-সনাতন স্মৃতি তীর্থের সেবা সংকল্প বিভাগের পক্ষ থেকে  কৃষ্ণ প্রীতি গ্রহণ করুন । 
+আপনার মাসিক প্রণামী  100 টাকা সাদরে গৃহীত হয়েছে।
+KEY-vopgs3jyoe9tagdcmf2dvfqrmqrl3xrs,Q4k$OpsQswPLRAe1,SINGLE_SMS,UNICODE,8801711582895,হরে কৃষ্ণ। দণ্ডবৎ প্রনাম গ্রহণ করুন। আপনি শ্রীশ্রীরূপ-সনাতন স্মৃতি তীর্থের সেবা সংকল্প বিভাগে সম্মানিত সদস্য হিসেবে নিবন্ধিত হয়েছেন। নিবন্ধন নং: 98।  হরিবল।
+KEY-vopgs3jyoe9tagdcmf2dvfqrmqrl3xrs,Q4k$OpsQswPLRAe1,SINGLE_SMS,UNICODE,8801712405163,হরে কৃষ্ণ। দণ্ডবৎ প্রনাম গ্রহণ করুন। আপনি শ্রীশ্রীরূপ-সনাতন স্মৃতি তীর্থের সেবা সংকল্প বিভাগে সম্মানিত সদস্য হিসেবে নিবন্ধিত হয়েছেন। নিবন্ধন নং: 99।  হরিবল।
+KEY-vopgs3jyoe9tagdcmf2dvfqrmqrl3xrs,Q4k$OpsQswPLRAe1,SINGLE_SMS,UNICODE,8801711582895,হরে কৃষ্ণ। শ্রীশ্রী রূপ-সনাতন স্মৃতি তীর্থের সেবা সংকল্প বিভাগের পক্ষ থেকে  কৃষ্ণ প্রীতি গ্রহণ করুন । 
+আপনার মাসিক প্রণামী 151 টাকা সাদরে গৃহীত হয়েছে।
+KEY-vopgs3jyoe9tagdcmf2dvfqrmqrl3xrs,Q4k$OpsQswPLRAe1,SINGLE_SMS,UNICODE,8801712405163,হরে কৃষ্ণ। শ্রীশ্রী রূপ-সনাতন স্মৃতি তীর্থের সেবা সংকল্প বিভাগের পক্ষ থেকে  কৃষ্ণ প্রীতি গ্রহণ করুন । 
+আপনার মাসিক প্রণামী 151 টাকা সাদরে গৃহীত হয়েছে।
+KEY-vopgs3jyoe9tagdcmf2dvfqrmqrl3xrs,Q4k$OpsQswPLRAe1,SINGLE_SMS,UNICODE,8801777150751,হরে কৃষ্ণ। শ্রীশ্রী রূপ-সনাতন স্মৃতি তীর্থের সেবা সংকল্প বিভাগের পক্ষ থেকে  কৃষ্ণ প্রীতি গ্রহণ করুন । 
+আপনার মাসিক প্রণামী 151 টাকা সাদরে গৃহীত হয়েছে।
+KEY-vopgs3jyoe9tagdcmf2dvfqrmqrl3xrs,Q4k$OpsQswPLRAe1,SINGLE_SMS,UNICODE,8801719021741,হরে কৃষ্ণ। শ্রীশ্রী রূপ-সনাতন স্মৃতি তীর্থের সেবা সংকল্প বিভাগের পক্ষ থেকে  কৃষ্ণ প্রীতি গ্রহণ করুন । 
+আপনার মাসিক প্রণামী 201 টাকা সাদরে গৃহীত হয়েছে।
+KEY-vopgs3jyoe9tagdcmf2dvfqrmqrl3xrs,Q4k$OpsQswPLRAe1,GENERAL_CAMPAIGN,UNICODE,8801714779964,8801713900423,Developer Testing BulK SMS 
+01714779964 - বলদেব
+01713900423 - Kanny
+KEY-vopgs3jyoe9tagdcmf2dvfqrmqrl3xrs,Q4k$OpsQswPLRAe1,GENERAL_CAMPAIGN,UNICODE,8801714779964,8801713900423,Developer Testing BulK SMS
+01714779964 - বলদেব
+01713900423 - Kanny,GeneralNotify
+KEY-vopgs3jyoe9tagdcmf2dvfqrmqrl3xrs,Q4k$OpsQswPLRAe1,GENERAL_CAMPAIGN,UNICODE,8801714779964,8801713900423,Developer Testing BulK SMS
+01714779964 - বলদেব
+01713900423 - Kanny,20191004_General
+KEY-vopgs3jyoe9tagdcmf2dvfqrmqrl3xrs,Q4k$OpsQswPLRAe1,20191004_General,GENERAL_CAMPAIGN,UNICODE,8801714779964,8801713900423,Developer Testing BulK SMS
+01714779964 - বলদেব
+01713900423 - Kanny
+KEY-vopgs3jyoe9tagdcmf2dvfqrmqrl3xrs,Q4k$OpsQswPLRAe1,20180518_Campaign01,GENERAL_CAMPAIGN,TEXT | UNICODE,8801714779964,8801713900423,Developer Testing BulK SMS
+01714779964 - বলদেব
+01713900423 - Kanny

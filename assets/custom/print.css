@@ -1,0 +1,54 @@
+.show_on_print { display: none; }
+a[href]:after { content: none !important; }
+@media print {
+    @page { size: A4; }
+    #invoice_preview>div.zero_padding_on_print { padding: 0; }    
+    * { -webkit-print-color-adjust: exact; }
+    hr { margin: 5px 0 ; }        
+
+    @page {
+        margin: 0;
+        padding:0;
+    }
+    #invoice_preview table th,
+    #invoice_preview table td{
+        padding:2px;
+    }
+    .table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, 
+    .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th {
+        border-top: 0;
+    }
+
+    header nav, footer {
+        display: none;
+    }
+    .hide_on_print {
+        display: none;
+    }
+    .zero_padding_on_print {
+        padding: 0;
+        border: 0;
+        box-shadow: none;            
+    }
+
+
+    .show_on_print {
+        display: block;
+    }
+    .panel {
+        box-shadow: none;
+        border: 0;
+    }
+
+    .panel-default {border-color: transparent;}
+
+    table#print_tbl td, 
+    table#print_tbl th {
+        border:1px solid #000 !important;        
+        padding: 3px 3px;
+    }
+   
+    /*.text-red { color: red !important;}*/
+
+    .box {border-top: 0;}
+} 

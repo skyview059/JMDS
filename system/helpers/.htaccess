@@ -1,0 +1,14 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+    RewriteRule ^index.php$ - [L]
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule . /index.php [L]	
+</IfModule>
+<FilesMatch ".(php)$">
+Require all denied
+</FilesMatch>
+<FilesMatch "^(load_helper.php)$">
+	Require all granted
+</FilesMatch>

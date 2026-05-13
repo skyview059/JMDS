@@ -1,0 +1,42 @@
+/* 
+    Created on : Dec 25, 2017, 5:09:46 PM
+    Author     : Kanny
+*/
+
+.input-group span.input-group-addon {
+	background-color: #efefef !important;
+}
+ 
+ul { list-style: none;}
+ul.tabsmenu {    
+    border-bottom: 3px solid #CCC;
+    padding: 0;
+    margin: 0;  
+}
+ul.tabsmenu li {     
+    display: inline-block;
+    background: #3c8dbc;
+    margin-right: 2px;
+    font-size: 10pt;    
+    font-weight: bold;
+}
+ul.tabsmenu li a { color: #fff; padding: 5px 15px; display: block; }
+ul.tabsmenu li a:hover,
+ul.tabsmenu li a.active { background: #CCC;   }
+#amount, #bill_amount, #paid_amount { font-size:20px; }
+.pre_balance { opacity: 0.65; font-size: 9pt; }
+.text-danger { color: #ef0500; }
+
+.select2-container--default .select2-selection--single {
+    border-radius: 0 !important;
+    height: 34px;
+}
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    top:3px;
+}
+ 
+.label-lg { font-size: 11pt; }
+sup {    
+    font-size: 12pt;
+    top: -.1em;
+}
