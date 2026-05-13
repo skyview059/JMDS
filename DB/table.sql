@@ -61,7 +61,15 @@ CREATE TABLE IF NOT EXISTS `batches` (
 
 
 
-
+CREATE TABLE IF NOT EXISTS `vehicles` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `photo` varchar(255) DEFAULT NULL,
+  `number` varchar(10) DEFAULT NULL,
+  `purchased_date` date DEFAULT NULL,
+  `amount` int DEFAULT NULL,
+  `remark` varchar(1000) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
 
 
 
