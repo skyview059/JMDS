@@ -119,9 +119,9 @@ class Trans extends Admin_controller{
     }
     
     public function void( $id ){
-        $this->db->set('status','Void');
-        $this->db->where('id', $id );
-        $this->db->update('donations');
+        // $this->db->set('status','Void');
+        // $this->db->where('id', $id );
+        // $this->db->update('donations');
         $this->session->set_flashdata('message', '<p class="ajax_success">Trans Added Successfully</p>');
         redirect(site_url( Backend_URL. 'trans'));       
     }

@@ -82,13 +82,13 @@ class Dashboard extends Admin_controller {
          
     private function collectores_collections( $setDate ){
         
-        $this->db->select_sum('paid');
-        $this->db->where('collected_by = u.id');
-        $this->db->where('paid_date', $setDate );
-        $this->db->where('status', 'OK' );
-        $sql = $this->db->get_compiled_select('donations');  
+        // $this->db->select_sum('paid');
+        // $this->db->where('collected_by = u.id');
+        // $this->db->where('paid_date', $setDate );
+        // $this->db->where('status', 'OK' );
+        // $sql = $this->db->get_compiled_select('donations');  
                         
-        $this->db->select("u.id,u.first_name,u.last_name, ({$sql}) as paid");
+        $this->db->select("u.id,u.first_name,u.last_name, (0) as paid");
         $this->db->from('users as u');
         if($this->role_id != 1){ $this->db->where('u.id >=',2); }        
         $users = $this->db->get()->result();

@@ -432,13 +432,14 @@ function time_count($datetime, $full = false) {
 }
 
 function getDonationValue($date=''){
-    $ci =& get_instance();        
-    $ci->db->select_sum('paid');
-    $ci->db->from('donations');
-    if($date){ $ci->db->where('paid_date >=', "{$date}"); }    
-    $ci->db->where('status', 'OK');
-    $items = $ci->db->get()->row();    
-    return $items->paid;
+    return 0;
+    // $ci =& get_instance();        
+    // $ci->db->select_sum('paid');
+    // $ci->db->from('donations');
+    // if($date){ $ci->db->where('paid_date >=', "{$date}"); }    
+    // $ci->db->where('status', 'OK');
+    // $items = $ci->db->get()->row();    
+    // return $items->paid;
 }
 
 function getExpanseValue($date = ''){
