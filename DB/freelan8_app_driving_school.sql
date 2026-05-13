@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: May 13, 2026 at 12:50 PM
+-- Generation Time: May 13, 2026 at 01:41 PM
 -- Server version: 8.0.39
 -- PHP Version: 8.3.0
 
@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS `acls` (
   `order_id` int DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `permKey` (`permission_key`)
-) ENGINE=InnoDB AUTO_INCREMENT=127 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=134 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `acls`
@@ -105,7 +105,32 @@ INSERT INTO `acls` (`id`, `module_id`, `permission_name`, `permission_key`, `ord
 (123, 17, 'Learner/update', 'learner/update', 0),
 (124, 17, 'Learner/read', 'learner/read', 0),
 (125, 17, 'Learner/delete', 'learner/delete', 0),
-(126, 17, 'Learner/update_action', 'learner/update_action', 0);
+(126, 17, 'Learner/update_action', 'learner/update_action', 0),
+(127, 18, 'Batch', 'batch', 0),
+(128, 18, 'Batch create', 'batch/create', 0),
+(129, 18, 'Batch/save create action', 'batch/create_action', 0),
+(130, 18, 'Batch/update', 'batch/update', 0),
+(131, 18, 'Batch/read', 'batch/read', 0),
+(132, 18, 'Batch/delete', 'batch/delete', 0),
+(133, 18, 'Batch/update_action', 'batch/update_action', 0);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `batches`
+--
+
+DROP TABLE IF EXISTS `batches`;
+CREATE TABLE IF NOT EXISTS `batches` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `date_start` datetime DEFAULT NULL,
+  `date_end` datetime DEFAULT NULL,
+  `status` enum('Running','Close','Upcoming') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Upcoming',
+  `remarks` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -123,6 +148,67 @@ CREATE TABLE IF NOT EXISTS `db_sync` (
   `file` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `donations`
+--
+
+DROP TABLE IF EXISTS `donations`;
+CREATE TABLE IF NOT EXISTS `donations` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `donor_id` int NOT NULL,
+  `head_id` int NOT NULL,
+  `donate_type` enum('General','Personal') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'General',
+  `month` date NOT NULL,
+  `remark` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `paid` int NOT NULL,
+  `paid_date` date NOT NULL,
+  `collected_by` int NOT NULL,
+  `timestamp` timestamp NULL DEFAULT NULL,
+  `status` enum('OK','Void') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'OK',
+  PRIMARY KEY (`id`),
+  KEY `subscriber_id` (`donor_id`),
+  KEY `month` (`month`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `donation_heads`
+--
+
+DROP TABLE IF EXISTS `donation_heads`;
+CREATE TABLE IF NOT EXISTS `donation_heads` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(120) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `status` enum('Active','Inactive') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Active',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `donors`
+--
+
+DROP TABLE IF EXISTS `donors`;
+CREATE TABLE IF NOT EXISTS `donors` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `ref_id` int NOT NULL,
+  `area_id` int NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `amount` int NOT NULL,
+  `contact` varchar(80) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `add_line1` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `add_line2` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `reg_date` date NOT NULL,
+  `remark` varchar(1000) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `status` enum('Active','Inactive') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Active',
+  PRIMARY KEY (`id`),
+  KEY `status` (`status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -291,7 +377,7 @@ CREATE TABLE IF NOT EXISTS `modules` (
   `status` enum('Enable','Disable','Locked') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Disable',
   PRIMARY KEY (`id`),
   UNIQUE KEY `folder` (`folder`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `modules`
@@ -309,7 +395,8 @@ INSERT INTO `modules` (`id`, `added_date`, `order`, `type`, `name`, `folder`, `d
 (14, '2019-08-23', 1, 'Module', 'Trans', 'trans', '', 'Locked'),
 (15, '2019-08-23', 1, 'Module', 'Expense', 'Expense', '', 'Locked'),
 (16, '2019-08-26', 1, 'Module', 'SMS', 'sms', 'SMS', 'Locked'),
-(17, '2026-05-13', 1, 'Module', 'learner', 'learner', 'Learner Driver Management', 'Enable');
+(17, '2026-05-13', 1, 'Module', 'learner', 'learner', 'Learner Driver Management', 'Enable'),
+(18, '2026-05-13', 1, 'Module', 'Batch Manager', 'batch', 'Batch Manager', 'Enable');
 
 -- --------------------------------------------------------
 
@@ -351,7 +438,7 @@ CREATE TABLE IF NOT EXISTS `role_permissions` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `roleID_2` (`role_id`,`acl_id`),
   UNIQUE KEY `role_id` (`role_id`,`acl_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1745 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Role Permit ACL';
+) ENGINE=InnoDB AUTO_INCREMENT=1752 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Role Permit ACL';
 
 --
 -- Dumping data for table `role_permissions`
@@ -566,7 +653,14 @@ INSERT INTO `role_permissions` (`id`, `role_id`, `acl_id`, `access`) VALUES
 (1741, 1, 123, 1),
 (1742, 1, 124, 1),
 (1743, 1, 125, 1),
-(1744, 1, 126, 1);
+(1744, 1, 126, 1),
+(1745, 1, 127, 1),
+(1746, 1, 128, 1),
+(1747, 1, 129, 1),
+(1748, 1, 130, 1),
+(1749, 1, 131, 1),
+(1750, 1, 132, 1),
+(1751, 1, 133, 1);
 
 -- --------------------------------------------------------
 
