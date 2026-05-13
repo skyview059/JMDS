@@ -16,10 +16,11 @@
             <h3 class="box-title">Preview Before Delete</h3>
         </div>
         <table class="table table-striped">
+        <tr><td width="150">Name</td><td width="5">:</td><td><?php echo $name; ?></td></tr>        
 	    <tr><td width="150">Photo</td><td width="5">:</td><td><?php echo $photo; ?></td></tr>
 	    <tr><td width="150">Number</td><td width="5">:</td><td><?php echo $number; ?></td></tr>
-	    <tr><td width="150">Purchased Date</td><td width="5">:</td><td><?php echo $purchased_date; ?></td></tr>
-	    <tr><td width="150">Amount</td><td width="5">:</td><td><?php echo $amount; ?></td></tr>
+	    <tr><td width="150">Purchased Date</td><td width="5">:</td><td><?php echo is_null($purchased_date) ? 'N/A' : bdDateFormat($purchased_date); ?></td></tr>
+	    <tr><td width="150">Amount</td><td width="5">:</td><td><?php echo is_null($amount) ? 'N/A' : $amount; ?></td></tr>
 	    <tr><td width="150">Remark</td><td width="5">:</td><td><?php echo $remark; ?></td></tr>
 	</table>
 	<div class="box-header">

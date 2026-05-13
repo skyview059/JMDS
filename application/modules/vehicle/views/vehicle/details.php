@@ -20,7 +20,7 @@
         <table class="table table-striped">
 	    <tr><td width="150">Photo</td><td width="5">:</td><td><?php echo $photo; ?></td></tr>
 	    <tr><td width="150">Number</td><td width="5">:</td><td><?php echo $number; ?></td></tr>
-	    <tr><td width="150">Purchased Date</td><td width="5">:</td><td><?php echo $purchased_date; ?></td></tr>
+	    <tr><td width="150">Purchased Date</td><td width="5">:</td><td><?php echo bdDateFormat($purchased_date); ?></td></tr>
 	    <tr><td width="150">Amount</td><td width="5">:</td><td><?php echo $amount; ?></td></tr>
 	    <tr><td width="150">Remark</td><td width="5">:</td><td><?php echo $remark; ?></td></tr>
 	    <tr><td></td><td></td>

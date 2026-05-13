@@ -42,6 +42,7 @@ class Vehicle extends Admin_controller{
         if ($vehicle) {
             $data = [
 				'id' => $vehicle->id,
+                'name' => $vehicle->name,
 				'photo' => $vehicle->photo,
 				'number' => $vehicle->number,
 				'purchased_date' => $vehicle->purchased_date,
@@ -60,6 +61,7 @@ class Vehicle extends Admin_controller{
             'button' => 'Create',
             'action' => site_url( Backend_URL . 'vehicle/create_action'),
 			'id' => set_value('id'),
+            'name' => set_value('name'),
 			'photo' => set_value('photo'),
 			'number' => set_value('number'),
 			'purchased_date' => set_value('purchased_date'),
@@ -76,10 +78,11 @@ class Vehicle extends Admin_controller{
             $this->create();
         } else {
             $data = [
+                'name' => $this->input->post('name',TRUE),
 				'photo' => $this->input->post('photo',TRUE),
 				'number' => $this->input->post('number',TRUE),
-				'purchased_date' => $this->input->post('purchased_date',TRUE),
-				'amount' => $this->input->post('amount',TRUE),
+				'purchased_date' => $this->input->post('purchased_date',TRUE) ? $this->input->post('purchased_date',TRUE) : null,
+				'amount' => $this->input->post('amount',TRUE) ? $this->input->post('amount',TRUE) : null,
 				'remark' => $this->input->post('remark',TRUE),
 			    ];
 
@@ -97,6 +100,7 @@ class Vehicle extends Admin_controller{
                 'button' => 'Update',
                 'action' => site_url( Backend_URL . 'vehicle/update_action'),
 				'id' => set_value('id', $vehicle->id),
+                'name' => set_value('name', $vehicle->name),
 				'photo' => set_value('photo', $vehicle->photo),
 				'number' => set_value('number', $vehicle->number),
 				'purchased_date' => set_value('purchased_date', $vehicle->purchased_date),
@@ -118,10 +122,11 @@ class Vehicle extends Admin_controller{
             $this->update( $id );
         } else {
             $data = [
+				'name' => $this->input->post('name',TRUE),
 				'photo' => $this->input->post('photo',TRUE),
 				'number' => $this->input->post('number',TRUE),
-				'purchased_date' => $this->input->post('purchased_date',TRUE),
-				'amount' => $this->input->post('amount',TRUE),
+				'purchased_date' => $this->input->post('purchased_date',TRUE) ? $this->input->post('purchased_date',TRUE) : null,
+				'amount' => $this->input->post('amount',TRUE) ? $this->input->post('amount',TRUE) : null,
 				'remark' => $this->input->post('remark',TRUE),
 		    ];
 
@@ -136,6 +141,7 @@ class Vehicle extends Admin_controller{
         if ($vehicle) {
             $data = [
 				'id' => $vehicle->id,
+                'name' => $vehicle->name,
 				'photo' => $vehicle->photo,
 				'number' => $vehicle->number,
 				'purchased_date' => $vehicle->purchased_date,
@@ -165,11 +171,11 @@ class Vehicle extends Admin_controller{
     
 
     public function _rules(){
-		$this->form_validation->set_rules('photo', 'photo', 'trim|required');
+        $this->form_validation->set_rules('name', 'name', 'trim|required');
 		$this->form_validation->set_rules('number', 'number', 'trim|required');
-		$this->form_validation->set_rules('purchased_date', 'purchased date', 'trim|required');
-		$this->form_validation->set_rules('amount', 'amount', 'trim|required|numeric');
-		$this->form_validation->set_rules('remark', 'remark', 'trim|required');
+		$this->form_validation->set_rules('purchased_date', 'purchased date', 'trim');
+		$this->form_validation->set_rules('amount', 'amount', 'trim|numeric');
+		$this->form_validation->set_rules('remark', 'remark', 'trim');
 
 		$this->form_validation->set_rules('id', 'id', 'trim');
 		$this->form_validation->set_error_delimiters('<span class="text-danger">', '</span>');
