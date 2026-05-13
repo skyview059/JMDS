@@ -36,8 +36,7 @@ class Batch_model extends Fm_model{
 			$this->db->or_like('date_start', $q);
 			$this->db->or_like('date_end', $q);
 			$this->db->or_like('status', $q);
-			$this->db->or_like('remarks', $q);
-			$this->db->or_like('created_at', $q);
+			$this->db->or_like('remarks', $q);	
 		}
 		$this->db->limit($limit, $start);
         return $this->db->get($this->table)->result();
