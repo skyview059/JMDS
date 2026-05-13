@@ -229,7 +229,7 @@ class Users extends Admin_controller {
     
                    
     public function _menu(){        
-        return buildMenuForMoudle([
+        return buildMenuForModule([
             'module'    => 'Users',
             'icon'      => 'fa-users',
             'href'      => 'users',                    

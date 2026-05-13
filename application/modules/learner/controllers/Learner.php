@@ -255,19 +255,19 @@ class Learner extends Admin_controller{
 
 	public function _menu() {
         // return add_main_menu('Donor', 'donor', 'donor', 'fa-hand-o-right');
-        return buildMenuForMoudle([
+        return buildMenuForModule([
             'module' => 'Learner',
-            'icon' => 'fa-hand-o-right',
-            'href' => 'donor',
+            'icon' => 'fa-user',
+            'href' => 'learner',
             'children' => [
                 [
                     'title' => 'All Learner',
                     'icon' => 'fa fa-bars',
-                    'href' => 'donor'
+                    'href' => 'learner'
                 ], [
                     'title' => ' |_ Add Learner',
                     'icon' => 'fa fa-plus',
-                    'href' => 'donor/create'
+                    'href' => 'learner/create'
 				]
             ]
         ]);

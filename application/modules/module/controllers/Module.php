@@ -210,7 +210,7 @@ class Module extends Admin_controller{
     }
 
     public function menu(){
-        return buildMenuForMoudle([
+        return buildMenuForModule([
             'module'    => 'Module Manager',
             'icon'      => 'fa fa-puzzle-piece',
             'href'      => 'module',

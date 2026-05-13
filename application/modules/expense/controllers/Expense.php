@@ -98,7 +98,7 @@ class Expense extends Admin_controller{
 
     public function _menu(){
         // return add_main_menu('Expense', 'expense', 'expense', 'fa-hand-o-right');
-        return buildMenuForMoudle([
+        return buildMenuForModule([
             'module'    => 'Expense',
             'icon'      => 'fa-hand-o-right',
             'href'      => 'expense',                    

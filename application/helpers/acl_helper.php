@@ -106,7 +106,7 @@ function add_main_menu($title, $url, $access, $icon){
     }                      
 }
 
-function buildMenuForMoudle( $menus = null){  
+function buildMenuForModule( $menus = null){  
     $array = [
         'module'    => 'Menu Title',
         'icon'      => 'fa-users',

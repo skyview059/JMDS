@@ -54,7 +54,7 @@ class Report extends Admin_controller{
 
     
     public function _menu(){        
-        return buildMenuForMoudle([
+        return buildMenuForModule([
             'module'    => 'Report',
             'icon'      => 'fa-hand-o-right',
             'href'      => 'report',                    
