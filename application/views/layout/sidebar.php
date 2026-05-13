@@ -7,6 +7,7 @@
 
             echo add_main_menu('Batch', 'batch', 'batch', 'fa-users');
             echo add_main_menu('Report', 'report', 'report', 'fa-calendar');
+            echo add_main_menu('Transaction', 'transaction', 'transaction', 'fa-money');           
             // echo Modules::run('report/_menu');                                 
             echo Modules::run('transaction/_menu');            
             // echo Modules::run('learner/_menu');   

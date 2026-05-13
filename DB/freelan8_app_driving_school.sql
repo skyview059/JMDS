@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: May 13, 2026 at 01:41 PM
+-- Generation Time: May 13, 2026 at 02:25 PM
 -- Server version: 8.0.39
 -- PHP Version: 8.3.0
 
@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS `acls` (
   `order_id` int DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `permKey` (`permission_key`)
-) ENGINE=InnoDB AUTO_INCREMENT=134 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=159 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `acls`
@@ -112,7 +112,28 @@ INSERT INTO `acls` (`id`, `module_id`, `permission_name`, `permission_key`, `ord
 (130, 18, 'Batch/update', 'batch/update', 0),
 (131, 18, 'Batch/read', 'batch/read', 0),
 (132, 18, 'Batch/delete', 'batch/delete', 0),
-(133, 18, 'Batch/update_action', 'batch/update_action', 0);
+(133, 18, 'Batch/update_action', 'batch/update_action', 0),
+(138, 22, 'Transaction', 'transaction', 0),
+(139, 22, 'Transaction create', 'transaction/create', 0),
+(140, 22, 'Transaction/save create action', 'transaction/create_action', 0),
+(141, 22, 'Transaction/update', 'transaction/update', 0),
+(142, 22, 'Transaction/read', 'transaction/read', 0),
+(143, 22, 'Transaction/delete', 'transaction/delete', 0),
+(144, 22, 'Transaction/update_action', 'transaction/update_action', 0),
+(145, 23, 'Vehicle', 'vehicle', 0),
+(146, 23, 'Vehicle create', 'vehicle/create', 0),
+(147, 23, 'Vehicle/save create action', 'vehicle/create_action', 0),
+(148, 23, 'Vehicle/update', 'vehicle/update', 0),
+(149, 23, 'Vehicle/read', 'vehicle/read', 0),
+(150, 23, 'Vehicle/delete', 'vehicle/delete', 0),
+(151, 23, 'Vehicle/update_action', 'vehicle/update_action', 0),
+(152, 24, 'District', 'district', 0),
+(153, 24, 'District create', 'district/create', 0),
+(154, 24, 'District/save create action', 'district/create_action', 0),
+(155, 24, 'District/update', 'district/update', 0),
+(156, 24, 'District/read', 'district/read', 0),
+(157, 24, 'District/delete', 'district/delete', 0),
+(158, 24, 'District/update_action', 'district/update_action', 0);
 
 -- --------------------------------------------------------
 
@@ -124,6 +145,7 @@ DROP TABLE IF EXISTS `batches`;
 CREATE TABLE IF NOT EXISTS `batches` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `seat` smallint NOT NULL,
   `date_start` datetime DEFAULT NULL,
   `date_end` datetime DEFAULT NULL,
   `status` enum('Running','Close','Upcoming') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Upcoming',
@@ -148,6 +170,92 @@ CREATE TABLE IF NOT EXISTS `db_sync` (
   `file` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `districts`
+--
+
+DROP TABLE IF EXISTS `districts`;
+CREATE TABLE IF NOT EXISTS `districts` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(25) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `bn_name` varchar(25) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `lat` varchar(15) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `lon` varchar(15) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=65 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `districts`
+--
+
+INSERT INTO `districts` (`id`, `name`, `bn_name`, `lat`, `lon`) VALUES
+(1, 'Comilla', 'কুমিল্লা', '23.4682747', '91.1788135'),
+(2, 'Feni', 'ফেনী', '23.023231', '91.3840844'),
+(3, 'Brahmanbaria', 'ব্রাহ্মণবাড়িয়া', '23.9570904', '91.1119286'),
+(4, 'Rangamati', 'রাঙ্গামাটি', '22.65561018', '92.17541121'),
+(5, 'Noakhali', 'নোয়াখালী', '22.869563', '91.099398'),
+(6, 'Chandpur', 'চাঁদপুর', '23.2332585', '90.6712912'),
+(7, 'Lakshmipur', 'লক্ষ্মীপুর', '22.942477', '90.841184'),
+(8, 'Chattogram', 'চট্টগ্রাম', '22.335109', '91.834073'),
+(9, 'Coxsbazar', 'কক্সবাজার', '21.44315751', '91.97381741'),
+(10, 'Khagrachhari', 'খাগড়াছড়ি', '23.119285', '91.984663'),
+(11, 'Bandarban', 'বান্দরবান', '22.1953275', '92.2183773'),
+(12, 'Sirajganj', 'সিরাজগঞ্জ', '24.4533978', '89.7006815'),
+(13, 'Pabna', 'পাবনা', '23.998524', '89.233645'),
+(14, 'Bogura', 'বগুড়া', '24.8465228', '89.377755'),
+(15, 'Rajshahi', 'রাজশাহী', '24.37230298', '88.56307623'),
+(16, 'Natore', 'নাটোর', '24.420556', '89.000282'),
+(17, 'Joypurhat', 'জয়পুরহাট', '25.09636876', '89.04004280'),
+(18, 'Chapainawabganj', 'চাঁপাইনবাবগঞ্জ', '24.5965034', '88.2775122'),
+(19, 'Naogaon', 'নওগাঁ', '24.83256191', '88.92485205'),
+(20, 'Jashore', 'যশোর', '23.16643', '89.2081126'),
+(21, 'Satkhira', 'সাতক্ষীরা', '22.7180905', '89.0687033'),
+(22, 'Meherpur', 'মেহেরপুর', '23.762213', '88.631821'),
+(23, 'Narail', 'নড়াইল', '23.172534', '89.512672'),
+(24, 'Chuadanga', 'চুয়াডাঙ্গা', '23.6401961', '88.841841'),
+(25, 'Kushtia', 'কুষ্টিয়া', '23.901258', '89.120482'),
+(26, 'Magura', 'মাগুরা', '23.487337', '89.419956'),
+(27, 'Khulna', 'খুলনা', '22.815774', '89.568679'),
+(28, 'Bagerhat', 'বাগেরহাট', '22.651568', '89.785938'),
+(29, 'Jhenaidah', 'ঝিনাইদহ', '23.5448176', '89.1539213'),
+(30, 'Jhalakathi', 'ঝালকাঠি', '22.6422689', '90.2003932'),
+(31, 'Patuakhali', 'পটুয়াখালী', '22.3596316', '90.3298712'),
+(32, 'Pirojpur', 'পিরোজপুর', '22.5781398', '89.9983909'),
+(33, 'Barisal', 'বরিশাল', '22.7004179', '90.3731568'),
+(34, 'Bhola', 'ভোলা', '22.685923', '90.648179'),
+(35, 'Barguna', 'বরগুনা', '22.159182', '90.125581'),
+(36, 'Sylhet', 'সিলেট', '24.8897956', '91.8697894'),
+(37, 'Moulvibazar', 'মৌলভীবাজার', '24.482934', '91.777417'),
+(38, 'Habiganj', 'হবিগঞ্জ', '24.374945', '91.41553'),
+(39, 'Sunamganj', 'সুনামগঞ্জ', '25.0658042', '91.3950115'),
+(40, 'Narsingdi', 'নরসিংদী', '23.932233', '90.71541'),
+(41, 'Gazipur', 'গাজীপুর', '24.0022858', '90.4264283'),
+(42, 'Shariatpur', 'শরীয়তপুর', '23.2060195', '90.3477725'),
+(43, 'Narayanganj', 'নারায়ণগঞ্জ', '23.63366', '90.496482'),
+(44, 'Tangail', 'টাঙ্গাইল', '24.264145', '89.918029'),
+(45, 'Kishoreganj', 'কিশোরগঞ্জ', '24.444937', '90.776575'),
+(46, 'Manikganj', 'মানিকগঞ্জ', '23.8602262', '90.0018293'),
+(47, 'Dhaka', 'ঢাকা', '23.7115253', '90.4111451'),
+(48, 'Munshiganj', 'মুন্সিগঞ্জ', '23.5435742', '90.5354327'),
+(49, 'Rajbari', 'রাজবাড়ী', '23.7574305', '89.6444665'),
+(50, 'Madaripur', 'মাদারীপুর', '23.164102', '90.1896805'),
+(51, 'Gopalganj', 'গোপালগঞ্জ', '23.0050857', '89.8266059'),
+(52, 'Faridpur', 'ফরিদপুর', '23.6070822', '89.8429406'),
+(53, 'Panchagarh', 'পঞ্চগড়', '26.3411', '88.5541606'),
+(54, 'Dinajpur', 'দিনাজপুর', '25.6217061', '88.6354504'),
+(55, 'Lalmonirhat', 'লালমনিরহাট', '25.9165451', '89.4532409'),
+(56, 'Nilphamari', 'নীলফামারী', '25.931794', '88.856006'),
+(57, 'Gaibandha', 'গাইবান্ধা', '25.328751', '89.528088'),
+(58, 'Thakurgaon', 'ঠাকুরগাঁও', '26.0336945', '88.4616834'),
+(59, 'Rangpur', 'রংপুর', '25.7558096', '89.244462'),
+(60, 'Kurigram', 'কুড়িগ্রাম', '25.805445', '89.636174'),
+(61, 'Sherpur', 'শেরপুর', '25.0204933', '90.0152966'),
+(62, 'Mymensingh', 'ময়মনসিংহ', '24.7465670', '90.4072093'),
+(63, 'Jamalpur', 'জামালপুর', '24.937533', '89.937775'),
+(64, 'Netrokona', 'নেত্রকোণা', '24.870955', '90.727887');
 
 -- --------------------------------------------------------
 
@@ -377,7 +485,7 @@ CREATE TABLE IF NOT EXISTS `modules` (
   `status` enum('Enable','Disable','Locked') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Disable',
   PRIMARY KEY (`id`),
   UNIQUE KEY `folder` (`folder`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `modules`
@@ -395,8 +503,11 @@ INSERT INTO `modules` (`id`, `added_date`, `order`, `type`, `name`, `folder`, `d
 (14, '2019-08-23', 1, 'Module', 'Trans', 'trans', '', 'Locked'),
 (15, '2019-08-23', 1, 'Module', 'Expense', 'Expense', '', 'Locked'),
 (16, '2019-08-26', 1, 'Module', 'SMS', 'sms', 'SMS', 'Locked'),
-(17, '2026-05-13', 1, 'Module', 'learner', 'learner', 'Learner Driver Management', 'Enable'),
-(18, '2026-05-13', 1, 'Module', 'Batch Manager', 'batch', 'Batch Manager', 'Enable');
+(17, '2026-05-13', 1, 'Module', 'Learner Manager', 'learner', '', 'Enable'),
+(18, '2026-05-13', 1, 'Module', 'Batch Manager', 'batch', 'Batch Manager', 'Enable'),
+(22, '2026-05-13', 1, 'Module', 'Transaction Manager', 'transaction', '', 'Enable'),
+(23, '2026-05-13', 1, 'Module', 'Vehicle Manager', 'vehicle', '', 'Enable'),
+(24, '2026-05-13', 1, 'Module', 'District', 'district', '', 'Enable');
 
 -- --------------------------------------------------------
 
@@ -438,7 +549,7 @@ CREATE TABLE IF NOT EXISTS `role_permissions` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `roleID_2` (`role_id`,`acl_id`),
   UNIQUE KEY `role_id` (`role_id`,`acl_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1752 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Role Permit ACL';
+) ENGINE=InnoDB AUTO_INCREMENT=1777 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Role Permit ACL';
 
 --
 -- Dumping data for table `role_permissions`
@@ -468,96 +579,14 @@ INSERT INTO `role_permissions` (`id`, `role_id`, `acl_id`, `access`) VALUES
 (388, 1, 10, 1),
 (389, 1, 12, 1),
 (390, 1, 13, 1),
-(391, 1, 141, 1),
-(392, 1, 140, 1),
-(393, 1, 139, 1),
-(394, 1, 138, 1),
-(395, 1, 137, 1),
-(396, 1, 136, 1),
-(397, 1, 142, 1),
-(414, 1, 25, 1),
-(415, 1, 26, 1),
-(416, 1, 27, 1),
-(417, 1, 28, 1),
-(418, 1, 29, 1),
-(419, 1, 30, 1),
-(420, 1, 31, 1),
-(421, 1, 32, 1),
-(422, 1, 33, 1),
-(423, 1, 34, 1),
-(424, 1, 35, 1),
-(425, 1, 36, 1),
-(426, 1, 37, 1),
-(427, 1, 38, 1),
-(428, 1, 39, 1),
 (429, 1, 40, 1),
 (430, 1, 41, 1),
 (431, 1, 42, 1),
 (432, 1, 43, 1),
 (434, 1, 45, 1),
 (435, 1, 46, 1),
-(436, 1, 47, 1),
-(437, 1, 48, 1),
-(438, 1, 49, 1),
-(439, 1, 50, 1),
-(440, 1, 51, 1),
-(441, 1, 52, 1),
-(442, 1, 53, 1),
-(443, 1, 54, 1),
-(444, 1, 55, 1),
-(445, 1, 56, 1),
-(446, 1, 57, 1),
-(447, 1, 58, 1),
-(448, 1, 59, 1),
-(449, 1, 60, 1),
-(450, 1, 61, 1),
-(451, 1, 62, 1),
-(452, 1, 63, 1),
-(453, 1, 64, 1),
-(454, 1, 65, 1),
-(455, 1, 66, 1),
-(456, 1, 67, 1),
-(457, 1, 68, 1),
-(458, 1, 69, 1),
-(459, 1, 70, 1),
-(460, 1, 71, 1),
 (542, 1, 73, 1),
-(561, 1, 75, 1),
-(692, 1, 76, 1),
-(747, 1, 77, 1),
-(803, 1, 78, 1),
-(890, 1, 79, 1),
-(950, 3, 73, 1),
-(951, 3, 7, 1),
-(952, 3, 13, 1),
-(953, 3, 12, 1),
-(954, 3, 10, 1),
-(955, 3, 70, 1),
-(956, 3, 55, 1),
-(957, 3, 31, 1),
-(958, 3, 30, 1),
-(959, 3, 29, 1),
-(960, 3, 28, 1),
-(961, 3, 27, 1),
-(962, 3, 26, 1),
-(963, 3, 25, 1),
-(964, 3, 39, 1),
-(965, 3, 75, 1),
-(966, 3, 76, 1),
-(967, 3, 78, 1),
-(968, 3, 71, 1),
-(969, 3, 77, 1),
-(970, 3, 54, 1),
-(971, 3, 53, 1),
-(972, 3, 52, 1),
-(973, 3, 51, 1),
-(974, 3, 50, 1),
-(975, 3, 49, 1),
-(976, 3, 48, 1),
-(977, 3, 47, 1),
-(978, 3, 79, 1),
 (979, 1, 80, 1),
-(1104, 1, 88, 1),
 (1223, 1, 89, 1),
 (1224, 1, 90, 1),
 (1225, 1, 91, 1),
@@ -579,74 +608,10 @@ INSERT INTO `role_permissions` (`id`, `role_id`, `acl_id`, `access`) VALUES
 (1306, 1, 112, 1),
 (1308, 1, 114, 1),
 (1408, 1, 115, 1),
-(1450, 4, 7, 1),
-(1451, 4, 73, 1),
-(1452, 4, 13, 1),
-(1453, 4, 12, 1),
-(1454, 4, 10, 1),
-(1455, 4, 95, 1),
-(1456, 4, 94, 1),
-(1457, 4, 93, 1),
-(1458, 4, 92, 1),
-(1459, 4, 91, 1),
-(1460, 4, 90, 1),
-(1461, 4, 89, 1),
-(1462, 4, 98, 1),
-(1463, 4, 97, 1),
-(1464, 4, 104, 1),
-(1465, 4, 101, 1),
-(1466, 4, 100, 1),
-(1467, 4, 99, 1),
 (1468, 1, 116, 1),
 (1554, 1, 117, 1),
 (1599, 1, 118, 1),
 (1645, 1, 119, 1),
-(1692, 2, 73, 1),
-(1693, 2, 7, 1),
-(1694, 2, 1, 1),
-(1695, 2, 24, 1),
-(1696, 2, 9, 1),
-(1697, 2, 8, 1),
-(1698, 2, 4, 1),
-(1699, 2, 3, 1),
-(1700, 2, 21, 1),
-(1701, 2, 6, 1),
-(1702, 2, 11, 1),
-(1703, 2, 13, 1),
-(1704, 2, 12, 1),
-(1705, 2, 10, 1),
-(1706, 2, 46, 1),
-(1707, 2, 45, 1),
-(1708, 2, 43, 1),
-(1709, 2, 42, 1),
-(1710, 2, 41, 1),
-(1711, 2, 40, 1),
-(1712, 2, 80, 1),
-(1713, 2, 117, 1),
-(1714, 2, 116, 1),
-(1715, 2, 95, 1),
-(1716, 2, 94, 1),
-(1717, 2, 93, 1),
-(1718, 2, 92, 1),
-(1719, 2, 91, 1),
-(1720, 2, 90, 1),
-(1721, 2, 89, 1),
-(1722, 2, 96, 1),
-(1723, 2, 97, 1),
-(1724, 2, 98, 1),
-(1725, 2, 115, 1),
-(1726, 2, 119, 1),
-(1727, 2, 106, 1),
-(1728, 2, 101, 1),
-(1729, 2, 104, 1),
-(1730, 2, 99, 1),
-(1731, 2, 100, 1),
-(1732, 2, 118, 1),
-(1733, 2, 107, 1),
-(1734, 2, 114, 1),
-(1735, 2, 112, 1),
-(1736, 2, 108, 1),
-(1737, 2, 109, 1),
 (1738, 1, 120, 1),
 (1739, 1, 121, 1),
 (1740, 1, 122, 1),
@@ -660,7 +625,28 @@ INSERT INTO `role_permissions` (`id`, `role_id`, `acl_id`, `access`) VALUES
 (1748, 1, 130, 1),
 (1749, 1, 131, 1),
 (1750, 1, 132, 1),
-(1751, 1, 133, 1);
+(1751, 1, 133, 1),
+(1756, 1, 138, 1),
+(1757, 1, 139, 1),
+(1758, 1, 140, 1),
+(1759, 1, 141, 1),
+(1760, 1, 142, 1),
+(1761, 1, 143, 1),
+(1762, 1, 144, 1),
+(1763, 1, 145, 1),
+(1764, 1, 146, 1),
+(1765, 1, 147, 1),
+(1766, 1, 148, 1),
+(1767, 1, 149, 1),
+(1768, 1, 150, 1),
+(1769, 1, 151, 1),
+(1770, 1, 152, 1),
+(1771, 1, 153, 1),
+(1772, 1, 154, 1),
+(1773, 1, 155, 1),
+(1774, 1, 156, 1),
+(1775, 1, 157, 1),
+(1776, 1, 158, 1);
 
 -- --------------------------------------------------------
 
@@ -875,6 +861,30 @@ INSERT INTO `sms_templates` (`id`, `title`, `body`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `transactions`
+--
+
+DROP TABLE IF EXISTS `transactions`;
+CREATE TABLE IF NOT EXISTS `transactions` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `tx_date` date NOT NULL,
+  `nature` enum('Dr','Cr') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Dr',
+  `head_id` int NOT NULL,
+  `subhead_id` int NOT NULL,
+  `amount` decimal(11,2) NOT NULL,
+  `remark` varchar(1000) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `batch_id` int DEFAULT NULL,
+  `vehicle_id` int DEFAULT NULL,
+  `tx_status` tinyint(1) NOT NULL DEFAULT '1',
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `users`
 --
 
@@ -916,6 +926,23 @@ INSERT INTO `users` (`id`, `role_id`, `first_name`, `last_name`, `email`, `passw
 (8, 4, 'Anupam Chaitanya', 'Das', 'collector5@gmail.com', '$2y$10$J8DJi4FlcpG5dgCrkq0Qg.JG5ujPNYF4A4j4LnX2fc.gtKDaVTL7i', '', '0000-00-00', '', '', '', '', '', 17, '2018-08-30', '', NULL, 'Active'),
 (9, 4, 'সিদ্ধিদাতা নৃসিংহ', 'দাস', 'collector6@gmail.com', '$2y$10$JAPwaA3Jj/sdNj9JcDJJoeX2H8qtLzAqoS/7TL1v9kiaazDX4dsPm', '01988486938', '0000-00-00', 'শ্রীশ্রী রূপ সনাতন স্মৃতি তীর্থ ', '', '', '', '', 17, '2018-08-30', '', NULL, 'Active'),
 (10, 4, 'সর্বমঙ্গল গৌর ', 'দাস', 'collector7@gmail.com', '$2y$10$LEdfeQvSDk2TKkEzOIqS2e3cH56a2.uxjlAto1rPkgCHJUid6w6HC', '01912679729', '0000-00-00', 'শ্রীশ্রী রূপ সনাতন স্মৃতি তীর্থ ', '', '', '', '', 17, '2018-08-30', '', NULL, 'Active');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `vehicles`
+--
+
+DROP TABLE IF EXISTS `vehicles`;
+CREATE TABLE IF NOT EXISTS `vehicles` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `photo` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `number` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `purchased_date` date DEFAULT NULL,
+  `amount` int DEFAULT NULL,
+  `remark` varchar(1000) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
