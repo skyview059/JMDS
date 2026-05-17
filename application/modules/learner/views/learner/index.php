@@ -33,18 +33,14 @@
                         <tr>
                             <th width="40">S/L</th>
                             <th>Batch</th>
+                            <th>Photo</th>
                             <th>Name</th>
-                            <th>Dob</th>
-                            <th>Nid</th>
-                            <th>Father</th>
-                            <th>Mother</th>
+                            <th>Age</th>
                             <th>District</th>
                             <th>Primary Mobile</th>
                             <th>Blood Group</th>
-                            <th>Second Contact Person</th>
-                            <th>Second Contact Mobile</th>
                             <th>Is Resident</th>
-                            <th>Photo</th>
+                            
                             <th>Remarks</th>
                             <th class="text-center" width="160">Action</th>
                         </tr>
@@ -54,19 +50,14 @@
                         <?php foreach ($learners as $learner) { ?>
                             <tr>
                                 <td><?php echo ++$start ?></td>
-                                <td><?php echo $learner->batch_name; ?></td>
+                                <td><?php echo $learner->batch_name; ?></td>                                
+                                <td><?php echo $learner->photo; ?></td>
                                 <td><?php echo $learner->name; ?></td>
-                                <td><?php echo $learner->dob; ?></td>
-                                <td><?php echo $learner->nid; ?></td>
-                                <td><?php echo $learner->father; ?></td>
-                                <td><?php echo $learner->mother; ?></td>
+                                <td><?php echo rand(18, 40); ?> years</td>
                                 <td><?php echo $learner->district_name; ?></td>
                                 <td><?php echo $learner->primary_mobile; ?></td>
                                 <td><?php echo $learner->blood_group; ?></td>
-                                <td><?php echo $learner->second_contact_person; ?></td>
-                                <td><?php echo $learner->second_contact_mobile; ?></td>
                                 <td><?php echo $learner->is_resident; ?></td>
-                                <td><?php echo $learner->photo; ?></td>
                                 <td><?php echo $learner->remarks; ?></td>
                                 <td>
                                     <?php

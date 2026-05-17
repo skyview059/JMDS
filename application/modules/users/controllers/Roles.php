@@ -9,19 +9,14 @@ class Roles extends Admin_controller {
     }
 
     
-    public function index() {      
+    public function index() {        
         
-        if($this->role_id != 1){  $this->db->where('roles.id !=', 1); }
+        $raw_sql = 'SELECT count(*) FROM `users` WHERE role_id =  roles.id';
+
+        $this->db->select("roles.*, ({$raw_sql}) as qty");	                  
+        $data['roles'] = $this->db->get('roles')->result();
         
-        $roles_data = $this->db
-                        ->select('roles.*, count(users.role_id) as totalUser')
-                        ->from('roles')
-                        ->join('users', 'users.role_id = roles.id', 'left')
-                        ->group_by('roles.id')                        
-                        ->get()
-                        ->result();
-        
-        $this->viewAdminContent('users/roles', ['roles_data' => $roles_data]);
+        $this->viewAdminContent('users/roles', $data );
     }
 
     public function create() {
@@ -29,18 +24,19 @@ class Roles extends Admin_controller {
         // else will return forbidden message
         ajaxAuthorized();
                         
-        $role_name = $this->input->post('role_name');
+        $role_name = $this->input->post('name');
         
         if (empty($role_name)) {
-            echo ajaxRespond('Fail', '<p class="ajax_error">Please enter role name</p>' );
-        } else {
-            $new_role = [
-                'role_name' => $role_name,
-                'status'    => 'Unlocked'
-            ];
-            $this->db->insert('roles', $new_role);         
-            echo ajaxRespond('OK', '<p class="ajax_success">New Role Created Successfully</p>');
-        }               
+            echo ajaxRespond('Fail', 'Please enter role name' );
+            exit;
+        }
+
+        $this->db->insert('roles', [
+            'role_name' => $role_name,
+            'status'    => 'Unlocked'
+        ]);
+        echo ajaxRespond('OK', '<p class="ajax_success">New Role Added Successfully</p>');
+                    
     }
    
 
@@ -51,7 +47,7 @@ class Roles extends Admin_controller {
         $role = $this->db->get_where('roles', ['id' => $id])->row();
         
                
-        echo '<form action="'. Backend_URL .'users/roles/update" class="form-inline" method="POST" id="update_form">
+        echo '<form action="admin/users/roles/update" class="form-inline" method="POST" id="update_form">
             <div class="form-group">
             <input name="id" value="'. $id .'" type="hidden">
             <input class="form-control" name="role_name" value="' . $role->role_name . '" type="text"></div>

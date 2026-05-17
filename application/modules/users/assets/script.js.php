@@ -1,23 +1,8 @@
 <script type="text/javascript">
-    function countUserByRoleID(RoleID) {
-        jQuery.ajax({
-            url: "<?php echo Backend_URL; ?>users/countUser",
-            type: "POST",
-            dataType: "text",
-            data: {RoleID: RoleID},
-            beforeSend: function () {
-                jQuery('#role_' + RoleID).html('Loading...');
-            },
-            success: function (jsonData) {
-                jQuery('#role_' + RoleID).html(jsonData);
-            }
-        });
-    }
-
 
     // Manage ACL 
     function manage_acl(id) {
-        
+        jQuery.noConflict();
         jQuery('.js_update_respond').empty();
         jQuery('#manageAcl').modal({
             show: 'false'
@@ -25,54 +10,44 @@
 
 
         jQuery.ajax({
-            url: "<?php echo Backend_URL; ?>users/roles/getAcl",
+            url: "users/roles/getAcl",
             type: "POST",
             dataType: "text",
             data: {id: id},
             beforeSend: function () {
-                jQuery('.acl_respond').html('<p class="ajax_processing">Loading...</p>');
+                jQuery('.acl_respond').html('<i class="fa fa-2x fa-spinner" aria-hidden="true"></i>');
             },
             success: function (msg) {
                 jQuery('.acl_respond').html(msg);
             }
         });
     }
-    
-    function add_new_role(e) {
-        e.preventDefault();
-        var role_name = jQuery('#role_name').val();
 
-        jQuery.ajax({
-            url: '<?php echo Backend_URL; ?>users/roles/create',
+    function new_role(e) {
+        e.preventDefault();
+        let formData = $('#new_role').serialize();
+        $.ajax({
+            url: 'users/roles/create',
             type: "POST",
             dataType: "json",
-            data: {role_name: role_name},
+            data: formData,
             beforeSend: function () {
-                jQuery('#ajaxRespondID').css('display','block').html('<p class="ajax_processing">Loading...</p>');
+                $('#ajaxRespondID').css('display', 'block').html('<p class="ajax_processing">Loading...</p>');
             },
-            success: function (jsonRespond) {
-                jQuery('#ajaxRespondID').html(jsonRespond.Msg);
-                
-                setTimeout(function() {	
-                    jQuery('#ajaxRespondID').fadeOut('slow');
-                }, 2000);
-
-                
+            success: function (jsonRespond) {                
+                $('#ajaxRespondID').html(jsonRespond.Msg);
+                $('.ajax_error').fadeOut('slow');
+                location.reload();
             }
-        });
-        return false;
+        });        
     }
-
-
-
-
 
     // Delete Role ID
     function delete_role(id) {
         var yes = confirm('Really Want to Delete?');
         if (yes) {
             jQuery.ajax({
-                url: "<?php echo Backend_URL; ?>users/roles/delete",
+                url: "users/roles/delete",
                 type: "POST",
                 dataType: "json",
                 data: {id: id},
@@ -93,7 +68,7 @@
     // Rename Role 
     function edit_role(id) {
         jQuery.ajax({
-            url: '<?php echo Backend_URL; ?>users/roles/rename',
+            url: 'users/roles/rename',
             type: 'POST',
             dataType: "text",
             data: {id: id},
@@ -110,7 +85,7 @@
     function update_role(id) {
         var update_form = jQuery('#update_form').serialize();
         jQuery.ajax({
-            url: "<?php echo Backend_URL; ?>users/roles/update",
+            url: "users/roles/update",
             type: "POST",
             dataType: "json",
             data: update_form,
@@ -131,12 +106,12 @@
         var FormData = jQuery('#access_permission').serialize();
 
         jQuery.ajax({
-            url: "<?php echo Backend_URL; ?>users/roles/update_acl",
+            url: "users/roles/update_acl",
             type: "POST",
             dataType: "json",
             data: FormData,
             beforeSend: function () {
-                jQuery('.js_update_respond').html('<p class="ajax_processing">Please Wait...</p>');
+                jQuery('.js_update_respond').html('<i class="fa fa-2x fa-spinner" aria-hidden="true"></i>');
             },
             success: function (jsonRespond) {                
                 jQuery('.js_update_respond').html(jsonRespond.Msg);               
@@ -155,17 +130,14 @@
             document.getElementById('access_permission').elements[i].checked = checked;
         }
     }
-     
     function checkUncheck( module ) {        
-        var len = $("#"+module+" input[name='acl_id[]']:checked").length;        
+        var len = jQuery("#"+module+" input[name='acl_id[]']:checked").length;        
         if(len){
             jQuery('.' + module).prop('checked', '');
         } else {
             jQuery('.' + module).prop('checked', 'checked');
         }        
     }
-
-    
     
     
     // random password generator
@@ -181,9 +153,9 @@
 
     var $ = jQuery;
     $(document).ready(function (e) {
-        $("#update_user").on('submit', (function (e) {                                                
+        $("#update_user_aliza").on('submit', (function (e) {                                                
             e.preventDefault();            
-            var formData = new FormData(document.getElementById("update_user"));                                                          
+            var formData = new FormData(document.getElementById("update_user_aliza"));                                                          
              
             jQuery.ajax({
                 url: "<?php echo Backend_URL; ?>users/update_action",  
@@ -197,11 +169,7 @@
                 },
                 success: function (msg) {
                     jQuery('#success_report').html(msg);                     
-                    jQuery('html, body').animate({
-                        scrollTop: jQuery("#success_report").offset().top
-                    }, 1000);
-                        
-                    setTimeout(function () { jQuery('#success_report').fadeOut('slow');  }, 2000);                       
+                    setTimeout(function () { jQuery('#success_report').slideUp('slow');  }, 4000);                       
                 },
                 processData: false, 
                 contentType: false, 
@@ -209,127 +177,14 @@
             });            
         }));        
     });
-    
-    
-    /*------------ Instant Show Preview Image to a targeted place ------------*/
-    function instantShowUploadImage(input, target) {
-        if (input.files && input.files[0]) {
-            var reader = new FileReader();
-            reader.onload = function (e) {
-                $(target + ' img').attr('src', e.target.result);
-            };
-            reader.readAsDataURL(input.files[0]);
+
+
+    function date_range(range){
+        var range = range;
+        if( range == 'Custom'){       
+            $('#custom').css('display','block');
+        } else {      
+            $('#custom').css('display','none');
         }
-        $(target).show();
-    }
-
-
- function date_range(range){
-     var range = range;
-     if( range === 'Custom'){       
-      $('#custom').css('display','block');
-     } else {      
-      $('#custom').css('display','none');
-     }
-    }
-    
-
-    function  password_change() {
-        var formData = jQuery('#update_password').serialize();
-        var error = 0;
-        
-        
-
-        var new_pass = jQuery('[name=new_pass]').val();
-	if(!new_pass){
-            jQuery('[name=new_pass]').addClass('required');
-            error = 1;
-	}else{
-            jQuery('[name=new_pass]').removeClass('required').addClass('required_pass');
-	}
-        
-        var con_pass = jQuery('[name=con_pass]').val();
-	if(!con_pass){
-            jQuery('[name=con_pass]').addClass('required');
-            error = 1;
-	}else{
-            jQuery('[name=con_pass]').removeClass('required').addClass('required_pass');
-	}
-        
-                                        
-        if( !error ) {
-            jQuery.ajax({
-                url: '<?php echo Backend_URL; ?>users/reset_password',
-                type: "post",
-                dataType: 'json',
-                data: formData,
-                beforeSend: function () {
-                    jQuery('#ajax_respond')
-                            .html('<p class="ajax_processing">Please Wait...</p>')
-                            .css('display', 'block');
-                },
-                success: function (jsonRespond) {
-                    if(jsonRespond.Status === 'OK'){
-                        jQuery('#ajax_respond').html(jsonRespond.Msg);
-                        setTimeout(function() { 
-                            jQuery('#ajax_respond').slideUp('slow');
-                            document.getElementById("update_password").reset();
-                            jQuery('[name=new_pass]').removeClass('required_pass');
-                            jQuery('[name=con_pass]').removeClass('required_pass');
-                        }, 2000);
-                    } else {                    
-                        jQuery('#ajax_respond').html(jsonRespond.Msg);                
-                    }
-                }
-            });
-        }
-        
-     
-     return false;
-    };
-    
-    function setStatus( status, id ){               
-        
-        jQuery.ajax({
-            url: 'users/setStatus',
-            type: "POST",
-            dataType: 'json',
-            data: {status:status, id:id },
-            beforeSend: function () {
-                jQuery('#currentStatus').html('<p class="ajax_processing">Loading...</p>');                        
-            },
-            success: function ( jsonRespond ) {
-                if(jsonRespond.Status === 'OK'){
-                    jQuery('#currentStatus').html( jsonRespond.Msg );                    
-                }  
-            }
-        });
-        return false;
-        
-    }
-    
-    
-    function assign_billing_area() {
-        var FormData = jQuery('#assign_areas').serialize();
-
-        jQuery.ajax({
-            url: "users/area_action",
-            type: "POST",
-            dataType: "json",
-            data: FormData,
-            beforeSend: function () {
-                jQuery('#ajax_respond')
-                        .html('<p class="ajax_processing">Please Wait...</p>')
-                        .css('display','block');
-            },
-            success: function (jsonRespond) {                
-                jQuery('#ajax_respond').html(jsonRespond.Msg);                
-                if(jsonRespond.Status === 'OK'){
-                    setTimeout(function() { 
-                        jQuery('#ajax_respond').slideUp('slow');
-                    }, 2000);
-                }                
-            }
-        });
-    }
+    }    
 </script>

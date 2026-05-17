@@ -12,27 +12,26 @@
             echo Modules::run('transaction/_menu');            
             // echo Modules::run('learner/_menu');   
             echo add_main_menu('Learner Manager', 'learner', 'learner', 'fa-user');            
-            echo add_main_menu('Vehicle Manager', 'vehicle', 'vehicle', 'fa-car');             
-            
-
+            echo add_main_menu('Vehicle Manager', 'vehicle', 'vehicle', 'fa-car');  
             echo Modules::run('sms/_menu');         
             echo add_main_menu('District', 'district', 'district', 'fa-map');                             
             // Speceally for Developers            
-            echo add_main_menu('Settings', 'settings', 'settings', 'fa-gear');            
-            echo add_main_menu('DB Backup & Restore', 'db_sync', 'db_sync', 'fa-hdd-o');
-            echo Modules::run('module/menu');          
-            echo Modules::run('profile/_menu');
+            
                              
             // echo Modules::run('area/_menu'); 
             // echo Modules::run('donor/_menu');    
             // echo Modules::run('expense/_menu');    
             
             $role_id = getLoginUserData('role_id');
-            if($role_id == 1){
-                echo Modules::run('users/_menu');                
-            } else {
+            if(in_array($role_id, [1, 2])){
                 echo add_main_menu('Users', 'users', 'users', 'fa-gear');
             }            
+            echo add_main_menu('Settings', 'settings', 'settings', 'fa-gear');            
+            echo add_main_menu('DB Backup & Restore', 'db_sync', 'db_sync', 'fa-hdd-o');
+            echo Modules::run('module/menu');          
+            echo Modules::run('profile/_menu');
+
+
             echo add_main_menu('Logout', 'logout', 'dashboard', 'fa-sign-out');            
            ?>
         </ul>
