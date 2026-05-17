@@ -8,16 +8,13 @@
             echo add_main_menu('Batch', 'batch', 'batch', 'fa-users');
             echo add_main_menu('Report', 'report', 'report', 'fa-calendar');
             echo add_main_menu('Transaction', 'transaction', 'transaction', 'fa-money');           
-            // echo Modules::run('report/_menu');                                 
-            echo Modules::run('transaction/_menu');            
+            echo add_main_menu('Driving', 'driving', 'driving', 'fa-car');           
+            // echo Modules::run('report/_menu');                   
             // echo Modules::run('learner/_menu');   
             echo add_main_menu('Learner Manager', 'learner', 'learner', 'fa-user');            
             echo add_main_menu('Vehicle Manager', 'vehicle', 'vehicle', 'fa-car');  
             echo Modules::run('sms/_menu');         
-            echo add_main_menu('District', 'district', 'district', 'fa-map');                             
-            // Speceally for Developers            
-            
-                             
+            echo add_main_menu('District', 'district', 'district', 'fa-map');
             // echo Modules::run('area/_menu'); 
             // echo Modules::run('donor/_menu');    
             // echo Modules::run('expense/_menu');    
@@ -30,7 +27,6 @@
             echo add_main_menu('DB Backup & Restore', 'db_sync', 'db_sync', 'fa-hdd-o');
             echo Modules::run('module/menu');          
             echo Modules::run('profile/_menu');
-
 
             echo add_main_menu('Logout', 'logout', 'dashboard', 'fa-sign-out');            
            ?>

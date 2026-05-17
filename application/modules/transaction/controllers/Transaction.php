@@ -15,17 +15,37 @@ class Transaction extends Admin_controller{
     public function index(){
         $q = urldecode_fk($this->input->get('q', TRUE));
         $start = intval($this->input->get('start'));
-        
+
+        $tab = strtolower(trim((string) $this->input->get('tab', TRUE)));
+        if ($tab !== 'void' && $tab !== 'imported') {
+            $tab = 'transaction';
+        }
+
+        $filters = [
+            'tab' => $tab === 'void' ? 'void' : ($tab === 'imported' ? 'imported' : 'transaction'),
+            'source' => $this->input->get('source', TRUE),
+            'date_from' => $this->input->get('date_from', TRUE),
+            'date_to' => $this->input->get('date_to', TRUE),
+        ];
+
         $config['base_url'] = build_pagination_url( Backend_URL . 'transaction', 'start');
         $config['first_url'] = build_pagination_url( Backend_URL . 'transaction', 'start');
 
         $config['per_page'] = 25;
         $config['page_query_string'] = TRUE;
-        $config['total_rows'] = $this->Transaction_model->total_rows($q);
-        $transactions = $this->Transaction_model->get_limit_data($config['per_page'], $start, $q);
+        $config['total_rows'] = $this->Transaction_model->total_rows($q, $filters);
+        $transactions = $this->Transaction_model->get_limit_data($config['per_page'], $start, $q, $filters);
 
         $this->load->library('pagination');
         $this->pagination->initialize($config);
+
+        $source_options_filter = ['' => 'All Source'];
+        foreach ($this->Transaction_model->get_source_list() as $sid => $sname) {
+            if ($sid === '' || $sid === null) {
+                continue;
+            }
+            $source_options_filter[$sid] = $sname;
+        }
 
         $data = [
             'transactions' => $transactions,
@@ -33,6 +53,10 @@ class Transaction extends Admin_controller{
             'pagination' => $this->pagination->create_links(),
             'total_rows' => $config['total_rows'],
             'start' => $start,
+            'tab' => $tab,
+            'filters' => $filters,
+            'totals' => $this->Transaction_model->get_statement_totals($filters),
+            'source_filter_options' => $source_options_filter,
         ];
         $this->viewAdminContent('transaction/transaction/index', $data);
     }
@@ -79,6 +103,11 @@ class Transaction extends Admin_controller{
 			'tx_status' => set_value('tx_status'),
 			'created_at' => set_value('created_at'),
 			'updated_at' => set_value('updated_at'),
+			'source_list'  => $this->Transaction_model->get_source_list(),
+			'head_list'    => $this->Transaction_model->get_head_list(),
+			'subhead_list' => $this->Transaction_model->get_subhead_list(),
+			'batch_list'   => $this->Transaction_model->get_batch_list(),
+			'vehicle_list' => $this->Transaction_model->get_vehicle_list(),
 			];
         $this->viewAdminContent('transaction/transaction/create', $data);
     }
@@ -164,6 +193,28 @@ class Transaction extends Admin_controller{
             $this->session->set_flashdata('message', '<p class="ajax_success">Transaction Updated Successlly</p>');
             redirect(site_url( Backend_URL. 'transaction/update/'. $id ));
         }
+    }
+
+    public function void_action($id){
+        $id = (int) $id;
+        if ($id < 1) {
+            redirect(site_url(Backend_URL . 'transaction'));
+            return;
+        }
+        $row = $this->Transaction_model->get_by_id($id);
+        if (! $row) {
+            $this->session->set_flashdata('message', '<p class="ajax_error">Transaction Not Found</p>');
+            redirect(site_url( Backend_URL . 'transaction'));
+            return;
+        }
+
+        $this->Transaction_model->update($id, [
+            'tx_status' => 0,
+            'updated_at' => date('Y-m-d H:i:s'),
+        ]);
+
+        $this->session->set_flashdata('message', '<p class="ajax_success">Transaction voided successfully</p>');
+        redirect(site_url( Backend_URL . 'transaction'));
     }
 
     public function delete($id){
