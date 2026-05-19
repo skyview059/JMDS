@@ -8,6 +8,63 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * the daily-queue capacity constant and the tab bar used by the CRUD pages.
  */
 
+if (!function_exists('driving_drive_types')) {
+    /**
+     * Allowed drive-type values for queue assignment.
+     *
+     * @return array<string, string> value => label
+     */
+    function driving_drive_types() {
+        return [
+            'F'  => 'Forward',
+            'R' => 'Reverse',
+            'Z'   => 'ZikZak',
+        ];
+    }
+}
+
+if (!function_exists('driving_valid_drive_type')) {
+    /**
+     * @param string|null $drive_type
+     * @return string|null Sanitized value or null if invalid / empty
+     */
+    function driving_valid_drive_type($drive_type) {
+        $drive_type = trim((string) $drive_type);
+        if ($drive_type === '') {
+            return null;
+        }
+        $allowed = array_keys(driving_drive_types());
+        return in_array($drive_type, $allowed, true) ? $drive_type : null;
+    }
+}
+
+if (!function_exists('driving_round_qty_options')) {
+    /**
+     * Allowed round quantities for queue assignment.
+     *
+     * @return array<int, string>
+     */
+    function driving_round_qty_options() {
+        return [
+            1 => '1',
+            2 => '2',
+            3 => '3',
+        ];
+    }
+}
+
+if (!function_exists('driving_valid_round_qty')) {
+    /**
+     * @param mixed $round_qty
+     * @return int|null
+     */
+    function driving_valid_round_qty($round_qty) {
+        $round_qty = (int) $round_qty;
+        $allowed   = array_keys(driving_round_qty_options());
+        return in_array($round_qty, $allowed, true) ? $round_qty : null;
+    }
+}
+
 if (!function_exists('driving_daily_limit')) {
     /**
      * Maximum number of *active* learners (Queued + Driving) per vehicle per day.
@@ -47,19 +104,18 @@ if (!function_exists('driving_stage_badge')) {
      * Render a colourful badge for a single driving cell.
      *
      * @param string|null $stage         'Queued' | 'Driving' | 'Completed' | 'Cancelled' | null
-     * @param string      $vehicle_label fallback text (e.g. vehicle name) shown when not currently driving
+     * @param string      $vehicle_label unused; column headers show the vehicle name
      */
     function driving_stage_badge($stage = null, $vehicle_label = '') {
-        $label   = htmlspecialchars($vehicle_label !== '' ? $vehicle_label : ($stage ?: '-'));
         switch ($stage) {
             case 'Driving':
                 return '<span class="dv-badge dv-badge-driving">ON DRIVING</span>';
             case 'Queued':
-                return '<span class="dv-badge dv-badge-queued">' . $label . '</span>';
+                return '<span class="dv-badge dv-badge-queued">QUEUED</span>';
             case 'Completed':
-                return '<span class="dv-badge dv-badge-completed">' . $label . '</span>';
+                return '<span class="dv-badge dv-badge-completed">COMPLETED</span>';
             case 'Cancelled':
-                return '<span class="dv-badge dv-badge-cancelled">' . $label . '</span>';
+                return '<span class="dv-badge dv-badge-cancelled">CANCELLED</span>';
             default:
                 return '<span class="dv-badge dv-badge-empty">&mdash;</span>';
         }
@@ -88,8 +144,10 @@ if (!function_exists('driving_capacity_card')) {
         }
 
         $html  = '<div class="dv-capacity dv-capacity-' . $tone . '">';
-        $html .=   '<div class="dv-capacity-title">' . $title . '</div>';
-        $html .=   '<div class="dv-capacity-value">' . $used . ' / ' . $limit . '</div>';
+        $html .=   '<div class="dv-capacity-row">';
+        $html .=     '<div class="dv-capacity-title">' . $title . '</div>';
+        $html .=     '<div class="dv-capacity-value">' . $used . ' / ' . $limit . '</div>';
+        $html .=   '</div>';
         $html .=   '<div class="dv-capacity-bar"><span style="width:' . $pct . '%"></span></div>';
         $html .= '</div>';
         return $html;
@@ -149,6 +207,102 @@ if (!function_exists('driving_stage_label')) {
             default:          $cls .= 'dv-badge-empty';
         }
         return '<span class="' . $cls . '">' . htmlspecialchars($stage) . '</span>';
+    }
+}
+
+if (!function_exists('driving_drive_type_label')) {
+    function driving_drive_type_label($drive_type) {
+        $drive_type = trim((string) $drive_type);
+        if ($drive_type === '') {
+            return '-';
+        }
+        $map = driving_drive_types();
+        if (isset($map[$drive_type])) {
+            return $map[$drive_type];
+        }
+        return $drive_type;
+    }
+}
+
+if (!function_exists('driving_log_session_times')) {
+    /**
+     * Start = first Driving log; fallback first log. End = first Completed log.
+     */
+    function driving_log_session_times($logs) {
+        $start = null;
+        $end   = null;
+        foreach ($logs as $log) {
+            if ($log->stage === 'Driving' && $start === null) {
+                $start = $log->datetime;
+            }
+            if ($log->stage === 'Completed' && $end === null) {
+                $end = $log->datetime;
+            }
+        }
+        if ($start === null && !empty($logs)) {
+            $start = $logs[0]->datetime;
+        }
+        return ['start' => $start, 'end' => $end];
+    }
+}
+
+if (!function_exists('driving_learner_log_groups_html')) {
+    /**
+     * Table report for learner day logs (dashboard modal).
+     */
+    function driving_learner_log_groups_html($groups) {
+        if (empty($groups)) {
+            return '<p class="text-muted">No driving logs for this day.</p>';
+        }
+
+        usort($groups, function ($a, $b) {
+            $dateA = $a['tx_date'] ?? '';
+            $dateB = $b['tx_date'] ?? '';
+            if ($dateA !== $dateB) {
+                return strcmp($dateA, $dateB);
+            }
+            return strcmp($a['start_time'] ?? '', $b['start_time'] ?? '');
+        });
+
+        $html  = '<div class="table-responsive">';
+        $html .= '<table class="table table-bordered table-condensed dv-log-table">';
+        $html .= '<thead><tr>';
+        $html .= '<th>Date</th><th>Vehicle</th><th>Drive Type</th><th>Round</th>';
+        $html .= '<th>Start</th><th>End</th>';
+        $html .= '</tr></thead><tbody>';
+
+        foreach ($groups as $g) {
+            $html .= '<tr>';
+            $html .= '<td>' . driving_format_date($g['tx_date'] ?? null) . '</td>';
+            $html .= '<td>' . htmlspecialchars($g['vehicle_label'] ?? 'Vehicle') . '</td>';
+            $html .= '<td>' . htmlspecialchars(driving_drive_type_label($g['drive_type'] ?? '')) . '</td>';
+            $round_qty = $g['round_qty'] ?? null;
+            $html .= '<td class="text-center">' . ($round_qty !== null && $round_qty !== '' ? (int) $round_qty : '-') . '</td>';
+            $html .= '<td>' . driving_format_time($g['start_time'] ?? null) . '</td>';
+            $html .= '<td>' . driving_format_time($g['end_time'] ?? null) . '</td>';
+            $html .= '</tr>';
+        }
+
+        $html .= '</tbody></table></div>';
+        return $html;
+    }
+}
+
+if (!function_exists('driving_format_date')) {
+    function driving_format_date($date) {
+        if (empty($date) || $date === '0000-00-00') {
+            return '-';
+        }
+        return date('d-M-Y', strtotime($date));
+    }
+}
+
+if (!function_exists('driving_format_time')) {
+    function driving_format_time($datetime) {
+        if (empty($datetime) || $datetime === '0000-00-00 00:00:00') {
+            return '-';
+        }
+        return date('h:i A', strtotime($datetime));
     }
 }
 

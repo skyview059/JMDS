@@ -8,11 +8,13 @@ $base_query = array_filter([
 ]);
 $base_qs = $base_query ? ('?' . http_build_query($base_query)) : '';
 
-$learners = $pivot['learners'] ?? [];
-$grid     = $pivot['pivot']    ?? [];
-$counts   = $pivot['counts']   ?? [];
+$learners     = $pivot['learners'] ?? [];
+$grid         = $pivot['pivot']    ?? [];
+$counts       = $pivot['counts']   ?? [];
+$learner_logs = $learner_logs     ?? [];
 ?>
-
+<div class="content-wrapper">
+<div class="container">
 <section class="content-header">
     <h1>
         <i class="fa fa-car"></i> Driving Dashboard
@@ -64,12 +66,7 @@ $counts   = $pivot['counts']   ?? [];
             <div class="dv-summary">
                 <div class="dv-stat">
                     <div class="dv-stat-row">
-                        <div class="dv-stat-left">
-                            <div class="dv-stat-title"><i class="fa fa-users"></i> Total Students</div>
-                            <div class="dv-stat-sub">
-                                <?php echo (int) $students_today; ?> active on <?php echo $tx_date; ?>
-                            </div>
-                        </div>
+                        <div class="dv-stat-title"><i class="fa fa-users"></i> Total Learners</div>
                         <div class="dv-stat-value"><?php echo (int) $total_learners; ?></div>
                     </div>
                 </div>
@@ -84,38 +81,26 @@ $counts   = $pivot['counts']   ?? [];
                 <table class="dv-pivot table">
                     <thead>
                         <tr>
-                            <th style="width:80px;">Student</th>
+                            <th style="width:80px;">Index</th>
                             <th>Learner</th>
                             <?php foreach ($vehicles as $v): ?>
                                 <th class="dv-cell"><?php echo htmlspecialchars($v->name); ?></th>
                             <?php endforeach; ?>
-                            <th style="width:160px;">First Log</th>
-                            <th style="width:160px;">Last Log</th>
-                            <th class="text-center" style="width:120px;">Action</th>
+                            <th class="text-center" style="width:70px;">Log</th>
+                            <th class="text-center" style="width:90px;">Action</th>
                         </tr>
                     </thead>
                     <tbody>
                     <?php if (empty($learners)): ?>
                         <tr>
-                            <td colspan="<?php echo 6 + count($vehicles); ?>" class="text-center text-muted" style="padding:30px;">
+                            <td colspan="<?php echo 4 + count($vehicles); ?>" class="text-center text-muted" style="padding:30px;">
                                 No learners found<?php echo $batch_id ? ' for this batch' : ''; ?>.
                             </td>
                         </tr>
                     <?php else: ?>
                         <?php foreach ($learners as $learner): ?>
                             <?php
-                                $first_seen = null;
-                                $last_seen  = null;
-                                foreach ($grid[$learner->id] ?? [] as $cell) {
-                                    if ($cell->last_log_time) {
-                                        if (!$first_seen || $cell->last_log_time < $first_seen) {
-                                            $first_seen = $cell->last_log_time;
-                                        }
-                                        if (!$last_seen || $cell->last_log_time > $last_seen) {
-                                            $last_seen = $cell->last_log_time;
-                                        }
-                                    }
-                                }
+                                $log_groups = $learner_logs[$learner->id] ?? [];
                                 $reset_row_url = site_url(Backend_URL . 'driving/reset_row') . '?'
                                     . http_build_query([
                                         'learning_id' => $learner->id,
@@ -128,11 +113,6 @@ $counts   = $pivot['counts']   ?? [];
                                     <a href="<?php echo site_url(Backend_URL . 'driving/learner/' . (int) $learner->id); ?>">
                                         <?php echo htmlspecialchars($learner->name); ?>
                                     </a>
-                                    <?php if (!empty($learner->batch_name)): ?>
-                                        <div class="text-muted" style="font-size:11px;">
-                                            <i class="fa fa-tag"></i> <?php echo htmlspecialchars($learner->batch_name); ?>
-                                        </div>
-                                    <?php endif; ?>
                                 </td>
 
                                 <?php foreach ($vehicles as $v):
@@ -154,14 +134,28 @@ $counts   = $pivot['counts']   ?? [];
                                     </td>
                                 <?php endforeach; ?>
 
-                                <td><?php echo driving_format_dt($first_seen); ?></td>
-                                <td><?php echo driving_format_dt($last_seen); ?></td>
                                 <td class="text-center">
-                                    <a href="<?php echo $reset_row_url; ?>"
-                                       class="btn btn-xs btn-danger"
-                                       onclick="return confirm('Reset all driving entries for this learner on <?php echo $tx_date; ?>?')">
-                                        <i class="fa fa-refresh"></i> Reset
-                                    </a>
+                                    <?php if (!empty($log_groups)): ?>
+                                        <button type="button"
+                                                class="btn btn-xs btn-info dv-view-log"
+                                                data-learner-id="<?php echo (int) $learner->id; ?>"
+                                                data-learner-name="<?php echo htmlspecialchars($learner->name, ENT_QUOTES); ?>">
+                                            <i class="fa fa-list"></i> Log
+                                        </button>
+                                    <?php else: ?>
+                                        <span class="text-muted">&mdash;</span>
+                                    <?php endif; ?>
+                                </td>
+                                <td class="text-center">
+                                    <?php if (!empty($log_groups)): ?>
+                                        <a href="<?php echo $reset_row_url; ?>"
+                                           class="btn btn-xs btn-danger"
+                                           onclick="return confirm('Reset all driving entries for this learner on <?php echo $tx_date; ?>?')">
+                                            <i class="fa fa-refresh"></i> Reset
+                                        </a>
+                                    <?php else: ?>
+                                        <span class="text-muted">&mdash;</span>
+                                    <?php endif; ?>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
@@ -178,6 +172,30 @@ $counts   = $pivot['counts']   ?? [];
         </div>
     </div>
 </section>
+
+<?php if (!empty($learners)): ?>
+    <?php foreach ($learners as $learner): ?>
+        <div id="dvLogData-<?php echo (int) $learner->id; ?>" class="hidden dv-log-data">
+            <?php echo driving_learner_log_groups_html($learner_logs[$learner->id] ?? []); ?>
+        </div>
+    <?php endforeach; ?>
+<?php endif; ?>
+
+<!-- ============================== Driving log modal ========================= -->
+<div class="modal fade" id="dvLogModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+        <h4 class="modal-title"><i class="fa fa-list"></i> <span id="dvLogModalTitle">Driving Log</span></h4>
+      </div>
+      <div class="modal-body" id="dvLogModalBody"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- ============================== Assign-to-queue modal ========================= -->
 <div class="modal fade" id="dvAssignModal" tabindex="-1" role="dialog">
@@ -202,12 +220,26 @@ $counts   = $pivot['counts']   ?? [];
             </div>
             <div class="form-group">
                 <label>Vehicle</label>
-                <?php echo form_dropdown('vehicle_id', $vehicle_list, '',
-                    'class="form-control" id="dvAssignVehicle" required'); ?>
+                <div class="dv-inline-radios" id="dvAssignVehicleRadios">
+                <?php
+                $first_vehicle = true;
+                foreach ($vehicle_list as $vid => $vlabel):
+                    if ($vid === '' || $vid === null) { continue; }
+                ?>
+                    <label class="radio-inline">
+                        <input type="radio" name="vehicle_id" value="<?php echo (int) $vid; ?>"
+                               <?php echo $first_vehicle ? 'checked' : ''; ?> required>
+                        <?php echo htmlspecialchars($vlabel); ?>
+                    </label>
+                <?php
+                    $first_vehicle = false;
+                endforeach;
+                ?>
+                </div>
             </div>
             <div class="form-group">
                 <label>Drive Type</label>
-                <div class="dv-drive-type-radios">
+                <div class="dv-inline-radios">
                 <?php foreach (driving_drive_types() as $value => $label): ?>
                     <label class="radio-inline">
                         <input type="radio" name="drive_type" value="<?php echo htmlspecialchars($value); ?>"
@@ -229,18 +261,21 @@ $counts   = $pivot['counts']   ?? [];
                 <?php endforeach; ?>
                 </div>
             </div>
-            <p class="text-muted" style="margin:0;">
-                A new <b>Queued</b> log will be created automatically.
-            </p>
+
         </div>
+
         <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
             <button type="submit" class="btn btn-success"><i class="fa fa-check"></i> Add to Queue</button>
         </div>
+
       </div>
     </form>
   </div>
 </div>
+</div>
+</div>
+
 
 <script>
 (function($){
@@ -249,7 +284,15 @@ $counts   = $pivot['counts']   ?? [];
         var learnerId = $(this).data('prefill-learner');
         var vehicleId = $(this).data('prefill-vehicle');
         $('#dvAssignLearner').val(learnerId);
-        $('#dvAssignVehicle').val(vehicleId);
+        $('#dvAssignVehicleRadios input[name="vehicle_id"][value="' + vehicleId + '"]').prop('checked', true);
+    });
+    $(document).on('click', '.dv-view-log', function(){
+        var learnerId = $(this).data('learner-id');
+        var learnerName = $(this).data('learner-name') || 'Driving Log';
+        var html = $('#dvLogData-' + learnerId).html();
+        $('#dvLogModalTitle').text(learnerName);
+        $('#dvLogModalBody').html(html || '<p class="text-muted">No driving logs for this day.</p>');
+        $('#dvLogModal').modal('show');
     });
 })(jQuery);
 </script>

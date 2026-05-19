@@ -43,6 +43,21 @@ class Admin_controller extends MX_Controller {
             $this->load->view('layout/footer');
         }
     }
+    public function viewMobileContent($view, $data = []){				
+        if( $this->input->is_ajax_request() ){
+            $this->load->view($view, $data);        
+        } else {
+            $this->load->view('mobile/header');            
+            //$this->load->view('maintenance');    
+            
+            if( $this->check_access( $view ) ){
+                $this->load->view($view, $data); 
+            } else {
+                $this->load->view('restrict');    
+            }
+            $this->load->view('mobile/footer');
+        }
+    }
     
     private function check_access( $string = 'dashboard'){                
         $controller = empty($this->uri->segment(1)) ? $string : $this->uri->segment(1);       

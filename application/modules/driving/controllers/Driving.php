@@ -41,6 +41,7 @@ class Driving extends Admin_controller {
             'batch_id'        => $batch_id,
             'vehicles'        => $vehicles,
             'pivot'           => $pivot,
+            'learner_logs'    => $this->_learner_day_log_groups($pivot, $vehicles),
             'batch_list'      => $this->Driving_model->get_batch_options(),
             'vehicle_list'    => $this->Driving_model->get_vehicle_options(),
             'learner_list'    => $this->Driving_model->get_learner_options($batch_id),
@@ -48,7 +49,8 @@ class Driving extends Admin_controller {
             'students_today'  => $this->Driving_model->count_students_on($tx_date, $batch_id),
             'daily_limit'     => driving_daily_limit(),
         ];
-        $this->viewAdminContent('driving/driving/dashboard', $data);
+        // $this->viewAdminContent('driving/driving/dashboard', $data);
+        $this->viewMobileContent('driving/driving/mobile/dashboard', $data);
     }
 
     // =============================================================
@@ -59,6 +61,8 @@ class Driving extends Admin_controller {
         $batch_id    = $this->input->post('batch_id', TRUE);
         $learning_id = (int) $this->input->post('learning_id', TRUE);
         $vehicle_id  = (int) $this->input->post('vehicle_id',  TRUE);
+        $drive_type  = driving_valid_drive_type($this->input->post('drive_type', TRUE));
+        $round_qty   = driving_valid_round_qty($this->input->post('round_qty', TRUE));
 
         $redirect = site_url(Backend_URL . 'driving') . '?' . http_build_query(array_filter([
             'tx_date'  => $tx_date,
@@ -68,6 +72,16 @@ class Driving extends Admin_controller {
         if ($learning_id <= 0 || $vehicle_id <= 0 || empty($tx_date)) {
             $this->session->set_flashdata('message',
                 '<p class="ajax_error">Please choose a learner and a vehicle.</p>');
+            redirect($redirect);
+        }
+        if ($drive_type === null) {
+            $this->session->set_flashdata('message',
+                '<p class="ajax_error">Please select a drive type.</p>');
+            redirect($redirect);
+        }
+        if ($round_qty === null) {
+            $this->session->set_flashdata('message',
+                '<p class="ajax_error">Please select round quantity.</p>');
             redirect($redirect);
         }
 
@@ -91,11 +105,17 @@ class Driving extends Admin_controller {
                 redirect($redirect);
             }
             $driving_id = $existing->id;
+            $this->Driving_model->update($driving_id, [
+                'drive_type' => $drive_type,
+                'round_qty'  => $round_qty,
+            ]);
         } else {
             $this->Driving_model->insert([
                 'learning_id' => $learning_id,
                 'vehicle_id'  => $vehicle_id,
                 'tx_date'     => $tx_date,
+                'drive_type'  => $drive_type,
+                'round_qty'   => $round_qty,
             ]);
             $driving_id = (int) $this->db->insert_id();
         }
@@ -230,7 +250,8 @@ class Driving extends Admin_controller {
                 'Cancelled' => 'Cancelled',
             ],
         ];
-        $this->viewAdminContent('driving/driving/history', $data);
+        // $this->viewAdminContent('driving/driving/history', $data);
+        $this->viewMobileContent('driving/driving/mobile/history', $data);
     }
 
     /**
@@ -412,5 +433,39 @@ class Driving extends Admin_controller {
         $this->form_validation->set_rules('tx_date',     'tx date',   'trim|required');
         $this->form_validation->set_rules('id',          'id',        'trim');
         $this->form_validation->set_error_delimiters('<span class="text-danger">', '</span>');
+    }
+
+    /**
+     * Per-learner log groups for the mobile dashboard modal.
+     */
+    private function _learner_day_log_groups($pivot, $vehicles) {
+        $vehicle_map = [];
+        foreach ($vehicles as $v) {
+            $label = $v->name;
+            if (!empty($v->number)) {
+                $label .= ' (' . $v->number . ')';
+            }
+            $vehicle_map[$v->id] = $label;
+        }
+
+        $out = [];
+        foreach ($pivot['learners'] ?? [] as $lid => $learner) {
+            $groups = [];
+            foreach ($pivot['pivot'][$lid] ?? [] as $vid => $cell) {
+                $logs  = $this->Driving_log_model->timeline($cell->driving_id);
+                $times = driving_log_session_times($logs);
+                $groups[] = [
+                    'vehicle_label' => $vehicle_map[$vid] ?? ('Vehicle #' . (int) $vid),
+                    'tx_date'       => $cell->tx_date ?? null,
+                    'drive_type'    => $cell->drive_type ?? null,
+                    'round_qty'     => $cell->round_qty ?? null,
+                    'start_time'    => $times['start'],
+                    'end_time'      => $times['end'],
+                    'current_stage' => $cell->current_stage ?? null,
+                ];
+            }
+            $out[$lid] = $groups;
+        }
+        return $out;
     }
 }

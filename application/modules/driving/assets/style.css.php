@@ -28,18 +28,31 @@
     background: #fff;
     border: 1px solid #e3e3e3;
     border-radius: 6px;
-    padding: 14px 16px;
+    padding: 8px 12px;
     box-shadow: 0 1px 2px rgba(0,0,0,.04);
 }
 
-.dv-stat-title  { font-size: 13px; color: #7b7b7b; text-transform: uppercase; letter-spacing: .3px; }
-.dv-stat-value  { font-size: 26px; font-weight: 700; color: #2f3a4a; margin-top: 4px; }
-.dv-stat-sub    { font-size: 12px; color: #9aa3ad; margin-top: 2px; }
+.dv-stat-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+.dv-stat-left   { flex: 1; min-width: 0; }
+.dv-stat-title  { font-size: 12px; color: #7b7b7b; text-transform: uppercase; letter-spacing: .3px; margin: 0; }
+.dv-stat-value  { font-size: 20px; font-weight: 700; color: #2f3a4a; margin: 0; white-space: nowrap; line-height: 1.2; }
+.dv-stat-sub    { font-size: 11px; color: #9aa3ad; margin: 2px 0 0; }
 
 .dv-capacity                  { position: relative; }
-.dv-capacity-title            { font-size: 14px; font-weight: 600; color: #2f3a4a; }
-.dv-capacity-value            { font-size: 22px; font-weight: 700; color: #2f3a4a; margin-top: 4px; }
-.dv-capacity-bar              { height: 5px; background: #eef0f3; border-radius: 4px; overflow: hidden; margin-top: 8px; }
+.dv-capacity-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+.dv-capacity-title            { font-size: 14px; font-weight: 600; color: #2f3a4a; flex: 1; min-width: 0; margin: 0; line-height: 1.3; }
+.dv-capacity-value            { font-size: 16px; font-weight: 700; color: #2f3a4a; margin: 0; white-space: nowrap; line-height: 1.2; }
+.dv-capacity-bar              { height: 4px; background: #eef0f3; border-radius: 4px; overflow: hidden; margin-top: 6px; }
 .dv-capacity-bar > span       { display: block; height: 100%; background: #1abc9c; border-radius: 4px; transition: width .25s ease; }
 .dv-capacity-ok  .dv-capacity-bar > span { background: #28a745; }
 .dv-capacity-high .dv-capacity-bar > span { background: #f0ad4e; }
@@ -55,7 +68,7 @@
 .dv-pivot tbody td            { padding: 10px 12px; border-bottom: 1px solid #eef0f3; background: #fff; }
 .dv-pivot tbody tr:hover td   { background: #f8fafc; }
 .dv-pivot .dv-cell            { text-align: center; min-width: 110px; }
-.dv-pivot .dv-cell-actions    { margin-top: 6px; }
+.dv-pivot .dv-cell-actions    { margin-top: 0; }
 .dv-pivot .dv-cell-actions .btn { padding: 1px 6px; font-size: 11px; }
 
 /* Status badges */
@@ -107,9 +120,20 @@
 }
 .dv-timeline .ts { color: #7b7b7b; font-size: 12px; margin-left: 6px; }
 
+.dv-log-table { margin: 0; font-size: 13px; }
+.dv-log-table th { background: #f5f6f8; font-weight: 600; white-space: nowrap; }
+.dv-log-table td { vertical-align: middle !important; }
+.dv-log-table .dv-badge { font-size: 11px; }
+
 /* Assign queue modal */
 .dv-assign-form .form-group  { margin-bottom: 12px; }
 .dv-assign-form label        { font-weight: 600; }
+.dv-inline-radios            { margin-top: 6px; }
+.dv-inline-radios .radio-inline {
+    margin-right: 16px;
+    margin-bottom: 6px;
+    font-weight: normal;
+}
 
 /* History filter strip */
 .dv-filter-strip {

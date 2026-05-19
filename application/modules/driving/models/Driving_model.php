@@ -134,11 +134,31 @@ class Driving_model extends Fm_model {
      *   ]
      */
     public function get_daily_pivot($tx_date, $batch_id = null) {
+        $learners = [];
+        $this->db->select('l.id, l.name, l.batch_id, b.name AS batch_name, l.primary_mobile');
+        $this->db->from('learners l');
+        $this->db->join('batches b', 'b.id = l.batch_id', 'left');
+        if ($batch_id) {
+            $this->db->where('l.batch_id', (int) $batch_id);
+        }
+        $this->db->order_by('l.id', 'ASC');
+        foreach ($this->db->get()->result() as $l) {
+            $learners[$l->id] = (object) [
+                'id'             => $l->id,
+                'name'           => $l->name,
+                'batch_id'       => $l->batch_id,
+                'batch_name'     => $l->batch_name,
+                'primary_mobile' => $l->primary_mobile,
+            ];
+        }
+
         $this->db->select("
             d.id           AS driving_id,
             d.learning_id  AS learner_id,
             d.vehicle_id   AS vehicle_id,
             d.tx_date      AS tx_date,
+            d.drive_type   AS drive_type,
+            d.round_qty    AS round_qty,
             l.name         AS learner_name,
             l.batch_id     AS batch_id,
             l.primary_mobile AS learner_mobile,
@@ -167,27 +187,18 @@ class Driving_model extends Fm_model {
         $this->db->order_by('d.id',          'ASC');
         $rows = $this->db->get()->result();
 
-        $learners = [];
-        $pivot    = [];
-        $counts   = [];
+        $pivot  = [];
+        $counts = [];
 
         foreach ($rows as $r) {
             $stage = $r->current_stage ?: 'Queued';
 
-            if (!isset($learners[$r->learner_id])) {
-                $learners[$r->learner_id] = (object) [
-                    'id'             => $r->learner_id,
-                    'name'           => $r->learner_name,
-                    'batch_id'       => $r->batch_id,
-                    'batch_name'     => $r->batch_name,
-                    'primary_mobile' => $r->learner_mobile,
-                    'first_seen'     => $r->last_log_time,
-                ];
-            }
             $pivot[$r->learner_id][$r->vehicle_id] = (object) [
                 'driving_id'    => $r->driving_id,
                 'vehicle_id'    => $r->vehicle_id,
                 'tx_date'       => $r->tx_date,
+                'drive_type'    => $r->drive_type ?? null,
+                'round_qty'     => $r->round_qty ?? null,
                 'current_stage' => $stage,
                 'last_log_time' => $r->last_log_time,
             ];
@@ -369,7 +380,7 @@ class Driving_model extends Fm_model {
      * Learner options (filterable by batch / search). Suitable for <select>.
      */
     public function get_learner_options($batch_id = null, $q = null, $limit = 500) {
-        $this->db->select('l.id, l.name, l.primary_mobile, l.batch_id, b.name AS batch_name');
+        $this->db->select('l.id, l.name, l.batch_id, b.name AS batch_name');
         $this->db->from('learners l');
         $this->db->join('batches b', 'b.id = l.batch_id', 'left');
         if ($batch_id) {
@@ -378,22 +389,16 @@ class Driving_model extends Fm_model {
         if ($q) {
             $this->db->group_start();
             $this->db->like('l.name', $q);
-            $this->db->or_like('l.primary_mobile', $q);
+            $this->db->or_like('l.id', $q);
             $this->db->group_end();
         }
-        $this->db->order_by('l.name', 'ASC');
+        $this->db->order_by('l.id', 'ASC');
         $this->db->limit($limit);
         $rows = $this->db->get()->result();
 
         $list = ['' => '-- Select Learner --'];
         foreach ($rows as $r) {
-            $label  = $r->name;
-            if (!empty($r->primary_mobile)) {
-                $label .= ' - ' . $r->primary_mobile;
-            }
-            if (!empty($r->batch_name)) {
-                $label .= ' [' . $r->batch_name . ']';
-            }
+            $label  = "{$r->id} - {$r->name}";            
             $list[$r->id] = $label;
         }
         return $list;
