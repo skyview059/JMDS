@@ -30,7 +30,7 @@ class Transaction_model extends Fm_model{
         }
 
         if (!empty($filters['source']) && ctype_digit((string) $filters['source'])) {
-            $this->db->where($t . 'user_id', (int) $filters['source']);
+            $this->db->where($t . 'source_id', (int) $filters['source']);
         }
 
         if (!empty($filters['date_from']) && strtotime($filters['date_from'])) {
@@ -57,7 +57,7 @@ class Transaction_model extends Fm_model{
     /** Join lookups for Income Statement listing */
     protected function _join_statement_related()
     {
-        $this->db->join('trans_sources ts', 'ts.id = transactions.user_id', 'left');
+        $this->db->join('trans_sources ts', 'ts.id = transactions.source_id', 'left');
         $this->db->join('trans_heads th', 'th.id = transactions.head_id', 'left');
         $this->db->join('trans_heads subh', 'subh.id = transactions.subhead_id', 'left');
     }

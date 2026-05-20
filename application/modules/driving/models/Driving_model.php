@@ -158,7 +158,11 @@ class Driving_model extends Fm_model {
             d.vehicle_id   AS vehicle_id,
             d.tx_date      AS tx_date,
             d.drive_type   AS drive_type,
+            d.drive_mode   AS drive_mode,
+            d.road_type    AS road_type,
             d.round_qty    AS round_qty,
+            d.instructor_id AS instructor_id,
+            u.full_name    AS instructor_name,
             l.name         AS learner_name,
             l.batch_id     AS batch_id,
             l.primary_mobile AS learner_mobile,
@@ -179,6 +183,7 @@ class Driving_model extends Fm_model {
         $this->db->from($this->table . ' d');
         $this->db->join('learners l', 'l.id = d.learning_id', 'left');
         $this->db->join('batches  b', 'b.id = l.batch_id',     'left');
+        $this->db->join('users u', 'u.id = d.instructor_id', 'left');
         $this->db->where('d.tx_date', $tx_date);
         if ($batch_id) {
             $this->db->where('l.batch_id', (int) $batch_id);
@@ -195,11 +200,16 @@ class Driving_model extends Fm_model {
 
             $pivot[$r->learner_id][$r->vehicle_id] = (object) [
                 'driving_id'    => $r->driving_id,
+                'learner_id'    => $r->learner_id,
                 'vehicle_id'    => $r->vehicle_id,
                 'tx_date'       => $r->tx_date,
                 'drive_type'    => $r->drive_type ?? null,
-                'round_qty'     => $r->round_qty ?? null,
-                'current_stage' => $stage,
+                'drive_mode'    => $r->drive_mode ?? null,
+                'road_type'       => $r->road_type ?? null,
+                'round_qty'       => $r->round_qty ?? null,
+                'instructor_id'   => $r->instructor_id ?? null,
+                'instructor_name' => $r->instructor_name ?? null,
+                'current_stage'   => $stage,
                 'last_log_time' => $r->last_log_time,
             ];
 
@@ -402,6 +412,38 @@ class Driving_model extends Fm_model {
             $list[$r->id] = $label;
         }
         return $list;
+    }
+
+    /**
+     * Instructors (users with role_id = 4) for assign modal.
+     */
+    public function get_instructor_options($placeholder = '-- Select Instructor --') {
+        $this->db->select('id, full_name');
+        $this->db->from('users');
+        $this->db->where('role_id', 4);
+        $this->db->where('status', 'Active');
+        $this->db->order_by('full_name', 'ASC');
+        $rows = $this->db->get()->result();
+
+        $list = ['' => $placeholder];
+        foreach ($rows as $r) {
+            $list[$r->id] = $r->full_name;
+        }
+        return $list;
+    }
+
+    /**
+     * @param int $instructor_id
+     */
+    public function is_valid_instructor($instructor_id) {
+        if ($instructor_id <= 0) {
+            return false;
+        }
+        $this->db->from('users');
+        $this->db->where('id', $instructor_id);
+        $this->db->where('role_id', 4);
+        $this->db->where('status', 'Active');
+        return $this->db->count_all_results() > 0;
     }
 
     /**

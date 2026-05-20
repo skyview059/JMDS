@@ -9,32 +9,64 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  */
 
 if (!function_exists('driving_drive_types')) {
-    /**
-     * Allowed drive-type values for queue assignment.
-     *
-     * @return array<string, string> value => label
-     */
+    /** F=Forward, R=Reverse, Z=Zikjak */
     function driving_drive_types() {
         return [
-            'F'  => 'Forward',
+            'F' => 'Forward',
             'R' => 'Reverse',
-            'Z'   => 'ZikZak',
+            'Z' => 'ZikZak',
+        ];
+    }
+}
+
+if (!function_exists('driving_drive_modes')) {
+    /** D=Day, AN=Afternoon, N=Night */
+    function driving_drive_modes() {
+        return [
+            'D'  => 'Day',
+            'AN' => 'Afternoon',
+            'N'  => 'Night',
+        ];
+    }
+}
+
+if (!function_exists('driving_road_types')) {
+    /** TF=Training Field, DT=Driving Track, HW=Highway */
+    function driving_road_types() {
+        return [
+            'TF' => 'Training Field',
+            'DT' => 'Driving Track',
+            'HW' => 'Highway',
         ];
     }
 }
 
 if (!function_exists('driving_valid_drive_type')) {
-    /**
-     * @param string|null $drive_type
-     * @return string|null Sanitized value or null if invalid / empty
-     */
     function driving_valid_drive_type($drive_type) {
-        $drive_type = trim((string) $drive_type);
-        if ($drive_type === '') {
+        return driving_valid_enum_option($drive_type, 'driving_drive_types');
+    }
+}
+
+if (!function_exists('driving_valid_drive_mode')) {
+    function driving_valid_drive_mode($drive_mode) {
+        return driving_valid_enum_option($drive_mode, 'driving_drive_modes');
+    }
+}
+
+if (!function_exists('driving_valid_road_type')) {
+    function driving_valid_road_type($road_type) {
+        return driving_valid_enum_option($road_type, 'driving_road_types');
+    }
+}
+
+if (!function_exists('driving_valid_enum_option')) {
+    function driving_valid_enum_option($value, $options_fn) {
+        $value = trim((string) $value);
+        if ($value === '' || !function_exists($options_fn)) {
             return null;
         }
-        $allowed = array_keys(driving_drive_types());
-        return in_array($drive_type, $allowed, true) ? $drive_type : null;
+        $allowed = array_keys($options_fn());
+        return in_array($value, $allowed, true) ? $value : null;
     }
 }
 
@@ -67,14 +99,14 @@ if (!function_exists('driving_valid_round_qty')) {
 
 if (!function_exists('driving_daily_limit')) {
     /**
-     * Maximum number of *active* learners (Queued + Driving) per vehicle per day.
-     * Override globally by defining the constant DRIVING_DAILY_LIMIT before this file loads.
+     * Maximum active learners (Queued + Driving) per vehicle per day.
+     * Return 0 for no limit. Override with constant DRIVING_DAILY_LIMIT if needed.
      */
     function driving_daily_limit() {
         if (defined('DRIVING_DAILY_LIMIT')) {
             return (int) DRIVING_DAILY_LIMIT;
         }
-        return 15;
+        return 0;
     }
 }
 
@@ -143,6 +175,16 @@ if (!function_exists('driving_capacity_card')) {
             $title .= ' <small class="text-muted">(' . htmlspecialchars($vehicle_number) . ')</small>';
         }
 
+        if ($limit <= 0) {
+            $html  = '<div class="dv-capacity dv-capacity-ok">';
+            $html .=   '<div class="dv-capacity-row">';
+            $html .=     '<div class="dv-capacity-title">' . $title . '</div>';
+            $html .=     '<div class="dv-capacity-value">' . $used . ' active</div>';
+            $html .=   '</div>';
+            $html .= '</div>';
+            return $html;
+        }
+
         $html  = '<div class="dv-capacity dv-capacity-' . $tone . '">';
         $html .=   '<div class="dv-capacity-row">';
         $html .=     '<div class="dv-capacity-title">' . $title . '</div>';
@@ -154,38 +196,71 @@ if (!function_exists('driving_capacity_card')) {
     }
 }
 
+if (!function_exists('driving_allowed_stage_transition')) {
+    function driving_allowed_stage_transition($from, $to) {
+        $from = $from ?: 'Queued';
+        $map  = [
+            'Queued'    => ['Completed', 'Driving'],
+            'Driving'   => ['Completed'],
+            'Completed' => ['Queued'],
+            'Cancelled' => ['Queued'],
+        ];
+        return in_array($to, $map[$from] ?? [], true);
+    }
+}
+
+if (!function_exists('driving_ajax_stage_button')) {
+    function driving_ajax_stage_button($driving_id, $stage, $btn_class, $icon, $label) {
+        return '<button type="button" class="btn btn-xs ' . $btn_class . ' dv-stage-btn"'
+            . ' data-driving-id="' . (int) $driving_id . '"'
+            . ' data-stage="' . htmlspecialchars($stage) . '"'
+            . ' title="' . htmlspecialchars($label) . '">'
+            . '<i class="fa ' . $icon . '"></i></button> ';
+    }
+}
+
+if (!function_exists('driving_assign_cell_html')) {
+    function driving_assign_cell_html($learner_id, $vehicle_id) {
+        return '<a class="btn btn-xs btn-default" href="#" data-toggle="modal" data-target="#dvAssignModal"'
+            . ' data-prefill-learner="' . (int) $learner_id . '"'
+            . ' data-prefill-vehicle="' . (int) $vehicle_id . '">'
+            . '<i class="fa fa-plus"></i> Assign</a>';
+    }
+}
+
 if (!function_exists('driving_action_buttons')) {
     /**
-     * Inline action buttons rendered inside a pivot cell.
+     * Inline AJAX buttons: Queue → Drived (Completed).
      */
     function driving_action_buttons($cell) {
         if (!$cell) {
             return '';
         }
-        $base = site_url(Backend_URL . 'driving/transition/' . (int) $cell->driving_id);
-        $html = '<div class="dv-cell-actions">';
+        $html  = '<div class="dv-cell-actions" data-driving-id="' . (int) $cell->driving_id . '">';
+        $stage = $cell->current_stage ?: 'Queued';
 
-        switch ($cell->current_stage) {
-            case 'Queued':
-                $html .= '<a class="btn btn-xs btn-warning" href="' . $base . '?stage=Driving" title="Start driving"><i class="fa fa-play"></i></a> ';
-                $html .= '<a class="btn btn-xs btn-success" href="' . $base . '?stage=Completed" title="Mark completed"><i class="fa fa-check"></i></a> ';
-                break;
-            case 'Driving':
-                $html .= '<a class="btn btn-xs btn-success" href="' . $base . '?stage=Completed" title="Mark completed"><i class="fa fa-check"></i></a> ';
-                $html .= '<a class="btn btn-xs btn-default" href="' . $base . '?stage=Queued" title="Back to queue"><i class="fa fa-rotate-left"></i></a> ';
-                break;
-            case 'Completed':
-                $html .= '<a class="btn btn-xs btn-warning" href="' . $base . '?stage=Driving" title="Re-open"><i class="fa fa-undo"></i></a> ';
-                break;
-            case 'Cancelled':
-                $html .= '<a class="btn btn-xs btn-warning" href="' . $base . '?stage=Queued" title="Re-queue"><i class="fa fa-undo"></i></a> ';
-                break;
+        if (in_array($stage, ['Queued', 'Driving'], true)) {
+            if ($stage === 'Queued') {
+                $html .= driving_ajax_stage_button(
+                    $cell->driving_id, 'Driving', 'btn-warning', 'fa-play', 'Queue'
+                );
+            }
+            $html .= driving_ajax_stage_button(
+                $cell->driving_id, 'Completed', 'btn-success', 'fa-check', 'Drived'
+            );
+        } elseif ($stage === 'Completed') {
+            $html .= driving_ajax_stage_button(
+                $cell->driving_id, 'Queued', 'btn-default', 'fa-rotate-left', 'Queue again'
+            );
+        } elseif ($stage === 'Cancelled') {
+            $html .= driving_ajax_stage_button(
+                $cell->driving_id, 'Queued', 'btn-warning', 'fa-undo', 'Queue'
+            );
         }
 
-        $reset_url = site_url(Backend_URL . 'driving/reset_action/' . (int) $cell->driving_id);
-        $html .= '<a class="btn btn-xs btn-danger" href="' . $reset_url . '" '
-              .  'onclick="return confirm(\'Remove this driving entry?\')" title="Reset cell">'
-              .  '<i class="fa fa-times"></i></a>';
+        $html .= '<button type="button" class="btn btn-xs btn-danger dv-reset-btn"'
+            . ' data-driving-id="' . (int) $cell->driving_id . '" title="Remove">'
+            . '<i class="fa fa-times"></i></button>';
 
         $html .= '</div>';
         return $html;
@@ -212,15 +287,30 @@ if (!function_exists('driving_stage_label')) {
 
 if (!function_exists('driving_drive_type_label')) {
     function driving_drive_type_label($drive_type) {
-        $drive_type = trim((string) $drive_type);
-        if ($drive_type === '') {
+        return driving_enum_label($drive_type, 'driving_drive_types');
+    }
+}
+
+if (!function_exists('driving_drive_mode_label')) {
+    function driving_drive_mode_label($drive_mode) {
+        return driving_enum_label($drive_mode, 'driving_drive_modes');
+    }
+}
+
+if (!function_exists('driving_road_type_label')) {
+    function driving_road_type_label($road_type) {
+        return driving_enum_label($road_type, 'driving_road_types');
+    }
+}
+
+if (!function_exists('driving_enum_label')) {
+    function driving_enum_label($value, $options_fn) {
+        $value = trim((string) $value);
+        if ($value === '' || !function_exists($options_fn)) {
             return '-';
         }
-        $map = driving_drive_types();
-        if (isset($map[$drive_type])) {
-            return $map[$drive_type];
-        }
-        return $drive_type;
+        $map = $options_fn();
+        return $map[$value] ?? $value;
     }
 }
 
@@ -267,7 +357,7 @@ if (!function_exists('driving_learner_log_groups_html')) {
         $html  = '<div class="table-responsive">';
         $html .= '<table class="table table-bordered table-condensed dv-log-table">';
         $html .= '<thead><tr>';
-        $html .= '<th>Date</th><th>Vehicle</th><th>Drive Type</th><th>Round</th>';
+        $html .= '<th>Date</th><th>Vehicle</th><th>Instructor</th><th>Drive Type</th><th>Mode</th><th>Road</th><th>Round</th>';
         $html .= '<th>Start</th><th>End</th>';
         $html .= '</tr></thead><tbody>';
 
@@ -275,7 +365,10 @@ if (!function_exists('driving_learner_log_groups_html')) {
             $html .= '<tr>';
             $html .= '<td>' . driving_format_date($g['tx_date'] ?? null) . '</td>';
             $html .= '<td>' . htmlspecialchars($g['vehicle_label'] ?? 'Vehicle') . '</td>';
+            $html .= '<td>' . htmlspecialchars($g['instructor_name'] ?? '-') . '</td>';
             $html .= '<td>' . htmlspecialchars(driving_drive_type_label($g['drive_type'] ?? '')) . '</td>';
+            $html .= '<td>' . htmlspecialchars(driving_drive_mode_label($g['drive_mode'] ?? '')) . '</td>';
+            $html .= '<td>' . htmlspecialchars(driving_road_type_label($g['road_type'] ?? '')) . '</td>';
             $round_qty = $g['round_qty'] ?? null;
             $html .= '<td class="text-center">' . ($round_qty !== null && $round_qty !== '' ? (int) $round_qty : '-') . '</td>';
             $html .= '<td>' . driving_format_time($g['start_time'] ?? null) . '</td>';

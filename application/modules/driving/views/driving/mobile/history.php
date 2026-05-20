@@ -15,6 +15,7 @@
 </section>
 
 <section class="content">
+    
     <?php echo $this->session->flashdata('message'); ?>
 
     <!-- ============================ Filter strip ============================ -->
@@ -58,7 +59,7 @@
     </form>
 
     <div class="box">
-        <div class="box-body">
+        <div class="box-body">            
             <div class="table-responsive">
                 <table class="table table-bordered table-condensed">
                     <thead>
@@ -87,21 +88,11 @@
                                 <td>
                                     <a href="<?php echo site_url(Backend_URL . 'driving/learner/' . (int) $r->learner_id); ?>">
                                         <?php echo htmlspecialchars($r->learner_name ?: ('#' . $r->learner_id)); ?>
-                                    </a>
-                                    <?php if (!empty($r->primary_mobile)): ?>
-                                        <div class="text-muted" style="font-size:11px;">
-                                            <i class="fa fa-phone"></i> <?php echo htmlspecialchars($r->primary_mobile); ?>
-                                        </div>
-                                    <?php endif; ?>
+                                    </a>                                    
                                 </td>
                                 <td><?php echo htmlspecialchars($r->batch_name ?: '-'); ?></td>
                                 <td>
-                                    <?php echo htmlspecialchars($r->vehicle_name ?: ('#' . $r->vehicle_id)); ?>
-                                    <?php if (!empty($r->vehicle_number)): ?>
-                                        <div class="text-muted" style="font-size:11px;">
-                                            <?php echo htmlspecialchars($r->vehicle_number); ?>
-                                        </div>
-                                    <?php endif; ?>
+                                    <?php echo htmlspecialchars($r->vehicle_name ?: ('#' . $r->vehicle_id)); ?>                                    
                                 </td>
                                 <td><?php echo driving_stage_label($r->current_stage); ?></td>
                                 <td><?php echo driving_format_dt($r->first_log_time); ?></td>

@@ -45,6 +45,7 @@ class Driving extends Admin_controller {
             'batch_list'      => $this->Driving_model->get_batch_options(),
             'vehicle_list'    => $this->Driving_model->get_vehicle_options(),
             'learner_list'    => $this->Driving_model->get_learner_options($batch_id),
+            'instructor_list' => $this->Driving_model->get_instructor_options(),
             'total_learners'  => $this->Driving_model->total_learners($batch_id),
             'students_today'  => $this->Driving_model->count_students_on($tx_date, $batch_id),
             'daily_limit'     => driving_daily_limit(),
@@ -62,7 +63,10 @@ class Driving extends Admin_controller {
         $learning_id = (int) $this->input->post('learning_id', TRUE);
         $vehicle_id  = (int) $this->input->post('vehicle_id',  TRUE);
         $drive_type  = driving_valid_drive_type($this->input->post('drive_type', TRUE));
-        $round_qty   = driving_valid_round_qty($this->input->post('round_qty', TRUE));
+        $drive_mode  = driving_valid_drive_mode($this->input->post('drive_mode', TRUE));
+        $road_type   = driving_valid_road_type($this->input->post('road_type', TRUE));
+        $round_qty      = driving_valid_round_qty($this->input->post('round_qty', TRUE));
+        $instructor_id  = (int) $this->input->post('instructor_id', TRUE);
 
         $redirect = site_url(Backend_URL . 'driving') . '?' . http_build_query(array_filter([
             'tx_date'  => $tx_date,
@@ -79,20 +83,37 @@ class Driving extends Admin_controller {
                 '<p class="ajax_error">Please select a drive type.</p>');
             redirect($redirect);
         }
+        if ($drive_mode === null) {
+            $this->session->set_flashdata('message',
+                '<p class="ajax_error">Please select a drive mode.</p>');
+            redirect($redirect);
+        }
+        if ($road_type === null) {
+            $this->session->set_flashdata('message',
+                '<p class="ajax_error">Please select a road type.</p>');
+            redirect($redirect);
+        }
         if ($round_qty === null) {
             $this->session->set_flashdata('message',
                 '<p class="ajax_error">Please select round quantity.</p>');
             redirect($redirect);
         }
+        if (!$this->Driving_model->is_valid_instructor($instructor_id)) {
+            $this->session->set_flashdata('message',
+                '<p class="ajax_error">Please select an instructor.</p>');
+            redirect($redirect);
+        }
 
         $limit = driving_daily_limit();
-        $pivot = $this->Driving_model->get_daily_pivot($tx_date, null);
-        $used  = $pivot['counts'][$vehicle_id]['active'] ?? 0;
-        if ($used >= $limit) {
-            $this->session->set_flashdata('message',
-                '<p class="ajax_error">Queue for this vehicle is full ('
-                . $used . '/' . $limit . ') for ' . $tx_date . '.</p>');
-            redirect($redirect);
+        if ($limit > 0) {
+            $pivot = $this->Driving_model->get_daily_pivot($tx_date, null);
+            $used  = $pivot['counts'][$vehicle_id]['active'] ?? 0;
+            if ($used >= $limit) {
+                $this->session->set_flashdata('message',
+                    '<p class="ajax_error">Queue for this vehicle is full ('
+                    . $used . '/' . $limit . ') for ' . $tx_date . '.</p>');
+                redirect($redirect);
+            }
         }
 
         $existing = $this->Driving_model->find_one($learning_id, $vehicle_id, $tx_date);
@@ -106,16 +127,22 @@ class Driving extends Admin_controller {
             }
             $driving_id = $existing->id;
             $this->Driving_model->update($driving_id, [
-                'drive_type' => $drive_type,
-                'round_qty'  => $round_qty,
+                'drive_type'     => $drive_type,
+                'drive_mode'     => $drive_mode,
+                'road_type'      => $road_type,
+                'round_qty'      => $round_qty,
+                'instructor_id'  => $instructor_id,
             ]);
         } else {
             $this->Driving_model->insert([
-                'learning_id' => $learning_id,
-                'vehicle_id'  => $vehicle_id,
-                'tx_date'     => $tx_date,
-                'drive_type'  => $drive_type,
-                'round_qty'   => $round_qty,
+                'learning_id'   => $learning_id,
+                'vehicle_id'    => $vehicle_id,
+                'tx_date'       => $tx_date,
+                'drive_type'    => $drive_type,
+                'drive_mode'    => $drive_mode,
+                'road_type'     => $road_type,
+                'round_qty'     => $round_qty,
+                'instructor_id' => $instructor_id,
             ]);
             $driving_id = (int) $this->db->insert_id();
         }
@@ -133,6 +160,7 @@ class Driving extends Admin_controller {
         $driving_id = (int) $driving_id;
         $stage      = $this->input->get_post('stage', TRUE) ?: '';
         $allowed    = ['Queued', 'Driving', 'Completed', 'Cancelled'];
+        $is_ajax    = $this->input->is_ajax_request() || $this->input->post('ajax');
 
         $driving = $this->Driving_model->get_by_id($driving_id);
         $back    = site_url(Backend_URL . 'driving') . '?' . http_build_query(array_filter([
@@ -140,20 +168,39 @@ class Driving extends Admin_controller {
         ]));
 
         if (!$driving) {
-            $this->session->set_flashdata('message',
-                '<p class="ajax_error">Driving record not found.</p>');
-            redirect(site_url(Backend_URL . 'driving'));
+            return $this->_driving_ajax_or_redirect(
+                false, '<p class="ajax_error">Driving record not found.</p>', $back, $is_ajax
+            );
         }
         if (!in_array($stage, $allowed, true)) {
-            $this->session->set_flashdata('message',
-                '<p class="ajax_error">Invalid stage.</p>');
-            redirect($back);
+            return $this->_driving_ajax_or_redirect(
+                false, '<p class="ajax_error">Invalid stage.</p>', $back, $is_ajax
+            );
+        }
+
+        $latest = $this->Driving_log_model->latest_for($driving_id);
+        $from   = $latest ? $latest->stage : 'Queued';
+        if (!driving_allowed_stage_transition($from, $stage)) {
+            return $this->_driving_ajax_or_redirect(
+                false, '<p class="ajax_error">Cannot change from ' . htmlspecialchars($from) . ' to ' . htmlspecialchars($stage) . '.</p>',
+                $back, $is_ajax
+            );
         }
 
         $this->Driving_log_model->add_log($driving_id, $stage);
-        $this->session->set_flashdata('message',
-            '<p class="ajax_success">Stage updated to <b>' . $stage . '</b>.</p>');
-        redirect($back);
+        $cell = (object) [
+            'driving_id'    => $driving_id,
+            'current_stage' => $stage,
+        ];
+        $label = $stage === 'Completed' ? 'Drived' : ($stage === 'Driving' ? 'Queue' : $stage);
+
+        return $this->_driving_ajax_or_redirect(
+            true,
+            '<p class="ajax_success">Marked as <b>' . htmlspecialchars($label) . '</b>.</p>',
+            $back,
+            $is_ajax,
+            ['stage' => $stage, 'html' => driving_action_buttons($cell)]
+        );
     }
 
     // =============================================================
@@ -161,23 +208,36 @@ class Driving extends Admin_controller {
     // =============================================================
     public function reset_action($driving_id = 0) {
         $driving_id = (int) $driving_id;
+        $is_ajax    = $this->input->is_ajax_request() || $this->input->post('ajax');
         $driving    = $this->Driving_model->get_by_id($driving_id);
         $back       = site_url(Backend_URL . 'driving') . '?' . http_build_query(array_filter([
             'tx_date' => $driving ? $driving->tx_date : null,
         ]));
 
         if (!$driving) {
-            $this->session->set_flashdata('message',
-                '<p class="ajax_error">Driving record not found.</p>');
-            redirect(site_url(Backend_URL . 'driving'));
+            return $this->_driving_ajax_or_redirect(
+                false, '<p class="ajax_error">Driving record not found.</p>', $back, $is_ajax
+            );
         }
+
+        $learning_id = (int) $driving->learning_id;
+        $vehicle_id  = (int) $driving->vehicle_id;
 
         $this->Driving_log_model->clear_for($driving_id);
         $this->Driving_model->delete($driving_id);
 
-        $this->session->set_flashdata('message',
-            '<p class="ajax_success">Driving entry reset successfully.</p>');
-        redirect($back);
+        $extra = [];
+        if ($is_ajax) {
+            $extra['html'] = driving_assign_cell_html($learning_id, $vehicle_id);
+        }
+
+        return $this->_driving_ajax_or_redirect(
+            true,
+            '<p class="ajax_success">Driving entry reset successfully.</p>',
+            $back,
+            $is_ajax,
+            $extra
+        );
     }
 
     /**
@@ -435,6 +495,21 @@ class Driving extends Admin_controller {
         $this->form_validation->set_error_delimiters('<span class="text-danger">', '</span>');
     }
 
+    private function _driving_ajax_or_redirect($success, $message, $redirect_url, $is_ajax, $extra = []) {
+        if ($is_ajax) {
+            $payload = array_merge([
+                'success' => (bool) $success,
+                'message' => $message,
+            ], $extra);
+            $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode($payload));
+            return;
+        }
+        $this->session->set_flashdata('message', $message);
+        redirect($redirect_url);
+    }
+
     /**
      * Per-learner log groups for the mobile dashboard modal.
      */
@@ -458,7 +533,11 @@ class Driving extends Admin_controller {
                     'vehicle_label' => $vehicle_map[$vid] ?? ('Vehicle #' . (int) $vid),
                     'tx_date'       => $cell->tx_date ?? null,
                     'drive_type'    => $cell->drive_type ?? null,
-                    'round_qty'     => $cell->round_qty ?? null,
+                    'drive_mode'    => $cell->drive_mode ?? null,
+                    'road_type'        => $cell->road_type ?? null,
+                    'round_qty'        => $cell->round_qty ?? null,
+                    'instructor_id'    => $cell->instructor_id ?? null,
+                    'instructor_name'  => $cell->instructor_name ?? null,
                     'start_time'    => $times['start'],
                     'end_time'      => $times['end'],
                     'current_stage' => $cell->current_stage ?? null,

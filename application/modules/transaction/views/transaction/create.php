@@ -51,6 +51,9 @@
         .tx-btn-close{background:#fff;color:#525c6b;border:1px solid #dfe3e8;padding:8px 16px;border-radius:6px;font-weight:500;font-size:14px;display:inline-flex;align-items:center;gap:7px;text-decoration:none;}
         .tx-btn-close:hover{background:#f8f9fa;color:#333;text-decoration:none;}
         .tx-card .text-danger{display:block;margin-top:4px;font-size:12px;}
+        .tx-inline-radios{display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;padding:10px 14px;border:1px solid #dfe3e8;border-radius:6px;background:#fff;min-height:42px;}
+        .tx-inline-radios .tx-radio{display:inline-flex;align-items:center;font-weight:400;margin:0;padding:0;cursor:pointer;font-size:14px;color:#4a4a4a;white-space:nowrap;}
+        .tx-inline-radios .tx-radio input[type="radio"]{position:static;margin:0 7px 0 0;flex-shrink:0;accent-color:#4d8af0;}
         @media (max-width:768px){
             .tx-row{flex-direction:column;}
             .tx-row .tx-label{width:100%;text-align:left;padding:0 0 6px;}
@@ -66,39 +69,36 @@
         </div>
 
         <div class="tx-body">
+            <?php
+            $selected_batch = ($batch_id !== '' && $batch_id !== null) ? (int) $batch_id : 0;
+            $selected_vehicle = ($vehicle_id !== '' && $vehicle_id !== null) ? (int) $vehicle_id : 0;
+            $selected_source = ($source_id !== '' && $source_id !== null) ? (int) $source_id : null;
+            ?>
             <div class="tx-row">
                 <label class="tx-label" for="tx_date">Date :</label>
                 <div class="tx-ctrl">
                     <div class="tx-igroup">
                         <span class="tx-pref"><i class="fa fa-calendar-o"></i></span>
-                        <input type="text" class="tx-input with-pref js_datepicker" autocomplete="off" name="tx_date" id="tx_date" placeholder="Select Date" value="<?php echo $tx_date ? $tx_date : date('d M, Y'); ?>" />
+                        <?php
+                        $tx_date_value = date('Y-m-d');
+                        if (!empty($tx_date) && ($parsed = strtotime($tx_date))) {
+                            $tx_date_value = date('Y-m-d', $parsed);
+                        }
+                        ?>
+                        <input type="text" class="tx-input with-pref js_datepicker" autocomplete="off" name="tx_date" id="tx_date" placeholder="YYYY-MM-DD" value="<?php echo htmlspecialchars($tx_date_value); ?>" />
                     </div>
                     <?php echo form_error('tx_date'); ?>
                 </div>
             </div>
 
-            <div class="tx-row">
-                <label class="tx-label" for="user_id"><span class="req">*</span> Source :</label>
-                <div class="tx-ctrl">
-                    <select class="tx-select" name="user_id" id="user_id">
-                        <option value="">Select Source</option>
-                        <?php if (isset($source_list) && is_array($source_list)) {
-                            foreach ($source_list as $id => $name) { ?>
-                                <option value="<?php echo $id; ?>" <?php echo ($user_id == $id) ? 'selected' : ''; ?>><?php echo $name; ?></option>
-                        <?php }
-                        } ?>
-                    </select>
-                    <?php echo form_error('user_id'); ?>
-                </div>
-            </div>
+            
 
             <div class="tx-row">
                 <label class="tx-label" for="head_id"><span class="req">*</span> Head :</label>
                 <div class="tx-ctrl">
                     <div class="tx-headwrap">
                         <div class="tx-half">
-                            <select class="tx-select" name="head_id" id="head_id">
-                                <option value="">Select Head</option>
+                            <select class="tx-select" name="head_id" id="head_id">                                
                                 <?php if (isset($head_list) && is_array($head_list)) {
                                     foreach ($head_list as $id => $name) { ?>
                                         <option value="<?php echo $id; ?>" <?php echo ($head_id == $id) ? 'selected' : ''; ?>><?php echo $name; ?></option>
@@ -108,8 +108,7 @@
                         </div>
                         <div class="tx-half">
                             <span class="tx-half-label">SubHead</span>
-                            <select class="tx-select" name="subhead_id" id="subhead_id">
-                                <option value="">Select Sub Head</option>
+                            <select class="tx-select" name="subhead_id" id="subhead_id">                                
                                 <?php if (isset($subhead_list) && is_array($subhead_list)) {
                                     foreach ($subhead_list as $id => $name) { ?>
                                         <option value="<?php echo $id; ?>" <?php echo ($subhead_id == $id) ? 'selected' : ''; ?>><?php echo $name; ?></option>
@@ -138,12 +137,85 @@
                     <?php echo form_error('amount'); echo form_error('nature'); ?>
                 </div>
             </div>
+            <div class="tx-row">
+                <label class="tx-label"><span class="req">*</span> Source :</label>
+                <div class="tx-ctrl">
+                    <div class="tx-inline-radios" id="source_id">
+                        <?php
+                        $first_source = true;
+                        if (isset($source_list) && is_array($source_list)) {
+                            foreach ($source_list as $id => $name) {
+                                if ($id === '' || $id === null) { continue; }
+                                $is_checked = ($selected_source !== null)
+                                    ? ($selected_source === (int) $id)
+                                    : $first_source;
+                        ?>
+                                <label class="tx-radio">
+                                    <input type="radio" name="source_id" value="<?php echo (int) $id; ?>"
+                                           <?php echo $is_checked ? 'checked' : ''; ?> required>
+                                    <?php echo htmlspecialchars($name); ?>
+                                </label>
+                        <?php
+                                $first_source = false;
+                            }
+                        }
+                        ?>
+                    </div>
+                    <?php echo form_error('source_id'); ?>
+                </div>
+            </div>
 
             <div class="tx-row">
                 <label class="tx-label" for="remark">Remark :</label>
                 <div class="tx-ctrl">
                     <textarea class="tx-textarea" name="remark" id="remark" placeholder="Enter remark"><?php echo $remark; ?></textarea>
                     <?php echo form_error('remark'); ?>
+                </div>
+            </div>
+
+            <div class="tx-row">
+                <label class="tx-label">Batch :</label>
+                <div class="tx-ctrl">
+                    <div class="tx-inline-radios">
+                        <label class="tx-radio">
+                            <input type="radio" name="batch_id" value="0" <?php echo ($selected_batch === 0) ? 'checked' : ''; ?>>
+                            None
+                        </label>
+                        <?php if (isset($batch_list) && is_array($batch_list)) {
+                            foreach ($batch_list as $id => $name) {
+                                if ($id === '' || $id === null) { continue; } ?>
+                                <label class="tx-radio">
+                                    <input type="radio" name="batch_id" value="<?php echo (int) $id; ?>"
+                                           <?php echo ($selected_batch === (int) $id) ? 'checked' : ''; ?>>
+                                    <?php echo htmlspecialchars($name); ?>
+                                </label>
+                        <?php }
+                        } ?>
+                    </div>
+                    <?php echo form_error('batch_id'); ?>
+                </div>
+            </div>
+
+            <div class="tx-row">
+                <label class="tx-label">Vehicle :</label>
+                <div class="tx-ctrl">
+                    <div class="tx-inline-radios">
+                        <label class="tx-radio">
+                            <input type="radio" name="vehicle_id" value="0" <?php echo ($selected_vehicle === 0) ? 'checked' : ''; ?>>
+                            None
+                        </label>
+                        <?php if (isset($vehicle_list) && is_array($vehicle_list)) {
+                            foreach ($vehicle_list as $id => $name) {
+                                if ($id === '' || $id === null) { continue; } ?>
+                                <label class="tx-radio">
+                                    <input type="radio" name="vehicle_id" value="<?php echo (int) $id; ?>"
+                                           <?php echo ($selected_vehicle === (int) $id) ? 'checked' : ''; ?>>
+                                    <?php echo htmlspecialchars($name); ?>
+                                </label>
+                        <?php }
+                        } ?>
+                    </div>
+                    <?php echo form_error('vehicle_id'); ?>
                 </div>
             </div>
 
@@ -160,11 +232,6 @@
                 </div>
             </div>
 
-            <input type="hidden" name="batch_id" value="<?php echo $batch_id !== '' ? $batch_id : 0; ?>" />
-            <input type="hidden" name="vehicle_id" value="<?php echo $vehicle_id !== '' ? $vehicle_id : 0; ?>" />
-            <input type="hidden" name="tx_status" value="<?php echo $tx_status ? $tx_status : 'OK'; ?>" />
-            <input type="hidden" name="created_at" value="<?php echo $created_at ? $created_at : date('Y-m-d H:i:s'); ?>" />
-            <input type="hidden" name="updated_at" value="<?php echo $updated_at ? $updated_at : date('Y-m-d H:i:s'); ?>" />
         </div>
 
         <div class="tx-foot">
@@ -179,7 +246,7 @@
     $(function () {
         if ($.fn.datepicker) {
             $('.js_datepicker').datepicker({
-                format: 'dd M, yyyy',
+                format: 'yyyy-mm-dd',
                 autoclose: true,
                 todayHighlight: true
             });

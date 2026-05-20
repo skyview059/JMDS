@@ -66,7 +66,7 @@ class Transaction extends Admin_controller{
         if ($transaction) {
             $data = [
 				'id' => $transaction->id,
-				'user_id' => $transaction->user_id,
+				'source_id' => $transaction->source_id,
 				'tx_date' => $transaction->tx_date,
 				'nature' => $transaction->nature,
 				'head_id' => $transaction->head_id,
@@ -91,7 +91,7 @@ class Transaction extends Admin_controller{
             'button' => 'Create',
             'action' => site_url( Backend_URL . 'transaction/create_action'),
 			'id' => set_value('id'),
-			'user_id' => set_value('user_id'),
+			'source_id' => set_value('source_id'),
 			'tx_date' => set_value('tx_date'),
 			'nature' => set_value('nature'),
 			'head_id' => set_value('head_id'),
@@ -119,7 +119,8 @@ class Transaction extends Admin_controller{
             $this->create();
         } else {
             $data = [
-				'user_id' => $this->input->post('user_id',TRUE),
+				'user_id' => $this->user_id,
+				'source_id' => $this->input->post('source_id',TRUE),
 				'tx_date' => $this->input->post('tx_date',TRUE),
 				'nature' => $this->input->post('nature',TRUE),
 				'head_id' => $this->input->post('head_id',TRUE),
@@ -128,9 +129,9 @@ class Transaction extends Admin_controller{
 				'remark' => $this->input->post('remark',TRUE),
 				'batch_id' => $this->input->post('batch_id',TRUE),
 				'vehicle_id' => $this->input->post('vehicle_id',TRUE),
-				'tx_status' => $this->input->post('tx_status',TRUE),
-				'created_at' => $this->input->post('created_at',TRUE),
-				'updated_at' => $this->input->post('updated_at',TRUE),
+				'tx_status' => 1,
+				'created_at' => date('Y-m-d H:i:s'),
+				'updated_at' => null,
 			    ];
 
             $this->Transaction_model->insert($data);
@@ -147,7 +148,7 @@ class Transaction extends Admin_controller{
                 'button' => 'Update',
                 'action' => site_url( Backend_URL . 'transaction/update_action'),
 				'id' => set_value('id', $transaction->id),
-				'user_id' => set_value('user_id', $transaction->user_id),
+				'source_id' => set_value('source_id', $transaction->source_id),
 				'tx_date' => set_value('tx_date', $transaction->tx_date),
 				'nature' => set_value('nature', $transaction->nature),
 				'head_id' => set_value('head_id', $transaction->head_id),
@@ -159,6 +160,11 @@ class Transaction extends Admin_controller{
 				'tx_status' => set_value('tx_status', $transaction->tx_status),
 				'created_at' => set_value('created_at', $transaction->created_at),
 				'updated_at' => set_value('updated_at', $transaction->updated_at),
+				'source_list'  => $this->Transaction_model->get_source_list(),
+				'head_list'    => $this->Transaction_model->get_head_list(),
+				'subhead_list' => $this->Transaction_model->get_subhead_list(),
+				'batch_list'   => $this->Transaction_model->get_batch_list(),
+				'vehicle_list' => $this->Transaction_model->get_vehicle_list(),
 		    ];
             $this->viewAdminContent('transaction/transaction/update', $data);
         } else {
@@ -175,7 +181,7 @@ class Transaction extends Admin_controller{
             $this->update( $id );
         } else {
             $data = [
-				'user_id' => $this->input->post('user_id',TRUE),
+				'source_id' => $this->input->post('source_id',TRUE),
 				'tx_date' => $this->input->post('tx_date',TRUE),
 				'nature' => $this->input->post('nature',TRUE),
 				'head_id' => $this->input->post('head_id',TRUE),
@@ -222,7 +228,7 @@ class Transaction extends Admin_controller{
         if ($transaction) {
             $data = [
 				'id' => $transaction->id,
-				'user_id' => $transaction->user_id,
+				'source_id' => $transaction->source_id,
 				'tx_date' => $transaction->tx_date,
 				'nature' => $transaction->nature,
 				'head_id' => $transaction->head_id,
@@ -258,7 +264,7 @@ class Transaction extends Admin_controller{
     
 
     public function _rules(){
-		$this->form_validation->set_rules('user_id', 'user id', 'trim|required|numeric');
+		$this->form_validation->set_rules('source_id', 'source id', 'trim|required|numeric');
 		$this->form_validation->set_rules('tx_date', 'tx date', 'trim|required');
 		$this->form_validation->set_rules('nature', 'nature', 'trim|required');
 		$this->form_validation->set_rules('head_id', 'head id', 'trim|required|numeric');

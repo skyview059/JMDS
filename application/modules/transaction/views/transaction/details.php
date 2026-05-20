@@ -18,7 +18,7 @@
             <?php echo $this->session->flashdata('message'); ?>
         </div>
         <table class="table table-striped">
-	    <tr><td width="150">User Id</td><td width="5">:</td><td><?php echo $user_id; ?></td></tr>
+	    <tr><td width="150">Source Id</td><td width="5">:</td><td><?php echo $source_id; ?></td></tr>
 	    <tr><td width="150">Tx Date</td><td width="5">:</td><td><?php echo $tx_date; ?></td></tr>
 	    <tr><td width="150">Nature</td><td width="5">:</td><td><?php echo $nature; ?></td></tr>
 	    <tr><td width="150">Head Id</td><td width="5">:</td><td><?php echo $head_id; ?></td></tr>

@@ -70,6 +70,8 @@
 .dv-pivot .dv-cell            { text-align: center; min-width: 110px; }
 .dv-pivot .dv-cell-actions    { margin-top: 0; }
 .dv-pivot .dv-cell-actions .btn { padding: 1px 6px; font-size: 11px; }
+.dv-pivot .dv-cell.dv-cell-loading { opacity: 0.55; pointer-events: none; }
+.dv-ajax-message { margin-bottom: 10px; }
 
 /* Status badges */
 .dv-badge {

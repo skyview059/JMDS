@@ -1,5 +1,6 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
 <?php load_module_asset('driving', 'css'); ?>
+<?php load_module_asset('driving', 'js'); ?>
 
 <?php
 $base_query = array_filter([
@@ -25,7 +26,7 @@ $counts   = $pivot['counts']   ?? [];
 </section>
 
 <section class="content">
-    <?php echo $this->session->flashdata('message'); ?>
+    <div class="dv-ajax-message"><?php echo $this->session->flashdata('message'); ?></div>
 
     <div class="box">
         <div class="box-body">
@@ -138,7 +139,9 @@ $counts   = $pivot['counts']   ?? [];
                                 <?php foreach ($vehicles as $v):
                                     $cell = $grid[$learner->id][$v->id] ?? null;
                                 ?>
-                                    <td class="dv-cell <?php echo $cell ? '' : 'dv-empty'; ?>">
+                                    <td class="dv-cell <?php echo $cell ? '' : 'dv-empty'; ?>"
+                                        data-learner-id="<?php echo (int) $learner->id; ?>"
+                                        data-vehicle-id="<?php echo (int) $v->id; ?>">
                                         <?php if ($cell): ?>
                                             <?php echo driving_action_buttons($cell); ?>
                                         <?php else: ?>
@@ -172,8 +175,7 @@ $counts   = $pivot['counts']   ?? [];
 
             <p class="text-muted" style="margin-top:8px;">
                 <i class="fa fa-info-circle"></i>
-                Each vehicle accepts up to <b><?php echo (int) $daily_limit; ?></b> active learners per day
-                (Queued + ON DRIVING). Use the action icons inside a cell to start, complete or rewind a stage.
+                Use the action icons inside a cell to start, complete or rewind a stage.
             </p>
         </div>
     </div>
@@ -207,11 +209,35 @@ $counts   = $pivot['counts']   ?? [];
             </div>
             <div class="form-group">
                 <label>Drive Type</label>
-                <div class="dv-drive-type-radios">
+                <div class="dv-inline-radios">
                 <?php foreach (driving_drive_types() as $value => $label): ?>
                     <label class="radio-inline">
                         <input type="radio" name="drive_type" value="<?php echo htmlspecialchars($value); ?>"
                                <?php echo $value === 'F' ? 'checked' : ''; ?> required>
+                        <?php echo htmlspecialchars($label); ?>
+                    </label>
+                <?php endforeach; ?>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Drive Mode</label>
+                <div class="dv-inline-radios">
+                <?php foreach (driving_drive_modes() as $value => $label): ?>
+                    <label class="radio-inline">
+                        <input type="radio" name="drive_mode" value="<?php echo htmlspecialchars($value); ?>"
+                               <?php echo $value === 'D' ? 'checked' : ''; ?> required>
+                        <?php echo htmlspecialchars($label); ?>
+                    </label>
+                <?php endforeach; ?>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Road Type</label>
+                <div class="dv-inline-radios">
+                <?php foreach (driving_road_types() as $value => $label): ?>
+                    <label class="radio-inline">
+                        <input type="radio" name="road_type" value="<?php echo htmlspecialchars($value); ?>"
+                               <?php echo $value === 'DT' ? 'checked' : ''; ?> required>
                         <?php echo htmlspecialchars($label); ?>
                     </label>
                 <?php endforeach; ?>
@@ -229,6 +255,25 @@ $counts   = $pivot['counts']   ?? [];
                 <?php endforeach; ?>
                 </div>
             </div>
+            <div class="form-group">
+                <label>Instructor</label>
+                <div class="dv-inline-radios" id="dvAssignInstructorRadios">
+                <?php
+                $first_instructor = true;
+                foreach ($instructor_list as $iid => $ilabel):
+                    if ($iid === '' || $iid === null) { continue; }
+                ?>
+                    <label class="radio-inline">
+                        <input type="radio" name="instructor_id" value="<?php echo (int) $iid; ?>"
+                               <?php echo $first_instructor ? 'checked' : ''; ?> required>
+                        <?php echo htmlspecialchars($ilabel); ?>
+                    </label>
+                <?php
+                    $first_instructor = false;
+                endforeach;
+                ?>
+                </div>
+            </div>
             <p class="text-muted" style="margin:0;">
                 A new <b>Queued</b> log will be created automatically.
             </p>
@@ -242,14 +287,3 @@ $counts   = $pivot['counts']   ?? [];
   </div>
 </div>
 
-<script>
-(function($){
-    if (!window.jQuery) { return; }
-    $(document).on('click', '[data-prefill-learner]', function(){
-        var learnerId = $(this).data('prefill-learner');
-        var vehicleId = $(this).data('prefill-vehicle');
-        $('#dvAssignLearner').val(learnerId);
-        $('#dvAssignVehicle').val(vehicleId);
-    });
-})(jQuery);
-</script>

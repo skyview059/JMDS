@@ -99,23 +99,22 @@ if ($df !== '' || $dt !== '') {
 }
 ?>
 
-<section class="content-header" style="display:none;"></section>
+<section class="content-header">
+    <h1> Transaction  <small>Statements</small> 
+    <?php 
+    echo anchor(site_url(Backend_URL . 'transaction/create'), 
+        '<i class="fa fa-plus"></i> Add Transaction', 
+        'class="btn btn-success"'); 
+    ?>
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="<?php echo site_url(Backend_URL) ?>"><i class="fa fa-dashboard"></i> Admin</a></li>
+        <li class="active">Trans</li>
+    </ol>
+</section>
 
 <section class="content tx-page">
-    <div class="tx-toolbar row">
-        <div class="col-sm-7">
-            <h1>Transaction <small class="tx-subtle">Income Statement</small></h1>
-            <div class="clearfix" style="margin-top:8px;">
-                <?php echo anchor(site_url(Backend_URL . 'transaction/create'), '<i class="fa fa-plus"></i> Add New', 'class="btn btn-tx-green"'); ?>
-                <button type="button" class="btn btn-tx-orange" onclick="alert('CSV import coming soon'); return false;">
-                    <i class="fa fa-upload"></i> Import Data (CSV)
-                </button>
-            </div>
-        </div>
-    </div>
-
     <?php echo $this->session->flashdata('message'); ?>
-
     <div class="row tx-stat-cards">
         <div class="col-md-4">
             <div class="tx-stat-card income">
@@ -155,10 +154,7 @@ if ($df !== '' || $dt !== '') {
                     </li>
                     <li class="<?php echo $tab === 'void' ? 'active' : ''; ?>">
                         <a href="<?php echo htmlspecialchars($list_url_fn(['tab' => 'void'])); ?>"><i class="fa fa-ban"></i> Void</a>
-                    </li>
-                    <li class="<?php echo $tab === 'imported' ? 'active' : ''; ?>">
-                        <a href="<?php echo htmlspecialchars($list_url_fn(['tab' => 'imported'])); ?>"><i class="fa fa-download"></i> Imported(CSV)</a>
-                    </li>
+                    </li>                    
                 </ul>
 
                 <div class="pull-right dropdown tx-tab-filter-dropdown">
@@ -206,13 +202,13 @@ if ($df !== '' || $dt !== '') {
                     <thead>
                         <tr>
                             <th width="36"><input type="checkbox" id="chk-all-tx"></th>
-                            <th width="118">Trans Date</th>
-                            <th width="132">Source</th>
+                            <th width="120">Trans Date</th>
+                            <th width="200">Source</th>
                             <th>Head / Sub Head</th>
                             <th>Remark</th>
                             <th width="132" class="text-right">Expense(Dr)</th>
                             <th width="132" class="text-right">Income(Cr)</th>
-                            <th width="112" class="text-center">Action</th>
+                            <th width="140" class="text-center">Action</th>
                         </tr>
                     </thead>
                     <tbody>
