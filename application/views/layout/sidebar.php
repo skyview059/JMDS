@@ -23,6 +23,7 @@
             if(in_array($role_id, [1, 2])){
                 echo add_main_menu('Users', 'users', 'users', 'fa-gear');
             }            
+            echo add_main_menu('Trans Heads', 'trans/head', 'trans/head', 'fa-gear');    
             echo add_main_menu('Settings', 'settings', 'settings', 'fa-gear');            
             echo add_main_menu('DB Backup & Restore', 'db_sync', 'db_sync', 'fa-hdd-o');
             echo Modules::run('module/menu');          

@@ -20,7 +20,7 @@ class Admin_controller extends MX_Controller {
         $this->user_id = getLoginUserData('user_id');
         $this->role_id = getLoginUserData('role_id');
         
-        
+        $this->output->enable_profiler(TRUE);
         if($this->user_id <= 0){
             redirect( site_url('login'));
         }
@@ -62,8 +62,7 @@ class Admin_controller extends MX_Controller {
     private function check_access( $string = 'dashboard'){                
         $controller = empty($this->uri->segment(1)) ? $string : $this->uri->segment(1);       
         $method     = empty($this->uri->segment(2)) ? '' : '/'.$this->uri->segment(2);        
-        $access_key = $controller . $method;                
+        $access_key = "{$controller}{$method}";                
         return $this->acls->checkPermission($access_key, $this->role_id);
     }
-      
 }
