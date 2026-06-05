@@ -66,15 +66,15 @@
                     <div class="navbar-custom-menu">
                         <ul class="nav navbar-nav">                                                        
                             <li>
-                                <a href="trans/entry">
+                                <a href="learner/create">
                                     <i class="fa fa-edit"></i>
-                                    Donation 
+                                    Learner / Student Registration 
                                 </a>                                
                             </li>                                                                  
                             <li>
-                                <a href="expense/create">
+                                <a href="transaction">
                                     <i class="fa fa-edit"></i>
-                                    Expense
+                                    Transaction
                                 </a>                                
                             </li>                   
                             <li class="dropdown user user-menu">
