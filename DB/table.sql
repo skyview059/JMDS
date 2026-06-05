@@ -74,3 +74,13 @@ CREATE TABLE IF NOT EXISTS `vehicles` (
 
 
 COMMIT;
+
+ALTER TABLE `drivings` CHANGE `drive_type` `drive_type` ENUM('F','R','Z') NOT NULL DEFAULT 'F' COMMENT 'F=Forward,R=Reverse Z=Jikjak';
+
+ALTER TABLE `drivings` ADD `drive_mode` ENUM('D','AN','N') NOT NULL DEFAULT 'D' COMMENT 'D=Day, AN=Afternoon, N=Night' AFTER `drive_type`;
+
+ALTER TABLE `drivings` ADD `road_type` ENUM('TF','DT','HW') NOT NULL DEFAULT 'DT' COMMENT 'TF=Training Field, DT=Driving Track, HW=Highway' AFTER `round_qty`;
+
+ALTER TABLE `drivings` ADD `instructor_id` INT NULL DEFAULT NULL AFTER `road_type`;
+
+ALTER TABLE `transactions` ADD `source_id` INT NULL DEFAULT NULL AFTER `amount`;

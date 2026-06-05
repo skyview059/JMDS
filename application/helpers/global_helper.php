@@ -133,6 +133,9 @@ function sinceCalculator($date = null) {
 function password_encription($string = '') {
     return password_hash($string, PASSWORD_BCRYPT);
 }
+function password_encryption($string = '') {
+    return password_hash($string, PASSWORD_BCRYPT);
+}
 
 
 function get_admin_email() {

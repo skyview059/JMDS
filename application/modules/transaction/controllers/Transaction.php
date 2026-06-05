@@ -15,17 +15,37 @@ class Transaction extends Admin_controller{
     public function index(){
         $q = urldecode_fk($this->input->get('q', TRUE));
         $start = intval($this->input->get('start'));
-        
+
+        $tab = strtolower(trim((string) $this->input->get('tab', TRUE)));
+        if ($tab !== 'void' && $tab !== 'imported') {
+            $tab = 'transaction';
+        }
+
+        $filters = [
+            'tab' => $tab === 'void' ? 'void' : ($tab === 'imported' ? 'imported' : 'transaction'),
+            'source' => $this->input->get('source', TRUE),
+            'date_from' => $this->input->get('date_from', TRUE),
+            'date_to' => $this->input->get('date_to', TRUE),
+        ];
+
         $config['base_url'] = build_pagination_url( Backend_URL . 'transaction', 'start');
         $config['first_url'] = build_pagination_url( Backend_URL . 'transaction', 'start');
 
         $config['per_page'] = 25;
         $config['page_query_string'] = TRUE;
-        $config['total_rows'] = $this->Transaction_model->total_rows($q);
-        $transactions = $this->Transaction_model->get_limit_data($config['per_page'], $start, $q);
+        $config['total_rows'] = $this->Transaction_model->total_rows($q, $filters);
+        $transactions = $this->Transaction_model->get_limit_data($config['per_page'], $start, $q, $filters);
 
         $this->load->library('pagination');
         $this->pagination->initialize($config);
+
+        $source_options_filter = ['' => 'All Source'];
+        foreach ($this->Transaction_model->get_source_list() as $sid => $sname) {
+            if ($sid === '' || $sid === null) {
+                continue;
+            }
+            $source_options_filter[$sid] = $sname;
+        }
 
         $data = [
             'transactions' => $transactions,
@@ -33,6 +53,10 @@ class Transaction extends Admin_controller{
             'pagination' => $this->pagination->create_links(),
             'total_rows' => $config['total_rows'],
             'start' => $start,
+            'tab' => $tab,
+            'filters' => $filters,
+            'totals' => $this->Transaction_model->get_statement_totals($filters),
+            'source_filter_options' => $source_options_filter,
         ];
         $this->viewAdminContent('transaction/transaction/index', $data);
     }
@@ -42,7 +66,7 @@ class Transaction extends Admin_controller{
         if ($transaction) {
             $data = [
 				'id' => $transaction->id,
-				'user_id' => $transaction->user_id,
+				'source_id' => $transaction->source_id,
 				'tx_date' => $transaction->tx_date,
 				'nature' => $transaction->nature,
 				'head_id' => $transaction->head_id,
@@ -67,7 +91,7 @@ class Transaction extends Admin_controller{
             'button' => 'Create',
             'action' => site_url( Backend_URL . 'transaction/create_action'),
 			'id' => set_value('id'),
-			'user_id' => set_value('user_id'),
+			'source_id' => set_value('source_id'),
 			'tx_date' => set_value('tx_date'),
 			'nature' => set_value('nature'),
 			'head_id' => set_value('head_id'),
@@ -79,6 +103,11 @@ class Transaction extends Admin_controller{
 			'tx_status' => set_value('tx_status'),
 			'created_at' => set_value('created_at'),
 			'updated_at' => set_value('updated_at'),
+			'source_list'  => $this->Transaction_model->get_source_list(),
+			'head_list'    => $this->Transaction_model->get_head_list(),
+			'subhead_list' => $this->Transaction_model->get_subhead_list(),
+			'batch_list'   => $this->Transaction_model->get_batch_list(),
+			'vehicle_list' => $this->Transaction_model->get_vehicle_list(),
 			];
         $this->viewAdminContent('transaction/transaction/create', $data);
     }
@@ -90,7 +119,8 @@ class Transaction extends Admin_controller{
             $this->create();
         } else {
             $data = [
-				'user_id' => $this->input->post('user_id',TRUE),
+				'user_id' => $this->user_id,
+				'source_id' => $this->input->post('source_id',TRUE),
 				'tx_date' => $this->input->post('tx_date',TRUE),
 				'nature' => $this->input->post('nature',TRUE),
 				'head_id' => $this->input->post('head_id',TRUE),
@@ -99,9 +129,9 @@ class Transaction extends Admin_controller{
 				'remark' => $this->input->post('remark',TRUE),
 				'batch_id' => $this->input->post('batch_id',TRUE),
 				'vehicle_id' => $this->input->post('vehicle_id',TRUE),
-				'tx_status' => $this->input->post('tx_status',TRUE),
-				'created_at' => $this->input->post('created_at',TRUE),
-				'updated_at' => $this->input->post('updated_at',TRUE),
+				'tx_status' => 1,
+				'created_at' => date('Y-m-d H:i:s'),
+				'updated_at' => null,
 			    ];
 
             $this->Transaction_model->insert($data);
@@ -118,7 +148,7 @@ class Transaction extends Admin_controller{
                 'button' => 'Update',
                 'action' => site_url( Backend_URL . 'transaction/update_action'),
 				'id' => set_value('id', $transaction->id),
-				'user_id' => set_value('user_id', $transaction->user_id),
+				'source_id' => set_value('source_id', $transaction->source_id),
 				'tx_date' => set_value('tx_date', $transaction->tx_date),
 				'nature' => set_value('nature', $transaction->nature),
 				'head_id' => set_value('head_id', $transaction->head_id),
@@ -130,6 +160,11 @@ class Transaction extends Admin_controller{
 				'tx_status' => set_value('tx_status', $transaction->tx_status),
 				'created_at' => set_value('created_at', $transaction->created_at),
 				'updated_at' => set_value('updated_at', $transaction->updated_at),
+				'source_list'  => $this->Transaction_model->get_source_list(),
+				'head_list'    => $this->Transaction_model->get_head_list(),
+				'subhead_list' => $this->Transaction_model->get_subhead_list(),
+				'batch_list'   => $this->Transaction_model->get_batch_list(),
+				'vehicle_list' => $this->Transaction_model->get_vehicle_list(),
 		    ];
             $this->viewAdminContent('transaction/transaction/update', $data);
         } else {
@@ -146,7 +181,7 @@ class Transaction extends Admin_controller{
             $this->update( $id );
         } else {
             $data = [
-				'user_id' => $this->input->post('user_id',TRUE),
+				'source_id' => $this->input->post('source_id',TRUE),
 				'tx_date' => $this->input->post('tx_date',TRUE),
 				'nature' => $this->input->post('nature',TRUE),
 				'head_id' => $this->input->post('head_id',TRUE),
@@ -166,12 +201,34 @@ class Transaction extends Admin_controller{
         }
     }
 
+    public function void_action($id){
+        $id = (int) $id;
+        if ($id < 1) {
+            redirect(site_url(Backend_URL . 'transaction'));
+            return;
+        }
+        $row = $this->Transaction_model->get_by_id($id);
+        if (! $row) {
+            $this->session->set_flashdata('message', '<p class="ajax_error">Transaction Not Found</p>');
+            redirect(site_url( Backend_URL . 'transaction'));
+            return;
+        }
+
+        $this->Transaction_model->update($id, [
+            'tx_status' => 0,
+            'updated_at' => date('Y-m-d H:i:s'),
+        ]);
+
+        $this->session->set_flashdata('message', '<p class="ajax_success">Transaction voided successfully</p>');
+        redirect(site_url( Backend_URL . 'transaction'));
+    }
+
     public function delete($id){
         $transaction = $this->Transaction_model->get_by_id($id);
         if ($transaction) {
             $data = [
 				'id' => $transaction->id,
-				'user_id' => $transaction->user_id,
+				'source_id' => $transaction->source_id,
 				'tx_date' => $transaction->tx_date,
 				'nature' => $transaction->nature,
 				'head_id' => $transaction->head_id,
@@ -207,7 +264,7 @@ class Transaction extends Admin_controller{
     
 
     public function _rules(){
-		$this->form_validation->set_rules('user_id', 'user id', 'trim|required|numeric');
+		$this->form_validation->set_rules('source_id', 'source id', 'trim|required|numeric');
 		$this->form_validation->set_rules('tx_date', 'tx date', 'trim|required');
 		$this->form_validation->set_rules('nature', 'nature', 'trim|required');
 		$this->form_validation->set_rules('head_id', 'head id', 'trim|required|numeric');

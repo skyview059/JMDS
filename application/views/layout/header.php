@@ -48,6 +48,56 @@
     <body class="hold-transition skin-blue sidebar-mini">
         <div class="wrapper">
 
+        <!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title><?php echo getSettingItem('ComName');?> | FreelancerKlub.com </title>
+        <!-- Tell the browser to be responsive to screen width -->  
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">        
+        <base href="<?php echo base_url(); ?>"/>
+        <!-- Bootstrap 3.3.6 -->
+        <link rel="stylesheet" href="assets/lib/bootstrap/css/bootstrap.min.css">
+        <link rel="stylesheet" href="assets/admin/dist/css/style.css">
+
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="assets/lib/font-awesome/font-awesome.min.css">
+        
+        <!-- Theme style -->
+        <link rel="stylesheet" href="assets/admin/dist/css/AdminLTE.min.css">
+        <!-- AdminLTE Skins. Choose a skin from the css/skins
+             folder instead of downloading all of them to reduce the load. -->
+        <link rel="stylesheet" href="assets/admin/dist/css/skins/_all-skins.min.css">
+
+
+        <!-- jQuery 2.2.3 -->
+        <script src="assets/lib/plugins/jQuery/jquery-2.2.3.min.js"></script>
+        <script src="assets/lib/plugins/jQueryUI/jquery-ui.min.js"></script>
+        <!-- Bootstrap 3.3.6 -->
+        <script src="assets/lib/bootstrap/js/bootstrap.min.js"></script>
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <link rel="stylesheet" href="assets/lib/plugins/select2/select2.min.css">   
+        <script type='text/javascript' src="assets/lib/plugins/select2/select2.min.js"></script>
+
+        <link href="assets/lib/plugins/datepicker/datepicker3.css" rel="stylesheet" type="text/css">
+        
+        <script src="assets/custom/script.js" type="text/javascript"></script>        
+        <link href="assets/custom/ajax.css" rel="stylesheet" type="text/css">
+        <link href="assets/custom/style.css" rel="stylesheet" type="text/css"/>
+        <link href="assets/custom/print.css" rel="stylesheet" type="text/css"/>
+    </head>
+    
+    <body class="hold-transition skin-blue sidebar-mini">
+        <div class="wrapper">
+
             <header class="main-header">
                 <!-- Logo -->
                 <a href="<?php echo site_url(); ?>" class="logo">
