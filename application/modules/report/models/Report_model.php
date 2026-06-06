@@ -4,27 +4,27 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Report_model extends Fm_model {
 
-    public $table = 'subscriber_bills';
+    public $table = 'learners';
     public $id = 'id';
     public $order = 'DESC';
 
-    function __construct() {
+    public function __construct() {
         parent::__construct();
     }
 
     public function users( $setDate ){
         
-        $this->db->select_sum('paid');
-        $this->db->where('collected_by = u.id');
+        $this->db->select_sum('amount');
+        $this->db->where('user_id', 'u.id');
         $this->db->where('status', 'OK' );
-        $income = $this->db->get_compiled_select('donations'); 
+        $income = $this->db->get_compiled_select('transactions'); 
         
         $this->db->select_sum('amount');
-        $this->db->where('user_id = u.id');
+        $this->db->where('user_id', 'u.id');
         $this->db->where('status', 'OK' );
-        $expense = $this->db->get_compiled_select('expenses'); 
+        $expense = $this->db->get_compiled_select('transactions'); 
                         
-        $this->db->select('u.id,u.first_name,u.last_name');
+        $this->db->select('u.id, CONCAT(u.first_name," ",u.last_name) as full_name');
         $this->db->select("({$income}) as income, ({$expense}) as expense");
         $this->db->from('users as u');
         if($this->role_id != 1){ $this->db->where('u.id >=',2); }        

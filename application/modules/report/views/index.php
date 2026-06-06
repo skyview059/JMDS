@@ -32,10 +32,10 @@
                                 ?>
                                 <tr>
                                     <td><?php echo sprintf('%02d', ++$sl); ?></td>
-                                    <td><?php echo "{$user->first_name} {$user->last_name}"; ?></td>
+                                    <td><?php echo $user->full_name; ?></td>
                                     <td class='text-right'><?php echo BDT((int) $user->income); ?></td>    
                                     <td class='text-right'><?php echo BDT((int) $user->expense); ?></td>    
-                                    <td class='text-right'><?php echo BDT( (int)$user->income - (int)$user->expense); ?></td>    
+                                    <td class='text-right'><?php echo BDT((int)$user->income - (int)$user->expense); ?></td>    
                                 </tr>
                             <?php } ?>
 
