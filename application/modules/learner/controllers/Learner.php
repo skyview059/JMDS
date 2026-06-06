@@ -16,6 +16,7 @@ class Learner extends Admin_controller{
 
     public function index(){
         $q = urldecode_fk($this->input->get('q', TRUE));
+        $batch_id = $this->input->get('batch_id', TRUE);
         $start = intval($this->input->get('start'));
         
         $config['base_url'] = build_pagination_url( Backend_URL . 'learner', 'start');
@@ -23,15 +24,23 @@ class Learner extends Admin_controller{
 
         $config['per_page'] = 25;
         $config['page_query_string'] = TRUE;
-        $config['total_rows'] = $this->Learner_model->total_rows($q);
-        $learners = $this->Learner_model->get_limit_data($config['per_page'], $start, $q);
+        $config['total_rows'] = $this->Learner_model->total_rows($q, $batch_id);
+        $learners = $this->Learner_model->get_limit_data($config['per_page'], $start, $q, $batch_id);
 
         $this->load->library('pagination');
         $this->pagination->initialize($config);
 
+        $batches = $this->Batch_model->get_all();
+        $batch_list = array('' => '-- Select Batch --');
+        foreach($batches as $batch) {
+            $batch_list[$batch->id] = $batch->name;
+        }
+
         $data = [
             'learners' => $learners,
             'q' => $q,
+            'batch_id' => $batch_id,
+            'batch_list' => $batch_list,
             'pagination' => $this->pagination->create_links(),
             'total_rows' => $config['total_rows'],
             'start' => $start,
@@ -44,13 +53,13 @@ class Learner extends Admin_controller{
         if ($learner) {
             $data = [
 				'id' => $learner->id,
-				'batch_id' => $learner->batch_id,
+				'batch_name' => $learner->batch_name,
 				'name' => $learner->name,
 				'dob' => $learner->dob,
 				'nid' => $learner->nid,
 				'father' => $learner->father,
 				'mother' => $learner->mother,
-				'district_id' => $learner->district_id,
+				'district_name' => $learner->district_name,
 				'primary_mobile' => $learner->primary_mobile,
 				'blood_group' => $learner->blood_group,
 				'second_contact_person' => $learner->second_contact_person,
@@ -124,9 +133,19 @@ class Learner extends Admin_controller{
 				'second_contact_person' => $this->input->post('second_contact_person',TRUE),
 				'second_contact_mobile' => $this->input->post('second_contact_mobile',TRUE),
 				'is_resident' => $this->input->post('is_resident',TRUE),
-				'photo' => $this->input->post('photo',TRUE),
 				'remarks' => $this->input->post('remarks',TRUE),
 			    ];
+
+            if (!empty($_FILES['photo']['name'])) {
+                $upload = $this->_do_upload();
+                if ($upload['status']) {
+                    $data['photo'] = $upload['file_name'];
+                } else {
+                    $this->session->set_flashdata('message', '<p class="ajax_error">'.$upload['error'].'</p>');
+                    $this->create();
+                    return;
+                }
+            }
 
             $this->Learner_model->insert($data);
             $this->session->set_flashdata('message', '<p class="ajax_success">Learner Added Successfully</p>');
@@ -201,13 +220,46 @@ class Learner extends Admin_controller{
 				'second_contact_person' => $this->input->post('second_contact_person',TRUE),
 				'second_contact_mobile' => $this->input->post('second_contact_mobile',TRUE),
 				'is_resident' => $this->input->post('is_resident',TRUE),
-				'photo' => $this->input->post('photo',TRUE),
 				'remarks' => $this->input->post('remarks',TRUE),
 		    ];
+
+            if (!empty($_FILES['photo']['name'])) {
+                $upload = $this->_do_upload();
+                if ($upload['status']) {
+                    $data['photo'] = $upload['file_name'];
+                    
+                    // Delete old photo
+                    $learner = $this->Learner_model->get_by_id($id);
+                    if ($learner && $learner->photo && file_exists('./uploads/learner/' . $learner->photo)) {
+                        unlink('./uploads/learner/' . $learner->photo);
+                    }
+                } else {
+                    $this->session->set_flashdata('message', '<p class="ajax_error">'.$upload['error'].'</p>');
+                    $this->update($id);
+                    return;
+                }
+            }
 
             $this->Learner_model->update($id, $data);
             $this->session->set_flashdata('message', '<p class="ajax_success">Learner Updated Successlly</p>');
             redirect(site_url( Backend_URL. 'learner/update/'. $id ));
+        }
+    }
+
+    private function _do_upload()
+    {
+        $config['upload_path']          = './uploads/learner/';
+        $config['allowed_types']        = 'gif|jpg|png|jpeg';
+        $config['max_size']             = 2048;
+        $config['file_name']            = 'learner_' . time();
+
+        $this->load->library('upload', $config);
+
+        if (!$this->upload->do_upload('photo')) {
+            return array('status' => FALSE, 'error' => $this->upload->display_errors());
+        } else {
+            $data = $this->upload->data();
+            return array('status' => TRUE, 'file_name' => $data['file_name']);
         }
     }
 
@@ -245,6 +297,9 @@ class Learner extends Admin_controller{
         $learner = $this->Learner_model->get_by_id($id);
 
         if ($learner) {
+            if ($learner->photo && file_exists('./uploads/learner/' . $learner->photo)) {
+                unlink('./uploads/learner/' . $learner->photo);
+            }
             $this->Learner_model->delete($id);
             $this->session->set_flashdata('message', '<p class="ajax_success">Learner Deleted Successfully</p>');
             redirect(site_url( Backend_URL. 'learner'));
@@ -268,7 +323,6 @@ class Learner extends Admin_controller{
 		$this->form_validation->set_rules('second_contact_person', 'second contact person', 'trim');
 		$this->form_validation->set_rules('second_contact_mobile', 'second contact mobile', 'trim');
 		$this->form_validation->set_rules('is_resident', 'is resident', 'trim|required');
-		$this->form_validation->set_rules('photo', 'photo', 'trim');
 		$this->form_validation->set_rules('remarks', 'remarks', 'trim');
 
 		$this->form_validation->set_rules('id', 'id', 'trim');

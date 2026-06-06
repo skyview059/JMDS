@@ -10,18 +10,27 @@
 <section class="content">
     <div class="box">
         <div class="box-header with-border">
-            <div class="col-md-3 col-md-offset-9 text-right">
-                <form action="<?php echo site_url(Backend_URL . 'learner'); ?>" class="form-inline" method="get">
-                    <div class="input-group">
-                        <input type="text" class="form-control" name="q" value="<?php echo $q; ?>">
-                        <span class="input-group-btn">
-                            <?php if ($q <> '') { ?>
-                                <a href="<?php echo site_url(Backend_URL . 'learner'); ?>" class="btn btn-default">Reset</a>
-                            <?php } ?>
-                            <button class="btn btn-success" type="submit">Search</button>
-                        </span>
-                    </div>
-                </form>
+            <div class="row">
+                <div class="col-md-8">
+                    <form method="get" action="<?php echo site_url(Backend_URL . 'learner'); ?>" class="form-inline">
+                        <div class="form-group">
+                            <label>Batch:</label>
+                            <?php echo form_dropdown('batch_id', $batch_list, $batch_id, 'class="form-control input-sm"'); ?>
+                        </div>
+                        <button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-filter"></i> Filter</button>
+                        <a href="<?php echo site_url(Backend_URL . 'learner'); ?>" class="btn btn-sm btn-default">Reset</a>
+                    </form>
+                </div>
+                <div class="col-md-4 text-right">
+                    <form action="<?php echo site_url(Backend_URL . 'learner'); ?>" class="form-inline" method="get">
+                        <div class="input-group">
+                            <input type="text" class="form-control input-sm" name="q" value="<?php echo $q; ?>" placeholder="Search...">
+                            <span class="input-group-btn">
+                                <button class="btn btn-success btn-sm" type="submit">Search</button>
+                            </span>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
 
@@ -51,7 +60,13 @@
                             <tr>
                                 <td><?php echo ++$start ?></td>
                                 <td><?php echo $learner->batch_name; ?></td>                                
-                                <td><?php echo $learner->photo; ?></td>
+                                <td>
+                                    <?php if ($learner->photo && file_exists('./uploads/learner/' . $learner->photo)) { ?>
+                                        <img src="<?php echo base_url('uploads/learner/' . $learner->photo); ?>" alt="Photo" style="width:50px;height:50px;object-fit:cover;border-radius:4px;">
+                                    <?php } else { ?>
+                                        <img src="<?php echo base_url('assets/admin/dist/img/avatar.png'); ?>" alt="Default" style="width:50px;height:50px;object-fit:cover;border-radius:4px;">
+                                    <?php } ?>
+                                </td>
                                 <td><?php echo $learner->name; ?></td>
                                 <td><?php echo rand(18, 40); ?> years</td>
                                 <td><?php echo $learner->district_name; ?></td>
