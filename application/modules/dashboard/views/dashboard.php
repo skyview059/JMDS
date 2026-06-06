@@ -27,7 +27,7 @@
                                 <th class="text-right">Lifetime</th>
                             </tr>
                             <tr class="bg-success">
-                                <td>Donations</td>
+                                <td>Income</td>
                                 <td class="text-right"><?php echo BDT($today); ?></td>
                                 <td class="text-right"><?php echo BDT($this_week); ?></td>
                                 <td class="text-right"><?php echo BDT($this_month); ?></td>
