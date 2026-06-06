@@ -79,5 +79,46 @@ class Learner_model extends Fm_model{
         return $this->db->get($this->table)->result();
     }
     
+    // insert data
+    function insert($data)
+    {
+        $this->db->insert($this->table, $data);
+    }
+
+    // update data
+    function update($id, $data)
+    {
+        $this->db->where($this->id, $id);
+        $this->db->update($this->table, $data);
+    }
+
+    // delete data
+    function delete($id)
+    {
+        $this->db->where($this->id, $id);
+        $this->db->delete($this->table);
+    }
+
+    // Attachment methods
+    function get_attachments($rel_id, $rel_tbl = 'learners') {
+        $this->db->where('rel_id', $rel_id);
+        $this->db->where('rel_tbl', $rel_tbl);
+        return $this->db->get('attachments')->result();
+    }
+
+    function insert_attachment($data) {
+        $this->db->insert('attachments', $data);
+        return $this->db->insert_id();
+    }
+
+    function get_attachment_by_id($id) {
+        $this->db->where('id', $id);
+        return $this->db->get('attachments')->row();
+    }
+
+    function delete_attachment($id) {
+        $this->db->where('id', $id);
+        $this->db->delete('attachments');
+    }
 
 }

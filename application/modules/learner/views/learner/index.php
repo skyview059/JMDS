@@ -76,9 +76,10 @@
                                 <td><?php echo $learner->remarks; ?></td>
                                 <td>
                                     <?php
-                                    echo anchor(site_url(Backend_URL . 'learner/details/' . $learner->id), '<i class="fa fa-fw fa-external-link"></i> View', 'class="btn btn-xs btn-success"');
-                                    echo anchor(site_url(Backend_URL . 'learner/update/' . $learner->id), '<i class="fa fa-fw fa-edit"></i> Edit',  'class="btn btn-xs btn-warning"');
-                                    echo anchor(site_url(Backend_URL . 'learner/delete/' . $learner->id), '<i class="fa fa-fw fa-times"></i>', 'class="btn btn-xs btn-danger"');
+                                    echo anchor(site_url(Backend_URL . 'learner/details/' . $learner->id), '<i class="fa fa-fw fa-external-link"></i>', 'class="btn btn-xs btn-success" title="View"');
+                                    echo anchor(site_url(Backend_URL . 'learner/document/' . $learner->id), '<i class="fa fa-fw fa-file-text-o"></i>', 'class="btn btn-xs btn-info" title="Documents"');
+                                    echo anchor(site_url(Backend_URL . 'learner/update/' . $learner->id), '<i class="fa fa-fw fa-edit"></i>',  'class="btn btn-xs btn-warning" title="Edit"');
+                                    echo anchor(site_url(Backend_URL . 'learner/delete/' . $learner->id), '<i class="fa fa-fw fa-times"></i>', 'class="btn btn-xs btn-danger" title="Delete"');
                                     ?>
                                 </td>
                             </tr>
