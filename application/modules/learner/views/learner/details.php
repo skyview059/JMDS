@@ -18,19 +18,29 @@
             <?php echo $this->session->flashdata('message'); ?>
         </div>
         <table class="table table-striped">
-	    <tr><td width="150">Batch</td><td width="5">:</td><td><?php echo $batch_id; ?></td></tr>
+	    <tr><td width="150">Batch</td><td width="5">:</td><td><?php echo $batch_name; ?></td></tr>
 	    <tr><td width="150">Name</td><td width="5">:</td><td><?php echo $name; ?></td></tr>
-	    <tr><td width="150">Dob</td><td width="5">:</td><td><?php echo $dob; ?></td></tr>
-	    <tr><td width="150">Nid</td><td width="5">:</td><td><?php echo $nid; ?></td></tr>
+	    <tr><td width="150">Date Of Birth</td><td width="5">:</td><td><?php echo $dob; ?></td></tr>
+	    <tr><td width="150">NID/BID</td><td width="5">:</td><td><?php echo $nid; ?></td></tr>
 	    <tr><td width="150">Father</td><td width="5">:</td><td><?php echo $father; ?></td></tr>
 	    <tr><td width="150">Mother</td><td width="5">:</td><td><?php echo $mother; ?></td></tr>
-	    <tr><td width="150">District</td><td width="5">:</td><td><?php echo $district_id; ?></td></tr>
+	    <tr><td width="150">District</td><td width="5">:</td><td><?php echo $district_name; ?></td></tr>
 	    <tr><td width="150">Primary Mobile</td><td width="5">:</td><td><?php echo $primary_mobile; ?></td></tr>
 	    <tr><td width="150">Blood Group</td><td width="5">:</td><td><?php echo $blood_group; ?></td></tr>
 	    <tr><td width="150">Second Contact Person</td><td width="5">:</td><td><?php echo $second_contact_person; ?></td></tr>
 	    <tr><td width="150">Second Contact Mobile</td><td width="5">:</td><td><?php echo $second_contact_mobile; ?></td></tr>
 	    <tr><td width="150">Is Resident</td><td width="5">:</td><td><?php echo $is_resident; ?></td></tr>
-	    <tr><td width="150">Photo</td><td width="5">:</td><td><?php echo $photo; ?></td></tr>
+	    <tr>
+            <td width="150">Photo</td>
+            <td width="5">:</td>
+            <td>
+                <?php if ($photo && file_exists('./uploads/learner/' . $photo)) { ?>
+                    <img src="<?php echo base_url('uploads/learner/' . $photo); ?>" alt="Photo" style="max-width:200px;border-radius:8px;box-shadow:0 2px 10px rgba(0,0,0,0.1);">
+                <?php } else { ?>
+                    <img src="<?php echo base_url('assets/admin/dist/img/avatar.png'); ?>" alt="Default" style="max-width:100px;border-radius:8px;">
+                <?php } ?>
+            </td>
+        </tr>
 	    <tr><td width="150">Remarks</td><td width="5">:</td><td><?php echo $remarks; ?></td></tr>
 	    <tr><td width="150">Created At</td><td width="5">:</td><td><?php echo $created_at; ?></td></tr>
 	    <tr><td width="150">Updated At</td><td width="5">:</td><td><?php echo $updated_at; ?></td></tr>
