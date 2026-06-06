@@ -124,30 +124,31 @@ class Dashboard extends Admin_controller {
         
     public function collection_report( $paid_date ){
                 
-        $this->db->select('log.id,log.donor_id,log.month,log.paid');
-        $this->db->select('d.name as donor_name');
-        $this->db->from('donations as log');
-        $this->db->join('donors as d','d.id=log.donor_id','LEFT');
-        $this->db->where('log.status', 'OK');
-        $this->db->where('paid_date', $paid_date);
-        $this->db->where('collected_by', $this->user_id );        
+        $this->db->select('log.id,log.amount,log.tx_date');
+        $this->db->select('u.full_name as user_name');
+        $this->db->from('transactions as log');
+        $this->db->join('users as u','u.id=log.user_id','LEFT');
+        $this->db->where('log.tx_status', 1);
+        $this->db->where('log.nature', 'Cr');
+        $this->db->where('log.tx_date', $paid_date);
+        $this->db->where('log.user_id', $this->user_id );        
         $bills = $this->db->get()->result();
         
         $total = 0;
         $tbl = '<table class="table table-bordered table-striped table-condensed">';
         $tbl .= '<tr>';
         $tbl .= "<th width='50'>Tx.ID</th>";
-        $tbl .= "<th>Donoar Name</th>";
-        $tbl .= "<th>Month of Donation</th>";
-        $tbl .= "<th width='90' class='text-right'>Paid TK</th>";            
+        $tbl .= "<th>User Name</th>";
+        $tbl .= "<th>Transaction Date</th>";
+        $tbl .= "<th width='90' class='text-right'>Amount TK</th>";            
         $tbl .= '</tr>';
         foreach($bills as $bill){
-            $total += (int)  $bill->paid;                        
+            $total += (int)  $bill->amount;                        
             $tbl .= '<tr>';
             $tbl .= '<td>'. sprintf('%02d', $bill->id) .'</td>';
-            $tbl .= '<td>'. $bill->donor_name .'</td>';
-            $tbl .= '<td>'. billingMonth($bill->month) .'</td>';            
-            $tbl .= "<td class='text-right'>". BDT( (int) $bill->paid). "</td>";            
+            $tbl .= '<td>'. $bill->user_name .'</td>';
+            $tbl .= '<td>'. $bill->tx_date .'</td>';            
+            $tbl .= "<td class='text-right'>". BDT( (int) $bill->amount). "</td>";            
             $tbl .= '</tr>';
         }
         $tbl .= '<tr>';

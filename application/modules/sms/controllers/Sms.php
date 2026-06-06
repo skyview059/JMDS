@@ -98,7 +98,7 @@ class Sms extends Admin_controller{
         $this->db->select('id,contact');
         $this->db->where('status','Active');
         //$this->db->where_in('id',[57,97]);        
-        $donors = $this->db->get('donors')->result();
+        $donors = $this->db->get('users')->result();
         $data = [];
         foreach($donors as $donor){
             if(mb_strlen($donor->contact) == 11){

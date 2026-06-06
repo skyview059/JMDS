@@ -435,22 +435,23 @@ function time_count($datetime, $full = false) {
 }
 
 function getDonationValue($date=''){
-    return 0;
-    // $ci =& get_instance();        
-    // $ci->db->select_sum('paid');
-    // $ci->db->from('donations');
-    // if($date){ $ci->db->where('paid_date >=', "{$date}"); }    
-    // $ci->db->where('status', 'OK');
-    // $items = $ci->db->get()->row();    
-    // return $items->paid;
+    $ci =& get_instance();        
+    $ci->db->select_sum('amount');
+    $ci->db->from('transactions');
+    $ci->db->where('nature', 'Cr');
+    if($date){ $ci->db->where('tx_date >=', "{$date}"); }    
+    $ci->db->where('tx_status', 1);
+    $items = $ci->db->get()->row();    
+    return $items->amount;
 }
 
 function getExpanseValue($date = ''){
     $ci =& get_instance();        
     $ci->db->select_sum('amount');
-    $ci->db->from('expenses');
-    if($date){ $ci->db->where('trans_date >=', "{$date}"); }
-    $ci->db->where('status', 'OK');
+    $ci->db->from('transactions');
+    $ci->db->where('nature', 'Dr');
+    if($date){ $ci->db->where('tx_date >=', "{$date}"); }
+    $ci->db->where('tx_status', 1);
     $items = $ci->db->get()->row();    
     return $items->amount;
 }

@@ -17,7 +17,7 @@ function getDonorMobile($id) {
     $ci =& get_instance();
     $ci->db->select('contact');
     $ci->db->where('id',$id);
-    $donor = $ci->db->get('donors')->row();
+    $donor = $ci->db->get('users')->row();
     if($donor){
         return $donor->contact;
     } else {
@@ -31,7 +31,7 @@ function getAllDonorMobileNumber() {
     $ci->db->select('contact');    
     $ci->db->where('status','Active');
     //$ci->db->where_in('id', [58,97]);
-    $donors = $ci->db->get('donors')->result();
+    $donors = $ci->db->get('users')->result();
     $sms_qty = 0;
     $mobile = [];
     foreach ($donors as $donor){

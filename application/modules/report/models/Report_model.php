@@ -33,13 +33,13 @@ class Report_model extends Fm_model {
     
     public function head_income(){
         
-        $this->db->select_sum('paid');
+        $this->db->select_sum('amount', 'paid');
         $this->db->where('head_id = h.id');
-        $this->db->where('status', 'OK' );
-        $sql = $this->db->get_compiled_select('donations');  
+        $this->db->where('nature', 'Cr' );
+        $sql = $this->db->get_compiled_select('transactions');  
                         
         $this->db->select("h.*, ({$sql}) as paid");
-        $this->db->from('donation_heads as h');       
+        $this->db->from('trans_heads as h');       
         return $this->db->get()->result();
     }
     
@@ -47,24 +47,24 @@ class Report_model extends Fm_model {
         
         $this->db->select_sum('amount');
         $this->db->where('head_id = h.id');
-        $this->db->where('status', 'OK' );
-        $sql = $this->db->get_compiled_select('expenses');  
+        $this->db->where('nature', 'Dr' );
+        $sql = $this->db->get_compiled_select('transactions');  
                         
         $this->db->select("h.*, ({$sql}) as paid");
-        $this->db->from('expense_heads as h');  
+        $this->db->from('trans_heads as h');  
         return $this->db->get()->result();
     }
     
     public function incomes( $month ){
         
-        $this->db->select_sum('paid');
+        $this->db->select_sum('amount', 'paid');
         $this->db->where('head_id = h.id');
-        $this->db->where('status', 'OK' );
-        $this->db->like('paid_date', $month, 'after' );
-        $sql = $this->db->get_compiled_select('donations');  
+        $this->db->where('nature', 'Cr' );
+        $this->db->like('tx_date', $month, 'after' );
+        $sql = $this->db->get_compiled_select('transactions');  
                         
         $this->db->select("h.*, ({$sql}) as paid");
-        $this->db->from('donation_heads as h');       
+        $this->db->from('trans_heads as h');       
         return $this->db->get()->result();
     }
     
@@ -72,51 +72,51 @@ class Report_model extends Fm_model {
         
         $this->db->select_sum('amount');
         $this->db->where('head_id = h.id');
-        $this->db->where('status', 'OK' );
-        $this->db->like('trans_date', $month, 'after' );
-        $sql = $this->db->get_compiled_select('expenses');  
+        $this->db->where('nature', 'Dr' );
+        $this->db->like('tx_date', $month, 'after' );
+        $sql = $this->db->get_compiled_select('transactions');  
                         
         $this->db->select("h.*, ({$sql}) as paid");
-        $this->db->from('expense_heads as h');  
+        $this->db->from('trans_heads as h');  
         return $this->db->get()->result();
     }
     
     
     public function graph_incomes( $year, $month ){     
         $this->db->select('"0" as Dr');        
-        $this->db->select_sum('paid', 'Cr');
-        $this->db->select('DATE_FORMAT(paid_date, "%d") as Day');        
-        $this->db->where('status', 'OK' );
+        $this->db->select_sum('amount', 'Cr');
+        $this->db->select('DATE_FORMAT(tx_date, "%d") as Day');        
+        $this->db->where('nature', 'Cr' );
         
         if ($month) {            
-            $this->db->like('paid_date', "{$year}-{$month}", 'after');
-            $this->db->select('DATE_FORMAT(paid_date, "%d %M") as Date');
+            $this->db->like('tx_date', "{$year}-{$month}", 'after');
+            $this->db->select('DATE_FORMAT(tx_date, "%d %M") as Date');
             $this->db->group_by('Date');
         } else {            
-            $this->db->like('paid_date', "{$year}", 'after');
-            $this->db->select('DATE_FORMAT(paid_date, "%M") as Date');
+            $this->db->like('tx_date', "{$year}", 'after');
+            $this->db->select('DATE_FORMAT(tx_date, "%M") as Date');
             $this->db->group_by('Date');
         }                
-        return $this->db->get('donations')->result();                        
+        return $this->db->get('transactions')->result();                        
     }
     
     public function graph_expenses( $year, $month ){        
         
         $this->db->select_sum('amount','Dr');
         $this->db->select('"0" as Cr');        
-        $this->db->where('status', 'OK' );
-        $this->db->select('DATE_FORMAT(trans_date, "%d") as Day');
+        $this->db->where('nature', 'Dr' );
+        $this->db->select('DATE_FORMAT(tx_date, "%d") as Day');
         if ($month) {
-            $this->db->like('trans_date', "{$year}-{$month}", 'after');
-            $this->db->select('DATE_FORMAT(trans_date, "%d %M") as Date');
+            $this->db->like('tx_date', "{$year}-{$month}", 'after');
+            $this->db->select('DATE_FORMAT(tx_date, "%d %M") as Date');
             $this->db->group_by('Date');
         } else {
-            $this->db->like('trans_date', "{$year}", 'after');
-            $this->db->select('DATE_FORMAT(trans_date, "%M") as Date');
+            $this->db->like('tx_date', "{$year}", 'after');
+            $this->db->select('DATE_FORMAT(tx_date, "%M") as Date');
             $this->db->group_by('Date');
         }
         
-        return $this->db->get('expenses')->result();
+        return $this->db->get('transactions')->result();
     }
     
     public function graph( $year, $month ){        

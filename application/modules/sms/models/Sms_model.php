@@ -27,9 +27,9 @@ class Sms_model extends Fm_model {
 
     // get data with limit and search
     function get_limit_data($limit, $start, $year,$month, $sms_type, $order_by, $q = NULL) {
-        $this->db->select("{$this->table}.*, d.name as donor_name");
+        $this->db->select("{$this->table}.*, u.full_name as donor_name");
         $this->db->from($this->table);
-        $this->db->join('donors as d',"d.id={$this->table}.donor_id",'LEFT');
+        $this->db->join('users as u',"u.id={$this->table}.donor_id",'LEFT');
         // $this->db->where('sms_log.id >', 58454);
         // $this->db->where('sms_log.phone', 1923938731);
         $this->__sql_filter( $year,$month, $sms_type, $q);

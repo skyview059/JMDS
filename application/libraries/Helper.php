@@ -60,7 +60,7 @@ class Helper {
     }
     
     public static function donationHeads($id = 0, $label = '--Select--') {
-        return self::getTableToSelector('donation_heads', 'name', $label, $id);
+        return self::getTableToSelector('trans_heads', 'name', $label, $id);
     }
     
     public static function getDropDownHead($type = 'Head', $select = 0, $label = '--Select--' ) {
@@ -68,7 +68,7 @@ class Helper {
         $ci = & get_instance();
         $ci->db->select('id,name');
         $ci->db->where('type', $type );
-        $heads = $ci->db->get('expense_heads')->result();  
+        $heads = $ci->db->get('trans_heads')->result();  
         $row = '<option value="0">' . $label . '</option>';
         $sl = 0;
         foreach ($heads as $head) {
@@ -83,21 +83,24 @@ class Helper {
     
     
     public static function donorName($id = 0) {
-        return self::getSingleColumnName('donors', 'name', $id);
+        return self::getSingleColumnName('users', 'full_name', $id);
     }
     
     public static function getDonationDropDown( $area_id = 0, $label = '--Select--' ) {
                 
         $ci = & get_instance();
-        $ci->db->select('id,name,add_line1,contact');
-        if($area_id){ $ci->db->where('area_id', $area_id) ; }
-        $subscribers = $ci->db->get('donors')->result();  
+        $ci->db->select('id,full_name,contact');
+        $subscribers = $ci->db->get('users')->result();  
         $row = '<option value="0">' . $label . '</option>';
         $sl = 0;
         foreach ($subscribers as $subs) {
             $sl++;
             $row .= "<option value=\"{$subs->id}\">";
             $row .= $sl .'. ';
+            $row .= $subs->full_name . ', '. $subs->contact;
+            $row .= '</option>';
+        }
+        return $row;
             if($area_id ==0 ){
                 $row .= $subs->add_line1 . ', ';
             }
