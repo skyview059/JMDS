@@ -101,14 +101,6 @@ class Helper {
             $row .= '</option>';
         }
         return $row;
-            if($area_id ==0 ){
-                $row .= $subs->add_line1 . ', ';
-            }
-            $row .= $subs->name . ', '. $subs->contact;
-            $row .= '</option>';
-        }
-        return $row;
-        
     }
     
     public static function getLoginUsers() {
@@ -119,7 +111,7 @@ class Helper {
         if($d){ $ci->db->where('role_id !=', 1 ); }        
         $users = $ci->db->get('users')->result();        
         foreach ($users as $user) {
-            $row .= "<option value=\"{{$user->email}}\">;        
+            $row .= "<option value=\"{$user->email}\">";
             $row .= $user->full_name;
             $row .= '</option>';
         }
