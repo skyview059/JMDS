@@ -24,7 +24,7 @@ class Report_model extends Fm_model {
         $this->db->where('status', 'OK' );
         $expense = $this->db->get_compiled_select('transactions'); 
                         
-        $this->db->select('u.id, CONCAT(u.first_name," ",u.last_name) as full_name');
+        $this->db->select('u.id, u.full_name');
         $this->db->select("({$income}) as income, ({$expense}) as expense");
         $this->db->from('users as u');
         if($this->role_id != 1){ $this->db->where('u.id >=',2); }        
