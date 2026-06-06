@@ -45,7 +45,8 @@ class Users extends Admin_controller
         if ($user) {
             $data = array(
                 'id'            => $user->id,
-                'role_id'       => Users_helper::getRoleNameByID($user->role_id),               
+                'role_id'       => Users_helper::getRoleNameByID($user->role_id),   
+                'designation_id' => Users_helper::getDesignationNameByID($user->designation_id),            
                 'full_name'     => $user->full_name,
                 'email'         => $user->email,
                 'contact'       => $user->contact,
@@ -79,13 +80,15 @@ class Users extends Admin_controller
             echo ajaxRespond('Fail', form_error('your_email'));
         } else {
             $data = array(
-                'role_id'       => intval($this->input->post('role_id', TRUE)),               
+                'role_id'       => intval($this->input->post('role_id', TRUE)),  
+                'designation_id' => intval($this->input->post('designation_id', TRUE)),
                 'full_name'     => $this->input->post('full_name', TRUE),
                 'email'         => $this->input->post('email', TRUE),
                 'password'      => password_encryption($this->input->post('password', TRUE)),
                 'contact'       => $this->input->post('contact', TRUE),
                 'created'       => date("Y-m-d"),
                 'status'        => $this->input->post('status', TRUE),
+                'last_access'   => date("Y-m-d H:i:s"),
             );
 
             $this->Users_model->insert($data);
@@ -102,7 +105,8 @@ class Users extends Admin_controller
                 'button' => 'Update',
                 'action' => site_url('users/update_action'),
                 'id' => set_value('id', $user->id),
-                'role_id' => set_value('role_id', $user->role_id),                
+                'role_id' => set_value('role_id', $user->role_id),   
+                'designation_id' => set_value('designation_id', $user->designation_id),
 
                 'full_name' => set_value('full_name', $user->full_name),
                 'email' => set_value('email', $user->email),
@@ -123,7 +127,8 @@ class Users extends Admin_controller
     {
         ajaxAuthorized();
         $data = array(
-            'role_id'       => (int)$this->input->post('role_id', TRUE),            
+            'role_id'       => (int)$this->input->post('role_id', TRUE),
+            'designation_id' => (int)$this->input->post('designation_id', TRUE),
             'full_name'    => $this->input->post('full_name', TRUE),
             'email'         => $this->input->post('email', TRUE),
             'contact'       => $this->input->post('contact', TRUE),

@@ -47,7 +47,7 @@ class Auth extends MX_Controller {
             'user_id' => $user->id,
             'user_mail' => $user->email,
             'role_id' => $user->role_id,
-            'name' => $user->first_name . ' ' . $user->last_name,
+            'name' => $user->full_name,
             'photo' => $user->profile_photo
         ]);
 

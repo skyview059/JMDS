@@ -31,6 +31,10 @@ load_module_asset('users', 'css');
                             <td>: <?= $role_id; ?></td>
                         </tr>
                         <tr>
+                            <td>Designation</td>
+                            <td>: <?= $designation_id; ?></td>
+                        </tr>
+                        <tr>
                             <td>Email</td>
                             <td>: <?= $email; ?></td>
                         </tr>                        

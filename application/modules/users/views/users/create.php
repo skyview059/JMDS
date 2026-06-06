@@ -23,6 +23,14 @@
                                 </select>
                             </div>
                         </div>
+                        <div class="form-group">
+                            <label for="designation_id" class="col-sm-3 control-label">Designation<sup>*</sup>: </label>
+                            <div class="col-sm-9">
+                                <select name="designation_id" class="form-control" id="designation_id">
+                                    <?php echo Users_helper::getDropDownDesignation(2); ?>
+                                </select>
+                            </div>
+                        </div>
 
 
                         <div class="form-group">

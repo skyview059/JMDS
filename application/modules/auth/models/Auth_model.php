@@ -14,7 +14,7 @@ class Auth_model extends Fm_model{
      */
     function validateUser($username){
         return $this->db
-                ->select('id,role_id,first_name,last_name,email,profile_photo,password,status')
+                ->select('id,role_id,full_name,email,profile_photo,password,status')
                 ->get_where($this->table, ['email' => $username] )
                 ->row();
     }

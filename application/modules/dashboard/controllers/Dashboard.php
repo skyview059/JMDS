@@ -88,7 +88,7 @@ class Dashboard extends Admin_controller {
         // $this->db->where('status', 'OK' );
         // $sql = $this->db->get_compiled_select('donations');  
                         
-        $this->db->select("u.id,u.first_name,u.last_name, (0) as paid");
+        $this->db->select("u.id,u.full_name, (0) as paid");
         $this->db->from('users as u');
         if($this->role_id != 1){ $this->db->where('u.id >=',2); }        
         $users = $this->db->get()->result();
@@ -98,7 +98,7 @@ class Dashboard extends Admin_controller {
         $tbl .= '<tr>';
         $tbl .= "<th width='40'>S/L</th>";
         $tbl .= "<th>Operator Name</th>";
-        $tbl .= "<th width='90' class='text-right'>Collected TK</th>";            
+        $tbl .= "<th width='90' class='text-right'>Collected TK</th>";
         $tbl .= '</tr>';
         $sl = 0;
         foreach($users as $user){
@@ -107,7 +107,7 @@ class Dashboard extends Admin_controller {
             $tbl .= '<tr>';
             $tbl .= "<td>{$id}</td>";
             $tbl .= "<td><a href=\"report\" target='_blank'>";
-            $tbl .= "{$user->first_name} {$user->last_name}";
+            $tbl .= "{$user->full_name}";
             $tbl .= '</a></td>';
             $tbl .= "<td class='text-right'>". BDT( (int) $user->paid). "</td>";            
             $tbl .= '</tr>';

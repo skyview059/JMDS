@@ -40,12 +40,12 @@ class Helper {
     public static function getUserName($user_id = 0) {
         $ci = & get_instance();
         
-        $ci->db->select('first_name,last_name');
+        $ci->db->select('full_name');
         $ci->db->where('id', $user_id);
         $user = $ci->db->get('users')->row();
         
         if($user){
-            return $user->first_name .' '. $user->last_name;
+            return $user->full_name;
         } else {
             return 'Unknown #ID-' . $user_id;
         }
@@ -112,12 +112,12 @@ class Helper {
         $row = '';
         $ci = & get_instance();        
         $d = ($ci->input->get('d')) ? false : true;        
-        $ci->db->select('email,first_name,last_name');        
+        $ci->db->select('email,full_name');        
         if($d){ $ci->db->where('role_id !=', 1 ); }        
         $users = $ci->db->get('users')->result();        
         foreach ($users as $user) {
-            $row .= "<option value=\"{$user->email}\">";
-            $row .= $user->first_name .' '. $user->last_name;
+            $row .= "<option value=\"{{$user->email}}\">;        
+            $row .= $user->full_name;
             $row .= '</option>';
         }
         return $row;
@@ -125,7 +125,7 @@ class Helper {
     
     public static function getUserDropDown($id = 0, $label = '--Select--') {
         $ci = & get_instance();
-        $ci->db->select('id,first_name,last_name');
+        $ci->db->select('id,full_name');
         $role_id = getLoginUserData('role_id');
         if($role_id != 1){ $ci->db->where('role_id !=', 1); }
         $users = $ci->db->get('users')->result();            
@@ -133,7 +133,7 @@ class Helper {
         foreach ($users as $user) {
             $row .= '<option value="' . $user->id . '"';
             $row .= ($id == $user->id ) ? ' selected' : '';
-            $row .= '>'. $user->first_name .' '. $user->last_name .'</option>';
+            $row .= '>'. $user->full_name .'</option>';
         }
         return $row;
     }

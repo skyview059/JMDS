@@ -36,6 +36,15 @@ load_module_asset('users', 'js');
                                         </select>
                                     </div>
                                 </div>
+                                
+                                <div class="form-group">
+                                    <label for="designation_id" class="col-sm-3 control-label">Designation<sup>*</sup> :<?php echo form_error('designation_id') ?></label>
+                                    <div class="col-sm-9">
+                                        <select name="designation_id" class="form-control" id="designation_id">
+                                            <?php echo Users_helper::getDropDownDesignation($designation_id); ?>
+                                        </select>
+                                    </div>
+                                </div>
 
 
                                 <div class="form-group">

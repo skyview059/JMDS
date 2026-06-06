@@ -96,4 +96,23 @@ class Users_helper {
         return ($role) ? $role->role_name : 'Unknown Role';
     }
 
+    
+    public static function getDropDownDesignation($designation_id = 0) {
+        $ci = & get_instance();
+        $designations = $ci->db->get('designations')->result();    
+
+        $options = '';
+        foreach ($designations as $designation) {
+            $options .= '<option value="' . $designation->id . '" ';
+            $options .= ($designation->id == $designation_id ) ? 'selected="selected"' : '';
+            $options .= '>' . $designation->name . '</option>';
+        }
+        return $options;
+    }
+
+    static public function getDesignationNameByID($designation_id) {                
+        $designation = get_instance()->db->get_where('designations', array('id' => $designation_id))->row();
+        return ($designation) ? $designation->name : 'Unknown Designation';
+    }
+
 }

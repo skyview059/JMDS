@@ -90,14 +90,14 @@ class Mail extends MX_Controller {
 
         $user               = $this->db->get_where('users', ['email' => $email])->row();
         $this->send_to      = $email;
-        $this->from_name    = $user->first_name;
+        $this->from_name    = $user->full_name;
 
         $templateSender = $this->useEmailTeamplate('onRequestForgotPassword');
         $this->subject  = $templateSender->title;
 
         $this->body = $this->filterEmailBody($templateSender->template, [
             'url'       => base_url( "auth/reset_password?token={$token}&email={$email}" ),
-            'fullname'  => $user->first_name
+            'fullname'  => $user->full_name
         ]);
 
         $this->log();
