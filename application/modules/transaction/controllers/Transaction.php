@@ -270,12 +270,9 @@ class Transaction extends Admin_controller{
 		$this->form_validation->set_rules('head_id', 'head id', 'trim|required|numeric');
 		$this->form_validation->set_rules('subhead_id', 'subhead id', 'trim|required|numeric');
 		$this->form_validation->set_rules('amount', 'amount', 'trim|required|numeric');
-		$this->form_validation->set_rules('remark', 'remark', 'trim|required');
-		$this->form_validation->set_rules('batch_id', 'batch id', 'trim|required|numeric');
-		$this->form_validation->set_rules('vehicle_id', 'vehicle id', 'trim|required|numeric');
-		$this->form_validation->set_rules('tx_status', 'tx status', 'trim|required');
-		$this->form_validation->set_rules('created_at', 'created at', 'trim|required');
-		$this->form_validation->set_rules('updated_at', 'updated at', 'trim|required');
+		$this->form_validation->set_rules('remark', 'remark', 'trim');
+		$this->form_validation->set_rules('batch_id', 'batch id', 'trim|numeric');
+		$this->form_validation->set_rules('vehicle_id', 'vehicle id', 'trim|numeric');
 
 		$this->form_validation->set_rules('id', 'id', 'trim');
 		$this->form_validation->set_error_delimiters('<span class="text-danger">', '</span>');

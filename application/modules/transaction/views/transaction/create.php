@@ -263,13 +263,36 @@
             var files = e.originalEvent.dataTransfer.files;
             if (files && files.length) {
                 $('#tx_attachment')[0].files = files;
-                $(this).find('.tx-dz-txt').first().text(files[0].name);
+                $('#tx_attachment').trigger('change');
             }
         });
 
         $('#tx_attachment').on('change', function () {
+            var $dz = $('.tx-dropzone');
             if (this.files && this.files.length) {
-                $('.tx-dropzone .tx-dz-txt').first().text(this.files[0].name);
+                var file = this.files[0];
+                if (file.type.match('image.*')) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        $dz.find('.tx-preview-img').remove();
+                        $dz.find('.tx-up-ico, .tx-dz-txt, .tx-browse').hide();
+                        var img = $('<img/>', {
+                            src: e.target.result,
+                            class: 'tx-preview-img',
+                            style: 'max-width: 100%; max-height: 150px; border-radius: 6px; object-fit: contain;'
+                        });
+                        $dz.prepend(img);
+                    }
+                    reader.readAsDataURL(file);
+                } else {
+                    $dz.find('.tx-preview-img').remove();
+                    $dz.find('.tx-up-ico, .tx-dz-txt, .tx-browse').show();
+                    $dz.find('.tx-dz-txt').first().text(file.name);
+                }
+            } else {
+                $dz.find('.tx-preview-img').remove();
+                $dz.find('.tx-up-ico, .tx-dz-txt, .tx-browse').show();
+                $dz.find('.tx-dz-txt').first().text("Drag & drop files here");
             }
         });
     });
