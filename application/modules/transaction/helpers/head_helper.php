@@ -3,15 +3,15 @@
 function headTabs($id, $active_tab) {
 	$html = '<ul class="tabsmenu">';
 	$tabs = [
-                'read'   => 'Details',
-                'update' => 'Update',
-                'delete' => 'Delete',
-            ];
+        'details'=> 'Details',
+        'update' => 'Update',
+        'delete' => 'Delete',
+    ];
 
 	foreach ($tabs as $link=>$tab) {
-		$html .= '<li><a href="' . Backend_URL ."expense/head/{$link}/{$id}\"";
+		$html .= '<li><a href="' . Backend_URL ."transaction/head/{$link}/{$id}\"";
 		$html .= ($link == $active_tab ) ? ' class="active"' : '';
-		$html .= '>'. $tab . '</a></li>';
+		$html .= ">{$tab}</a></li>";
 	}
 	$html .= '</ul>';
 	return $html;

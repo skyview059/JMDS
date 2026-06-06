@@ -4,7 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Head_model extends Fm_model{
 
-    public $table = 'donation_heads';
+    public $table = 'trans_heads';
     public $id = 'id';
     public $order = 'DESC';
 
@@ -13,14 +13,14 @@ class Head_model extends Fm_model{
     }    
     
     // get total rows
-    function total_rows($q = NULL) {
-    
-    if($q){
+    function total_rows($q = NULL) {    
+        if($q){
         	$this->db->like('id', $q);
-		$this->db->or_like('name', $q);
-		$this->db->or_like('status', $q);
-	}
-	$this->db->from($this->table);
+			$this->db->or_like('type', $q);
+			$this->db->or_like('name', $q);
+			$this->db->or_like('status', $q);
+		}
+		$this->db->from($this->table);
         return $this->db->count_all_results();
     }
 
@@ -29,10 +29,11 @@ class Head_model extends Fm_model{
         $this->db->order_by($this->id, $this->order);
         if($q){
         	$this->db->like('id', $q);
-		$this->db->or_like('name', $q);
-		$this->db->or_like('status', $q);
-	}
-	$this->db->limit($limit, $start);
+			$this->db->or_like('type', $q);
+			$this->db->or_like('name', $q);
+			$this->db->or_like('status', $q);
+		}
+		$this->db->limit($limit, $start);
         return $this->db->get($this->table)->result();
     }
     
