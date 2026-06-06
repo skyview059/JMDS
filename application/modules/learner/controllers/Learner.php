@@ -308,7 +308,110 @@ class Learner extends Admin_controller{
             redirect(site_url( Backend_URL. 'learner'));
         }
     }
-    
+
+    public function document($id) {
+        $learner = $this->Learner_model->get_by_id($id);
+        if ($learner) {
+            $attachments = $this->Learner_model->get_attachments($id);
+            $data = [
+                'learner' => $learner,
+                'attachments' => $attachments,
+                'action' => site_url(Backend_URL . 'learner/document_upload/' . $id),
+            ];
+            $this->viewAdminContent('learner/learner/document', $data);
+        } else {
+            $this->session->set_flashdata('message', '<p class="ajax_error">Learner Not Found</p>');
+            redirect(site_url(Backend_URL . 'learner'));
+        }
+    }
+
+    public function document_upload($id) {
+        $learner = $this->Learner_model->get_by_id($id);
+        if (!$learner) {
+            $this->session->set_flashdata('message', '<p class="ajax_error">Learner Not Found</p>');
+            redirect(site_url(Backend_URL . 'learner'));
+        }
+
+        $files = ['nid', 'educational_certificate', 'medical_faintness', 'electricity_bill'];
+        $upload_path = './uploads/attachments/';
+        if (!is_dir($upload_path)) {
+            mkdir($upload_path, 0777, TRUE);
+        }
+
+        $config['upload_path']          = $upload_path;
+        $config['allowed_types']        = 'gif|jpg|png|jpeg|pdf|doc|docx';
+        $config['max_size']             = 5120; // 5MB
+
+        $this->load->library('upload', $config);
+
+        $success_count = 0;
+        $error_messages = [];
+
+        // Get existing attachments to prevent duplicates
+        $existing_attachments = $this->Learner_model->get_attachments($id);
+        $uploaded_names = [];
+        foreach ($existing_attachments as $att) {
+            $uploaded_names[] = $att->name;
+        }
+
+        foreach ($files as $file_field) {
+            $display_name = str_replace('_', ' ', ucfirst($file_field));
+            
+            // Skip if already uploaded
+            if (in_array($display_name, $uploaded_names)) {
+                continue;
+            }
+
+            if (!empty($_FILES[$file_field]['name'])) {
+                $config['file_name'] = 'learner_' . $id . '_' . $file_field . '_' . time();
+                $this->upload->initialize($config);
+
+                if ($this->upload->do_upload($file_field)) {
+                    $upload_data = $this->upload->data();
+                    $attachment_data = [
+                        'user_id' => $this->session->userdata('user_id') ? $this->session->userdata('user_id') : 1,
+                        'rel_tbl' => 'learners',
+                        'rel_id' => $id,
+                        'name' => str_replace('_', ' ', ucfirst($file_field)),
+                        'path' => $upload_data['file_name'],
+                        'size' => $upload_data['file_size'],
+                        'type' => $upload_data['file_ext'],
+                        'uploaded_at' => date('Y-m-d H:i:s'),
+                    ];
+                    $this->Learner_model->insert_attachment($attachment_data);
+                    $success_count++;
+                } else {
+                    $error_messages[] = $file_field . ': ' . $this->upload->display_errors('', '');
+                }
+            }
+        }
+
+        if ($success_count > 0) {
+            $this->session->set_flashdata('message', '<p class="ajax_success">' . $success_count . ' Document(s) Uploaded Successfully</p>');
+        }
+        
+        if (!empty($error_messages)) {
+            $current_msg = $this->session->flashdata('message');
+            $this->session->set_flashdata('message', $current_msg . '<p class="ajax_error">' . implode('<br>', $error_messages) . '</p>');
+        }
+
+        redirect(site_url(Backend_URL . 'learner/document/' . $id));
+    }
+
+    public function document_delete($id, $attachment_id) {
+        $attachment = $this->Learner_model->get_attachment_by_id($attachment_id);
+        if ($attachment && $attachment->rel_id == $id) {
+            $file_path = './uploads/attachments/' . $attachment->path;
+            if (file_exists($file_path)) {
+                unlink($file_path);
+            }
+            $this->Learner_model->delete_attachment($attachment_id);
+            $this->session->set_flashdata('message', '<p class="ajax_success">Document Deleted Successfully</p>');
+        } else {
+            $this->session->set_flashdata('message', '<p class="ajax_error">Document Not Found</p>');
+        }
+        redirect(site_url(Backend_URL . 'learner/document/' . $id));
+    }
 
     public function _rules(){
 		$this->form_validation->set_rules('batch_id', 'batch id', 'trim|required|numeric');

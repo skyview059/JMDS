@@ -5,6 +5,7 @@ function learnerTabs($id, $active_tab) {
 	$tabs = [
         'details'=> 'Details',
         'update' => 'Update',
+        'document' => 'Documents',
         'delete' => 'Delete',
     ];
 
