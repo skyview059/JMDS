@@ -122,7 +122,7 @@
                                 </a>                                
                             </li>                                                                  
                             <li>
-                                <a href="transaction">
+                                <a href="transaction/create">
                                     <i class="fa fa-edit"></i>
                                     Transaction
                                 </a>                                
