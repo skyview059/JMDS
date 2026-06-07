@@ -9,7 +9,7 @@
 
 <section class="content">
     <div class="row">
-        <div class="col-md-5">
+        <div class="col-md-6">
             <div class="box box-primary">            
                 <div class="box-header with-border text-center">                                                       
                     <h3 class="box-title">Income & Expense Summery</h3>                    
@@ -25,26 +25,26 @@
                                 <th width="90" class="text-right">Balance</th>
                             </tr>
                             <?php
-                            $sl = $income = $exp = 0;
+                            $sl = $cr_tk = $dr_tk = 0;
                             foreach ($users as $user) {
-                                $income += (int) $user->income;
-                                $exp += (int) $user->expense;
+                                $cr_tk += (int) $user->cr_tk;
+                                $dr_tk += (int) $user->dr_tk;
                                 ?>
                                 <tr>
                                     <td><?php echo sprintf('%02d', ++$sl); ?></td>
                                     <td><?php echo $user->full_name; ?></td>
-                                    <td class='text-right'><?php echo BDT((int) $user->income); ?></td>    
-                                    <td class='text-right'><?php echo BDT((int) $user->expense); ?></td>    
-                                    <td class='text-right'><?php echo BDT((int)$user->income - (int)$user->expense); ?></td>    
+                                    <td class='text-right'><?php echo BDT((int) $user->dr_tk); ?></td>    
+                                    <td class='text-right'><?php echo BDT((int) $user->cr_tk); ?></td>    
+                                    <td class='text-right'><?php echo BDT((int)$user->dr_tk - (int)$user->cr_tk); ?></td>    
                                 </tr>
                             <?php } ?>
 
                             <tr>
                                 <th></th>
                                 <th class='text-right'>Total & Balance =</th>
-                                <th class='text-right'><?php echo BDT($income); ?></th>
-                                <th class='text-right'><?php echo BDT($exp); ?></th>
-                                <th class='text-right'><?php echo BDT($income-$exp); ?></th>
+                                <th class='text-right'><?php echo BDT($dr_tk); ?></th>
+                                <th class='text-right'><?php echo BDT($cr_tk); ?></th>
+                                <th class='text-right'><?php echo BDT($cr_tk-$dr_tk); ?></th>
                             </tr>           
                         </table>
                     </div>
@@ -52,88 +52,47 @@
             </div>
         </div>    
 
-        <div class="col-md-7">
-            <div class="row">
-
-                <div class="col-md-6">
-
-                    <div class="box box-primary">            
-                        <div class="box-header with-border text-center">                                                       
-                            <h3 class="box-title">Income Summery</h3>                    
-                        </div>
-
-                        <div class="box-body">                    
-                            <div class="table-responsive">
-                                <table class="table table-bordered table-striped table-condensed">
-                                    <tr><th width="40">S/L</th>
-                                        <th>Name of Head</th>
-                                        <th width="120" class="text-right">Income Amount</th>
-                                    </tr>
-                                    <?php
-                                    $total = 0;
-                                    foreach ($incomes as $income) {
-                                        $total += (int) $income->paid;
-                                        ?>
-                                        <tr>
-                                            <td><?php echo sprintf('%02d', $income->id); ?></td>
-                                            <td><?php echo $income->name; ?></td>
-                                            <td class='text-right'><?php echo BDT((int) $income->paid); ?></td>   
-                                        </tr>
-                                    <?php } ?>
-
-                                    <tr>
-                                        <th></th>
-                                        <th class='text-right'>Total =</th>
-                                        <th class='text-right'><?php echo BDT($total); ?></th>
-                                    </tr>           
-                                </table>
-                            </div>
-                        </div>
-                    </div>
+        <div class="col-md-6">
+            <div class="box box-primary">            
+                <div class="box-header with-border text-center">                                                       
+                    <h3 class="box-title">Head Wise Summery</h3>                    
                 </div>
 
-                <div class="col-md-6">    
+                <div class="box-body">                    
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped table-condensed">
+                            <tr><th width="40">S/L</th>
+                                <th>Name of Head</th>
+                                <th width="120" class="text-right">Expense TK</th>
+                                <th width="120" class="text-right">Income TK</th>
+                                <th width="120" class="text-right">Balance TK</th>
+                            </tr>
+                            <?php
+                            $total = 0;
+                            foreach ($heads as $head) {
+                                $dr_tk += (int) $head->dr_tk;
+                                $cr_tk += (int) $head->cr_tk;
+                                ?>
+                                <tr>
+                                    <td><?php echo sprintf('%02d', $head->id); ?></td>
+                                    <td><?php echo $head->name; ?></td>
+                                    <td class='text-right'><?php echo BDT((int) $head->dr_tk); ?></td>   
+                                    <td class='text-right'><?php echo BDT((int) $head->cr_tk); ?></td>   
+                                    <td class='text-right'><?php echo BDT( $head->cr_tk - $head->dr_tk); ?></td>   
+                                </tr>
+                            <?php } ?>
 
-                    <div class="box box-primary">            
-                        <div class="box-header with-border text-center">                                                       
-                            <h3 class="box-title">Expense Summery</h3>                    
-                        </div>
-
-
-                        <div class="box-body">                    
-                            <div class="table-responsive">
-                                <table class="table table-bordered table-striped table-condensed">
-                                    <tr><th width="40">S/L</th>
-                                        <th>Name of Head</th>
-                                        <th width="120" class="text-right">Expense Amount</th>
-                                    </tr>
-                                    <?php
-                                    $total = 0;
-                                    foreach ($expenses as $expense) {
-                                        $total += (int) $expense->paid;
-                                        ?>
-                                        <tr>
-                                            <td><?php echo sprintf('%02d', $expense->id); ?></td>
-                                            <td><?php echo $expense->name; ?></td>
-                                            <td class='text-right'><?php echo BDT((int) $expense->paid); ?></td>  
-                                        </tr>
-                                    <?php } ?>
-
-                                    <tr>
-                                        <th></th>
-                                        <th class='text-right'>Total =</th>
-                                        <th class='text-right'><?php echo BDT($total); ?></th>
-                                    </tr>           
-                                </table>
-                            </div>
-                        </div>
+                            <tr>
+                                <th></th>
+                                <th class='text-right'>Total =</th>
+                                <th class='text-right'><?php echo BDT($dr_tk); ?></th>
+                                <th class='text-right'><?php echo BDT($cr_tk); ?></th>
+                                <th class='text-right'><?php echo BDT($cr_tk-$dr_tk); ?></th>
+                            </tr>           
+                        </table>
                     </div>
-
                 </div>
-
-            </div>
+            </div>        
         </div>
-
-
     </div>
 </section>

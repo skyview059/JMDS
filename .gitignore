@@ -14,3 +14,4 @@
 /rnd.php
 /assets/lib/plugins/datatables
 /*.code-workspace
+/temp/cache

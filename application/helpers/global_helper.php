@@ -434,25 +434,23 @@ function time_count($datetime, $full = false) {
     return $string ? implode(', ', $string) . ' ago' : 'Just Now';
 }
 
-function getDonationValue($date=''){
+function getIncomeAmount($date=''){
     $ci =& get_instance();        
     $ci->db->select_sum('amount');
-    $ci->db->from('transactions');
     $ci->db->where('nature', 'Cr');
     if($date){ $ci->db->where('tx_date >=', "{$date}"); }    
     $ci->db->where('tx_status', 1);
-    $items = $ci->db->get()->row();    
+    $items = $ci->db->get('transactions')->row();    
     return $items->amount;
 }
 
-function getExpanseValue($date = ''){
+function getExpanseAmount($date = ''){
     $ci =& get_instance();        
     $ci->db->select_sum('amount');
-    $ci->db->from('transactions');
     $ci->db->where('nature', 'Dr');
     if($date){ $ci->db->where('tx_date >=', "{$date}"); }
     $ci->db->where('tx_status', 1);
-    $items = $ci->db->get()->row();    
+    $items = $ci->db->get('transactions')->row();    
     return $items->amount;
 }
 

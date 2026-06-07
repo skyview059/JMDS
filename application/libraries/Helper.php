@@ -2,6 +2,16 @@
 
 /** @author Kanny */
 class Helper {
+
+    public static function getTransAmount( $setDate, $nature = 'Dr' ){        
+        return get_instance()->db->select_sum('amount')
+            ->where('user_id','u.id', false)
+            ->where('tx_date', $setDate )
+            ->where('tx_status', 1)
+            ->where('nature', $nature )
+            ->get_compiled_select('transactions');  
+    }
+
     public static function buildMonths($selected=''){
         $months = array(
             date('Y-m-1', strtotime('-3 months')) => date('M, Y', strtotime('-3 months')),
@@ -21,42 +31,14 @@ class Helper {
         return $row;
     }
 
-    public static function getMonthlyOverview($month = 0) {
-        $ci = & get_instance();
-        $ci->db->select('count(*) as qty');
-        $ci->db->select_sum('total_bill');
-        $ci->db->select_sum('discount');
-        $ci->db->select_sum('paid');
-        $ci->db->where('month', $month);
-        $summery = $ci->db->get('subscriber_bills')->row();
-        
-        if($summery){
-            return $summery;
-        } else {
-            return (object)['bill' => 0, 'discount' => 0, 'paid' => 0, 'qty' => 0];
-        }
-    }
+   
     
-    public static function getUserName($user_id = 0) {
-        $ci = & get_instance();
-        
-        $ci->db->select('full_name');
-        $ci->db->where('id', $user_id);
-        $user = $ci->db->get('users')->row();
-        
-        if($user){
-            return $user->full_name;
-        } else {
-            return 'Unknown #ID-' . $user_id;
-        }
-    }
-        
-    public static function getAreaName($id = 0) {
-        return self::getSingleColumnName('service_areas', 'bn_name', $id);
-    }
-    
-    public static function getDropDownArea($id = 0, $label = '--Select--') {
-        return self::getTableToSelector('service_areas', 'bn_name', $label, $id);
+    public static function getUserName($user_id = 0) {            
+        $user = get_instance()->db
+                    ->select('full_name')
+                    ->where('id', $user_id)
+                    ->get('users')->row();             
+        return ($user) ? $user->full_name : "Unknown #ID-{$user_id}";        
     }
     
     public static function donationHeads($id = 0, $label = '--Select--') {
@@ -77,31 +59,8 @@ class Helper {
             $row .= ($select == $head->id ) ? ' selected' : '';            
             $row .= ">{$head->name}</option>";
         }
-        return $row;
-        
-    }
-    
-    
-    public static function donorName($id = 0) {
-        return self::getSingleColumnName('users', 'full_name', $id);
-    }
-    
-    public static function getDonationDropDown( $area_id = 0, $label = '--Select--' ) {
-                
-        $ci = & get_instance();
-        $ci->db->select('id,full_name,contact');
-        $subscribers = $ci->db->get('users')->result();  
-        $row = '<option value="0">' . $label . '</option>';
-        $sl = 0;
-        foreach ($subscribers as $subs) {
-            $sl++;
-            $row .= "<option value=\"{$subs->id}\">";
-            $row .= $sl .'. ';
-            $row .= $subs->full_name . ', '. $subs->contact;
-            $row .= '</option>';
-        }
-        return $row;
-    }
+        return $row;        
+    }   
     
     public static function getLoginUsers() {
         $row = '';
@@ -160,29 +119,5 @@ class Helper {
             $row .= '<option>-: Tbl ' . $table . ' Not Exists :-</option>';
         }
         return $row;
-    }
-
-    private static function getSingleColumnName($table, $column, $id = 0) {
-        $ci = & get_instance();
-        $exists = $ci->db->table_exists($table);
-
-        if ($exists) {
-            $result = $ci->db->get_where($table, ['id' => $id])->row();
-            if ($result) {
-                return $result->$column;
-            }
-        } else {
-            return '-: Tbl ' . $table . ' Not Exists :-';
-        }
-    }
-    
-    static public function rate($bill,$qty){
-        $rate = ($bill / $qty);
-        
-        if($rate == 150 || $rate == 100 ){
-            return '-';
-        } else {
-            return 'Problem';
-        }
     }
 }

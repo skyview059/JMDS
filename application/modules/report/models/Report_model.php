@@ -12,48 +12,45 @@ class Report_model extends Fm_model {
         parent::__construct();
     }
 
-    public function users( $setDate ){
-        
-        $this->db->select_sum('amount');
-        $this->db->where('user_id', 'u.id');
-        $this->db->where('status', 'OK' );
-        $income = $this->db->get_compiled_select('transactions'); 
-        
-        $this->db->select_sum('amount');
-        $this->db->where('user_id', 'u.id');
-        $this->db->where('status', 'OK' );
-        $expense = $this->db->get_compiled_select('transactions'); 
+    public function users(){
+        $income = $this->getTransUserAmount( 'Cr' ); 
+        $expense = $this->getTransUserAmount( 'Dr' ); 
                         
         $this->db->select('u.id, u.full_name');
-        $this->db->select("({$income}) as income, ({$expense}) as expense");
+        $this->db->select("({$income}) as cr_tk, ({$expense}) as dr_tk");
         $this->db->from('users as u');
         if($this->role_id != 1){ $this->db->where('u.id >=',2); }        
         return $this->db->get()->result();
     }
+
+    private function getTransUserAmount( $nature = 'Dr' ){        
+        return $this->db->select_sum('amount')
+            ->where('user_id','u.id', false)            
+            ->where('tx_status', 1)
+            ->where('nature', $nature )
+            ->get_compiled_select('transactions');  
+    }
+    private function getTransHeadAmount( $nature = 'Dr' ){        
+        return $this->db->select_sum('amount')
+            ->where('head_id','h.id', false)            
+            ->where('tx_status', 1)
+            ->where('nature', $nature )
+            ->get_compiled_select('transactions');  
+    }
     
-    public function head_income(){
+    public function trans_summary(){
         
-        $this->db->select_sum('amount', 'paid');
-        $this->db->where('head_id = h.id');
-        $this->db->where('nature', 'Cr' );
-        $sql = $this->db->get_compiled_select('transactions');  
+        $setDate = date('Y-m-d', strtotime('-1 day'));
+        $dr_tk = $this->getTransHeadAmount( 'Dr' );
+        $cr_tk = $this->getTransHeadAmount( 'Cr' );
                         
-        $this->db->select("h.*, ({$sql}) as paid");
+        $this->db->select("h.*, ({$dr_tk}) as dr_tk");
+        $this->db->select("({$cr_tk}) as cr_tk");
         $this->db->from('trans_heads as h');       
         return $this->db->get()->result();
     }
     
-    public function head_expense(){
-        
-        $this->db->select_sum('amount');
-        $this->db->where('head_id = h.id');
-        $this->db->where('nature', 'Dr' );
-        $sql = $this->db->get_compiled_select('transactions');  
-                        
-        $this->db->select("h.*, ({$sql}) as paid");
-        $this->db->from('trans_heads as h');  
-        return $this->db->get()->result();
-    }
+    
     
     public function incomes( $month ){
         

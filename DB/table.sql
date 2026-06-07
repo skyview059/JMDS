@@ -84,3 +84,65 @@ ALTER TABLE `drivings` ADD `road_type` ENUM('TF','DT','HW') NOT NULL DEFAULT 'DT
 ALTER TABLE `drivings` ADD `instructor_id` INT NULL DEFAULT NULL AFTER `road_type`;
 
 ALTER TABLE `transactions` ADD `source_id` INT NULL DEFAULT NULL AFTER `amount`;
+
+
+
+
+
+
+
+
+
+CREATE TABLE designations ( id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(100) NOT NULL UNIQUE );
+ALTER TABLE `users` ADD `designation_id` INT NULL AFTER `role_id`;
+ALTER TABLE `users` DROP `first_name`;
+ALTER TABLE `users` DROP `last_name`;
+
+ALTER TABLE `learners` CHANGE `nid` `nid` VARCHAR(20) NULL DEFAULT NULL;
+
+--- permission  key: learner/document
+
+DROP TABLE `db_sync`;
+DROP TABLE `donation_heads`;
+DROP TABLE `donors`;
+DROP TABLE `donations`;
+DROP TABLE `expenses`;
+DROP TABLE `expense_heads`;
+DROP TABLE `service_areas`;
+
+
+CREATE TABLE designations (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL UNIQUE, 
+    short_name VARCHAR(20) NOT NULL             
+);
+INSERT INTO designations (name, short_name) VALUES 
+('General', 'Gen'),
+('Lieutenant General', 'Lt Gen'),
+('Major General', 'Maj Gen'),
+('Brigadier General', 'Brig Gen'),
+('Colonel', 'Col'),
+('Lieutenant Colonel', 'Lt Col'),
+('Major', 'Maj'),
+('Captain', 'Capt'),
+('Lieutenant', 'Lt'),
+('Second Lieutenant', '2nd Lt'),
+('Master Warrant Officer', 'MWO'),
+('Senior Warrant Officer', 'SWO'),
+('Warrant Officer', 'WO'),
+('Sergeant', 'Sgt'),
+('Corporal', 'Cpl'),
+('Lance Corporal', 'L Cpl'),
+('Sainik', 'Snk');
+ 
+
+
+
+
+
+
+
+
+
+
+

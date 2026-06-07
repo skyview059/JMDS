@@ -70,21 +70,27 @@ function addAdminChildMenu($title = 'Child Item', $childURL = 'admin', $icon = '
 
 
 function checkMenuPermission($access_key,$role_id){
-    $ci =& get_instance();        
-    return $ci->db->from('role_permissions')
+    $ci =& get_instance();  
+    $ci->db->cache_on();      
+    $value =  $ci->db->from('role_permissions')
             ->join('acls', 'acls.id = role_permissions.acl_id', 'left')
             ->where('role_id',$role_id)
             ->where('permission_key',$access_key)			
             ->count_all_results();
+    $ci->db->cache_off();
+    return $value;
 }
 
 function checkPermission($access_key,$role_id){
-    $ci =& get_instance();        
-    return $ci->db->from('role_permissions')
+    $ci =& get_instance();    
+    $ci->db->cache_on();       
+    $value = $ci->db->from('role_permissions')
                 ->join('acls', 'acls.id = role_permissions.acl_id', 'left')
                 ->where('role_id',$role_id)
                 ->where('permission_key',$access_key)			
                 ->count_all_results();
+    $ci->db->cache_off();
+    return $value;
 } 
 
 function add_main_menu($title, $url, $access, $icon){

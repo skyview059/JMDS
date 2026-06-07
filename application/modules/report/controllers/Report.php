@@ -13,8 +13,9 @@ class Report extends Admin_controller{
     public function index(){        
         $setDate        = date('Y-m-d', strtotime('-1 day'));
         $data['users']  = $this->Report_model->users( $setDate );         
-        $data['incomes']  = $this->Report_model->head_income();
-        $data['expenses']  = $this->Report_model->head_expense( );         
+        $data['heads']  = $this->Report_model->trans_summary( $setDate );     
+        // echo $this->db->last_query();
+        // exit;
                 
         $this->viewAdminContent('report/index', $data);
     }
@@ -29,15 +30,13 @@ class Report extends Admin_controller{
             'expenses'  => $this->Report_model->expenses( $y_m ),
             'year'      => $year,
             'month'     => $month,
-            'min_year'  => 2019,
+            'min_year'  => 2025,
             'max_year'  => date('Y'),
             'label'     => $this->getMonthName( $month ) . ' ' . $year,
         ];
                         
         $this->viewAdminContent('report/print', $data);
-    }
-    
-    
+    }    
     
     public function graph() {
 

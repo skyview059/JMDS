@@ -15,7 +15,7 @@ $db['default'] = array(
 	'pconnect' => true,
 	'db_debug' => (ENVIRONMENT !== 'production'),
 	'cache_on' => FALSE,
-	'cachedir' => '',
+	'cachedir' => 'temp/cache',
 	'char_set' => 'utf8mb4',
 	'dbcollat' => 'utf8mb4_unicode_ci',
 	'swap_pre' => '',
