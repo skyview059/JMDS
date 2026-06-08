@@ -76,6 +76,15 @@
             </div>
 
             <div class="tx-row">
+                <label class="tx-label" for="gender">Gender :</label>
+                <div class="tx-ctrl">
+                    <div class="tx-inline-radios">
+                        <?php echo htmlRadio('gender', $gender, array('Male' => 'Male', 'Female' => 'Female', 'Other' => 'Other'));  ?>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tx-row">
                 <label class="tx-label" for="dob">Date of Birth :</label>
                 <div class="tx-ctrl">
                     <input type="text" class="tx-input js_datepicker" autocomplete="off" name="dob" id="dob" placeholder="YYYY-MM-DD" value="<?php echo $dob; ?>" />
@@ -108,14 +117,77 @@
             </div>
 
             <div class="tx-row">
-                <label class="tx-label" for="district_id"><span class="req">*</span> District :</label>
-                <div class="tx-ctrl">
-                    <select class="tx-select" name="district_id" id="district_id">
-                        <?php foreach($district_list as $id => $name) { ?>
-                            <option value="<?php echo $id; ?>" <?php echo ($district_id == $id) ? 'selected' : ''; ?>><?php echo $name; ?></option>
-                        <?php } ?>
-                    </select>
-                    <?php echo form_error('district_id') ?>
+                <label class="tx-label">Address :</label>
+                <div class="tx-ctrl" style="display:flex; gap:20px; flex-wrap:wrap;">
+                    <div style="flex:1; min-width: 250px;">
+                        <h4 style="margin-top:0;margin-bottom:15px;font-size:16px;color:#2c3e50;border-bottom:1px solid #eef0f3;padding-bottom:8px;">Current Address</h4>
+                        
+                        <div style="margin-bottom:12px;">
+                            <label style="display:block;margin-bottom:5px;font-weight:500;color:#525c6b;"><span class="req">*</span> District :</label>
+                            <select class="tx-select" name="cu_dist_id" id="cu_dist_id">
+                                <?php foreach($district_list as $id => $dname) { ?>
+                                    <option value="<?php echo $id; ?>" <?php echo ($cu_dist_id == $id) ? 'selected' : ''; ?>><?php echo $dname; ?></option>
+                                <?php } ?>
+                            </select>
+                            <?php echo form_error('cu_dist_id') ?>
+                        </div>
+                        
+                        <div style="margin-bottom:12px;">
+                            <label style="display:block;margin-bottom:5px;font-weight:500;color:#525c6b;"><span class="req">*</span> Village/House :</label>
+                            <input type="text" class="tx-input" name="cu_village" id="cu_village" value="<?php echo $cu_village; ?>" />
+                            <?php echo form_error('cu_village') ?>
+                        </div>
+                        
+                        <div style="margin-bottom:12px;">
+                            <label style="display:block;margin-bottom:5px;font-weight:500;color:#525c6b;">Post Office :</label>
+                            <input type="text" class="tx-input" name="cu_postoffice" id="cu_postoffice" value="<?php echo $cu_postoffice; ?>" />
+                        </div>
+                        
+                        <div style="margin-bottom:12px;">
+                            <label style="display:block;margin-bottom:5px;font-weight:500;color:#525c6b;">Post Code :</label>
+                            <input type="text" class="tx-input" name="cu_postcode" id="cu_postcode" value="<?php echo $cu_postcode; ?>" />
+                        </div>
+
+                        <div style="margin-bottom:12px;">
+                            <label style="display:block;margin-bottom:5px;font-weight:500;color:#525c6b;">Police Station :</label>
+                            <input type="text" class="tx-input" name="cu_ps" id="cu_ps" value="<?php echo $cu_ps; ?>" />
+                        </div>
+                    </div>
+                    
+                    <div style="flex:1; min-width: 250px;">
+                        <h4 style="margin-top:0;margin-bottom:15px;font-size:16px;color:#2c3e50;border-bottom:1px solid #eef0f3;padding-bottom:8px;">Permanent Address</h4>
+                        
+                        <div style="margin-bottom:12px;">
+                            <label style="display:block;margin-bottom:5px;font-weight:500;color:#525c6b;">District :</label>
+                            <select class="tx-select" name="pa_dist_id" id="pa_dist_id">
+                                <?php foreach($district_list as $id => $dname) { ?>
+                                    <option value="<?php echo $id; ?>" <?php echo ($pa_dist_id == $id) ? 'selected' : ''; ?>><?php echo $dname; ?></option>
+                                <?php } ?>
+                            </select>
+                            <?php echo form_error('pa_dist_id') ?>
+                        </div>
+                        
+                        <div style="margin-bottom:12px;">
+                            <label style="display:block;margin-bottom:5px;font-weight:500;color:#525c6b;">Village/House :</label>
+                            <input type="text" class="tx-input" name="pa_village" id="pa_village" value="<?php echo $pa_village; ?>" />
+                            <?php echo form_error('pa_village') ?>
+                        </div>
+                        
+                        <div style="margin-bottom:12px;">
+                            <label style="display:block;margin-bottom:5px;font-weight:500;color:#525c6b;">Post Office :</label>
+                            <input type="text" class="tx-input" name="pa_postoffice" id="pa_postoffice" value="<?php echo $pa_postoffice; ?>" />
+                        </div>
+                        
+                        <div style="margin-bottom:12px;">
+                            <label style="display:block;margin-bottom:5px;font-weight:500;color:#525c6b;">Post Code :</label>
+                            <input type="text" class="tx-input" name="pa_postcode" id="pa_postcode" value="<?php echo $pa_postcode; ?>" />
+                        </div>
+
+                        <div style="margin-bottom:12px;">
+                            <label style="display:block;margin-bottom:5px;font-weight:500;color:#525c6b;">Police Station :</label>
+                            <input type="text" class="tx-input" name="pa_ps" id="pa_ps" value="<?php echo $pa_ps; ?>" />
+                        </div>
+                    </div>
                 </div>
             </div>
 

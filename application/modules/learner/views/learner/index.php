@@ -52,8 +52,8 @@
                             <th>Batch</th>
                             <th>Photo</th>
                             <th>Name</th>
+                            <th>Gender</th>
                             <th>Age</th>
-                            <th>District</th>
                             <th>Primary Mobile</th>
                             <th>Blood Group</th>
                             <th>Is Resident</th>
@@ -72,16 +72,14 @@
                                     <img src="<?php echo getPhoto($learner->photo ? 'uploads/learner/' . $learner->photo : ''); ?>" alt="Photo" style="width:50px;height:50px;object-fit:cover;border-radius:50%;">
                                 </td>
                                 <td><?php echo $learner->name; ?></td>
-                                <td><?php echo rand(18, 40); ?> years</td>
-                                <td><?php echo $learner->district_name; ?></td>
+                                <td><?php echo isset($learner->gender) ? $learner->gender : ''; ?></td>
+                                <td><?php echo rand(18, 40); ?> years</td>                                
                                 <td><?php echo $learner->primary_mobile; ?></td>
                                 <td><?php echo $learner->blood_group; ?></td>
                                 <td><?php echo $learner->is_resident; ?></td>
                                 <td><?php echo $learner->remarks; ?></td>
-                                <td width="200">
-                                    <?php
-                                    echo anchor(site_url(Backend_URL . 'learner/details/' . $learner->id), '<i class="fa fa-fw fa-external-link"></i>', 'class="btn btn-xs btn-success" title="View"');
-                                    // echo anchor(site_url(Backend_URL . 'learner/document/' . $learner->id), '<i class="fa fa-fw fa-file-text-o"></i>', 'class="btn btn-xs btn-info" title="Documents"');
+                                <td width="120">
+                                    <?php                                 
                                     echo anchor(site_url(Backend_URL . 'learner/print/' . $learner->id), '<i class="fa fa-fw fa-print"></i>', 'class="btn btn-xs btn-info" title="Print ID Card" target="_blank"');
                                     echo anchor(site_url(Backend_URL . 'learner/certificate/' . $learner->id), '<i class="fa fa-fw fa-file"></i>', 'class="btn btn-xs btn-info" title="Print Certificate" target="_blank"');
                                     echo anchor(site_url(Backend_URL . 'learner/update/' . $learner->id), '<i class="fa fa-fw fa-edit"></i>',  'class="btn btn-xs btn-warning" title="Edit"');

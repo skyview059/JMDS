@@ -69,11 +69,20 @@ class Learner extends Admin_controller{
 				'id' => $learner->id,
 				'batch_name' => $learner->batch_name,
 				'name' => $learner->name,
+				'gender' => $learner->gender,
 				'dob' => $learner->dob,
 				'nid' => $learner->nid,
 				'father' => $learner->father,
 				'mother' => $learner->mother,
-				'district_name' => $learner->district_name,
+				'cu_village' => isset($learner->cu_village) ? $learner->cu_village : '',
+				'cu_postoffice' => isset($learner->cu_postoffice) ? $learner->cu_postoffice : '',
+				'cu_postcode' => isset($learner->cu_postcode) ? $learner->cu_postcode : '',
+				'cu_ps' => isset($learner->cu_ps) ? $learner->cu_ps : '',
+				'cu_district_name' => isset($learner->district_name) ? $learner->district_name : '',
+				'pa_village' => isset($learner->pa_village) ? $learner->pa_village : '',
+				'pa_postoffice' => isset($learner->pa_postoffice) ? $learner->pa_postoffice : '',
+				'pa_postcode' => isset($learner->pa_postcode) ? $learner->pa_postcode : '',
+				'pa_ps' => isset($learner->pa_ps) ? $learner->pa_ps : '',
 				'primary_mobile' => $learner->primary_mobile,
 				'blood_group' => $learner->blood_group,
 				'second_contact_person' => $learner->second_contact_person,
@@ -111,12 +120,22 @@ class Learner extends Admin_controller{
 			'batch_id' => set_value('batch_id'),
 			'batch_list' => $batch_list,
 			'name' => set_value('name'),
+			'gender' => set_value('gender'),
 			'dob' => set_value('dob'),
 			'nid' => set_value('nid'),
 			'father' => set_value('father'),
 			'mother' => set_value('mother'),
-			'district_id' => set_value('district_id'),
 			'district_list' => $district_list,
+			'cu_village' => set_value('cu_village'),
+			'cu_postoffice' => set_value('cu_postoffice'),
+			'cu_postcode' => set_value('cu_postcode'),
+			'cu_ps' => set_value('cu_ps'),
+			'cu_dist_id' => set_value('cu_dist_id'),
+			'pa_village' => set_value('pa_village'),
+			'pa_postoffice' => set_value('pa_postoffice'),
+			'pa_postcode' => set_value('pa_postcode'),
+			'pa_ps' => set_value('pa_ps'),
+			'pa_dist_id' => set_value('pa_dist_id'),
 			'primary_mobile' => set_value('primary_mobile'),
 			'blood_group' => set_value('blood_group'),
 			'second_contact_person' => set_value('second_contact_person'),
@@ -137,11 +156,11 @@ class Learner extends Admin_controller{
             $data = [
 				'batch_id' => $this->input->post('batch_id',TRUE),
 				'name' => $this->input->post('name',TRUE),
+				'gender' => $this->input->post('gender',TRUE),
 				'dob' => $this->input->post('dob',TRUE) ? date('Y-m-d', strtotime($this->input->post('dob',TRUE))) : null,
 				'nid' => $this->input->post('nid',TRUE) ? $this->input->post('nid',TRUE) : null,
 				'father' => $this->input->post('father',TRUE),
 				'mother' => $this->input->post('mother',TRUE),
-				'district_id' => $this->input->post('district_id',TRUE),
 				'primary_mobile' => $this->input->post('primary_mobile',TRUE),
 				'blood_group' => $this->input->post('blood_group',TRUE),
 				'second_contact_person' => $this->input->post('second_contact_person',TRUE),
@@ -149,6 +168,19 @@ class Learner extends Admin_controller{
 				'is_resident' => $this->input->post('is_resident',TRUE),
 				'remarks' => $this->input->post('remarks',TRUE),
 			    ];
+
+            $address_data = [
+                'cu_village' => $this->input->post('cu_village', TRUE),
+                'cu_postoffice' => $this->input->post('cu_postoffice', TRUE),
+                'cu_postcode' => $this->input->post('cu_postcode', TRUE),
+                'cu_ps' => $this->input->post('cu_ps', TRUE),
+                'cu_dist_id' => $this->input->post('cu_dist_id', TRUE),
+                'pa_village' => $this->input->post('pa_village', TRUE),
+                'pa_postoffice' => $this->input->post('pa_postoffice', TRUE),
+                'pa_postcode' => $this->input->post('pa_postcode', TRUE),
+                'pa_ps' => $this->input->post('pa_ps', TRUE),
+                'pa_dist_id' => $this->input->post('pa_dist_id', TRUE) ?: null,
+            ];
 
             if (!empty($_FILES['photo']['name'])) {
                 $this->load->library('File');
@@ -164,7 +196,7 @@ class Learner extends Admin_controller{
                 }
             }
 
-            $this->Learner_model->insert($data);
+            $this->Learner_model->insert($data, $address_data);
             $this->session->set_flashdata('message', '<p class="ajax_success">Learner Added Successfully</p>');
             redirect(site_url( Backend_URL. 'learner'));
         }
@@ -194,12 +226,22 @@ class Learner extends Admin_controller{
 				'batch_id' => set_value('batch_id', $learner->batch_id),
 				'batch_list' => $batch_list,
 				'name' => set_value('name', $learner->name),
+				'gender' => set_value('gender', isset($learner->gender) ? $learner->gender : ''),
 				'dob' => set_value('dob', $learner->dob),
 				'nid' => set_value('nid', $learner->nid),
 				'father' => set_value('father', $learner->father),
 				'mother' => set_value('mother', $learner->mother),
-				'district_id' => set_value('district_id', $learner->district_id),
-				'district_list' => $district_list,				
+				'district_list' => $district_list,
+				'cu_village' => set_value('cu_village', isset($learner->cu_village) ? $learner->cu_village : ''),
+				'cu_postoffice' => set_value('cu_postoffice', isset($learner->cu_postoffice) ? $learner->cu_postoffice : ''),
+				'cu_postcode' => set_value('cu_postcode', isset($learner->cu_postcode) ? $learner->cu_postcode : ''),
+				'cu_ps' => set_value('cu_ps', isset($learner->cu_ps) ? $learner->cu_ps : ''),
+				'cu_dist_id' => set_value('cu_dist_id', isset($learner->cu_dist_id) ? $learner->cu_dist_id : ''),
+				'pa_village' => set_value('pa_village', isset($learner->pa_village) ? $learner->pa_village : ''),
+				'pa_postoffice' => set_value('pa_postoffice', isset($learner->pa_postoffice) ? $learner->pa_postoffice : ''),
+				'pa_postcode' => set_value('pa_postcode', isset($learner->pa_postcode) ? $learner->pa_postcode : ''),
+				'pa_ps' => set_value('pa_ps', isset($learner->pa_ps) ? $learner->pa_ps : ''),
+				'pa_dist_id' => set_value('pa_dist_id', isset($learner->pa_dist_id) ? $learner->pa_dist_id : ''),
 				'primary_mobile' => set_value('primary_mobile', $learner->primary_mobile),
 				'blood_group' => set_value('blood_group', $learner->blood_group),
 				'second_contact_person' => set_value('second_contact_person', $learner->second_contact_person),
@@ -227,11 +269,11 @@ class Learner extends Admin_controller{
             $data = [
 				'batch_id' => $this->input->post('batch_id',TRUE),
 				'name' => $this->input->post('name',TRUE),
+				'gender' => $this->input->post('gender',TRUE),
 				'dob' => $this->input->post('dob',TRUE) ? date('Y-m-d', strtotime($this->input->post('dob',TRUE))) : null,
 				'nid' => $this->input->post('nid',TRUE) ? $this->input->post('nid',TRUE) : null,
 				'father' => $this->input->post('father',TRUE),
 				'mother' => $this->input->post('mother',TRUE),
-				'district_id' => $this->input->post('district_id',TRUE),
 				'primary_mobile' => $this->input->post('primary_mobile',TRUE),
 				'blood_group' => $this->input->post('blood_group',TRUE),
 				'second_contact_person' => $this->input->post('second_contact_person',TRUE),
@@ -239,6 +281,19 @@ class Learner extends Admin_controller{
 				'is_resident' => $this->input->post('is_resident',TRUE),
 				'remarks' => $this->input->post('remarks',TRUE),
 		    ];
+
+            $address_data = [
+                'cu_village' => $this->input->post('cu_village', TRUE),
+                'cu_postoffice' => $this->input->post('cu_postoffice', TRUE),
+                'cu_postcode' => $this->input->post('cu_postcode', TRUE),
+                'cu_ps' => $this->input->post('cu_ps', TRUE),
+                'cu_dist_id' => $this->input->post('cu_dist_id', TRUE),
+                'pa_village' => $this->input->post('pa_village', TRUE),
+                'pa_postoffice' => $this->input->post('pa_postoffice', TRUE),
+                'pa_postcode' => $this->input->post('pa_postcode', TRUE),
+                'pa_ps' => $this->input->post('pa_ps', TRUE),
+                'pa_dist_id' => $this->input->post('pa_dist_id', TRUE) ?: null,
+            ];
 
             if (!empty($_FILES['photo']['name'])) {
                 $this->load->library('File');
@@ -260,7 +315,7 @@ class Learner extends Admin_controller{
                 }
             }
 
-            $this->Learner_model->update($id, $data);
+            $this->Learner_model->update($id, $data, $address_data);
             $this->session->set_flashdata('message', '<p class="ajax_success">Learner Updated Successlly</p>');
             redirect(site_url( Backend_URL. 'learner/update/'. $id ));
         }
@@ -275,11 +330,12 @@ class Learner extends Admin_controller{
 				'id' => $learner->id,
 				'batch_id' => $learner->batch_id,
 				'name' => $learner->name,
+				'gender' => $learner->gender,
 				'dob' => $learner->dob,
 				'nid' => $learner->nid,
 				'father' => $learner->father,
 				'mother' => $learner->mother,
-				'district_id' => $learner->district_id,
+				'cu_district_name' => isset($learner->district_name) ? $learner->district_name : '',
 				'primary_mobile' => $learner->primary_mobile,
 				'blood_group' => $learner->blood_group,
 				'second_contact_person' => $learner->second_contact_person,
@@ -424,11 +480,13 @@ class Learner extends Admin_controller{
     public function _rules(){
 		$this->form_validation->set_rules('batch_id', 'batch id', 'trim|required|numeric');
 		$this->form_validation->set_rules('name', 'name', 'trim|required');
+		$this->form_validation->set_rules('gender', 'gender', 'trim');
 		$this->form_validation->set_rules('dob', 'dob', 'trim');
 		$this->form_validation->set_rules('nid', 'nid', 'trim|numeric');
 		$this->form_validation->set_rules('father', 'father', 'trim');
 		$this->form_validation->set_rules('mother', 'mother', 'trim');
-		$this->form_validation->set_rules('district_id', 'District', 'trim|required|numeric');
+		$this->form_validation->set_rules('cu_village', 'Current Village', 'trim|required');
+		$this->form_validation->set_rules('cu_dist_id', 'Current District', 'trim|required|numeric');
 		$this->form_validation->set_rules('primary_mobile', 'primary mobile', 'trim|required');
 		$this->form_validation->set_rules('blood_group', 'blood group', 'trim');
 		$this->form_validation->set_rules('second_contact_person', 'second contact person', 'trim');
