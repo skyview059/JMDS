@@ -3,7 +3,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 
 class Learner_model extends Fm_model{
-
     public $table = 'learners';
     public $id = 'id';
     public $order = 'DESC';
@@ -13,7 +12,7 @@ class Learner_model extends Fm_model{
     }    
     
     // get total rows
-    function total_rows($q = NULL, $batch_id = NULL) {    
+    function total_rows($q = NULL, $batch_id = NULL, $district_id = NULL, $is_resident = NULL) {    
         if($q){
             $this->db->group_start();
         	$this->db->like('id', $q);
@@ -34,6 +33,14 @@ class Learner_model extends Fm_model{
         if($batch_id){
             $this->db->where('batch_id', $batch_id);
         }
+        
+        if($district_id){
+            $this->db->where('district_id', $district_id);
+        }
+        
+        if($is_resident){
+            $this->db->where('is_resident', $is_resident);
+        }
 
 		$this->db->from($this->table);
 
@@ -48,7 +55,7 @@ class Learner_model extends Fm_model{
         $this->db->where('learners.'.$this->id, $id);
         return $this->db->get($this->table)->row();
     }
-    function get_limit_data($limit, $start = 0, $q = NULL, $batch_id = NULL) {
+    function get_limit_data($limit, $start = 0, $q = NULL, $batch_id = NULL, $district_id = NULL, $is_resident = NULL) {
         $this->db->select('learners.*, batches.name as batch_name,  districts.bn_name as district_name');
         $this->db->join('batches', 'batches.id = learners.batch_id', 'left');   
         $this->db->join('districts', 'districts.id = learners.district_id', 'left');
@@ -74,8 +81,25 @@ class Learner_model extends Fm_model{
         if($batch_id){
             $this->db->where('learners.batch_id', $batch_id);
         }
+        
+        if($district_id){
+            $this->db->where('learners.district_id', $district_id);
+        }
+        
+        if($is_resident){
+            $this->db->where('learners.is_resident', $is_resident);
+        }
 
 		$this->db->limit($limit, $start);
+        return $this->db->get($this->table)->result();
+    }
+    
+    // get all data
+    function get_all() {
+        $this->db->select('learners.*, batches.name as batch_name, districts.bn_name as district_name');
+        $this->db->join('batches', 'batches.id = learners.batch_id', 'left');
+        $this->db->join('districts', 'districts.id = learners.district_id', 'left');
+        $this->db->order_by('learners.'.$this->id, $this->order);
         return $this->db->get($this->table)->result();
     }
     

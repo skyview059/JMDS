@@ -17,6 +17,14 @@
                             <label>Batch:</label>
                             <?php echo form_dropdown('batch_id', $batch_list, $batch_id, 'class="form-control input-sm"'); ?>
                         </div>
+                        <div class="form-group">
+                            <label>District:</label>
+                            <?php echo form_dropdown('district_id', $district_list, $district_id, 'class="form-control input-sm"'); ?>
+                        </div>
+                        <div class="form-group">
+                            <label>Resident:</label>
+                            <?php echo form_dropdown('is_resident', $resident_list, $is_resident, 'class="form-control input-sm"'); ?>
+                        </div>
                         <button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-filter"></i> Filter</button>
                         <a href="<?php echo site_url(Backend_URL . 'learner'); ?>" class="btn btn-sm btn-default">Reset</a>
                     </form>
@@ -62,9 +70,9 @@
                                 <td><?php echo $learner->batch_name; ?></td>                                
                                 <td>
                                     <?php if ($learner->photo && file_exists('./uploads/learner/' . $learner->photo)) { ?>
-                                        <img src="<?php echo base_url('uploads/learner/' . $learner->photo); ?>" alt="Photo" style="width:50px;height:50px;object-fit:cover;border-radius:4px;">
+                                        <img src="<?php echo base_url('uploads/learner/' . $learner->photo); ?>" alt="Photo" style="width:50px;height:50px;object-fit:cover;border-radius:4px;border-radius: 50%;">
                                     <?php } else { ?>
-                                        <img src="<?php echo base_url('assets/admin/dist/img/avatar.png'); ?>" alt="Default" style="width:50px;height:50px;object-fit:cover;border-radius:4px;">
+                                        <img src="<?php echo base_url('assets/admin/dist/img/avatar.png'); ?>" alt="Default" style="width:50px;height:50px;object-fit:cover;border-radius:4px;border-radius: 50%;">
                                     <?php } ?>
                                 </td>
                                 <td><?php echo $learner->name; ?></td>
@@ -74,10 +82,12 @@
                                 <td><?php echo $learner->blood_group; ?></td>
                                 <td><?php echo $learner->is_resident; ?></td>
                                 <td><?php echo $learner->remarks; ?></td>
-                                <td>
+                                <td width="200">
                                     <?php
                                     echo anchor(site_url(Backend_URL . 'learner/details/' . $learner->id), '<i class="fa fa-fw fa-external-link"></i>', 'class="btn btn-xs btn-success" title="View"');
-                                    echo anchor(site_url(Backend_URL . 'learner/document/' . $learner->id), '<i class="fa fa-fw fa-file-text-o"></i>', 'class="btn btn-xs btn-info" title="Documents"');
+                                    // echo anchor(site_url(Backend_URL . 'learner/document/' . $learner->id), '<i class="fa fa-fw fa-file-text-o"></i>', 'class="btn btn-xs btn-info" title="Documents"');
+                                    echo anchor(site_url(Backend_URL . 'learner/print/' . $learner->id), '<i class="fa fa-fw fa-print"></i>', 'class="btn btn-xs btn-info" title="Print ID Card" target="_blank"');
+                                    echo anchor(site_url(Backend_URL . 'learner/certificate/' . $learner->id), '<i class="fa fa-fw fa-file"></i>', 'class="btn btn-xs btn-info" title="Print Certificate" target="_blank"');
                                     echo anchor(site_url(Backend_URL . 'learner/update/' . $learner->id), '<i class="fa fa-fw fa-edit"></i>',  'class="btn btn-xs btn-warning" title="Edit"');
                                     echo anchor(site_url(Backend_URL . 'learner/delete/' . $learner->id), '<i class="fa fa-fw fa-times"></i>', 'class="btn btn-xs btn-danger" title="Delete"');
                                     ?>
@@ -92,7 +102,7 @@
             <div class="row">
                 <div class="col-md-6">
                     <span class="btn btn-success">Total Learner: <?php echo $total_rows ?></span>
-
+                    <a href="<?php echo site_url(Backend_URL . 'learner/print'); ?>" class="btn btn-sm btn-primary" target="_blank"><i class="fa fa-print"></i> Print All ID Card</a>
                 </div>
                 <div class="col-md-6 text-right">
                     <?php echo $pagination ?>
