@@ -169,7 +169,7 @@
                         <div class="tx-up-ico"><i class="fa fa-cloud-upload"></i></div>
                         <div class="tx-dz-txt">Click to upload photo</div>
                         <input type="file" name="photo" id="photo_input" accept="image/*" onchange="previewImage(this)">
-                        <img id="photo_preview" src="#" alt="Preview">
+                        <img id="photo_preview" src="<?php echo getPhoto(''); ?>" alt="Preview" style="display:none;">
                     </div>
                     <?php echo form_error('photo') ?>
                 </div>

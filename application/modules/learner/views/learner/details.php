@@ -33,12 +33,9 @@
 	    <tr>
             <td width="150">Photo</td>
             <td width="5">:</td>
-            <td>
-                <?php if ($photo && file_exists('./uploads/learner/' . $photo)) { ?>
-                    <img src="<?php echo base_url('uploads/learner/' . $photo); ?>" alt="Photo" style="max-width:200px;border-radius:8px;box-shadow:0 2px 10px rgba(0,0,0,0.1);">
-                <?php } else { ?>
-                    <img src="<?php echo base_url('assets/admin/dist/img/avatar.png'); ?>" alt="Default" style="max-width:100px;border-radius:8px;">
-                <?php } ?>
+            <td>                
+                <img src="<?php echo getPhoto($photo ? 'uploads/learner/' . $photo : ''); ?>" alt="Photo" style="max-width:200px;border-radius:8px;box-shadow:0 2px 10px rgba(0,0,0,0.1);">
+                
             </td>
         </tr>
 	    <tr><td width="150">Remarks</td><td width="5">:</td><td><?php echo $remarks; ?></td></tr>

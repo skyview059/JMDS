@@ -137,7 +137,7 @@ class Learner extends Admin_controller{
             $data = [
 				'batch_id' => $this->input->post('batch_id',TRUE),
 				'name' => $this->input->post('name',TRUE),
-				'dob' => $this->input->post('dob',TRUE),
+				'dob' => $this->input->post('dob',TRUE) ? date('Y-m-d', strtotime($this->input->post('dob',TRUE))) : null,
 				'nid' => $this->input->post('nid',TRUE) ? $this->input->post('nid',TRUE) : null,
 				'father' => $this->input->post('father',TRUE),
 				'mother' => $this->input->post('mother',TRUE),
@@ -151,11 +151,14 @@ class Learner extends Admin_controller{
 			    ];
 
             if (!empty($_FILES['photo']['name'])) {
-                $upload = $this->_do_upload();
-                if ($upload['status']) {
-                    $data['photo'] = $upload['file_name'];
+                $this->load->library('File');
+                $path = "uploads/learner/" . date('Y/m/');
+                $photo = File::uploadPhoto($_FILES['photo'], $path);
+                if (!empty($photo)) {
+                    $photo = str_replace('\\', '/', $photo);
+                    $data['photo'] = str_replace('uploads/learner/', '', $photo);
                 } else {
-                    $this->session->set_flashdata('message', '<p class="ajax_error">'.$upload['error'].'</p>');
+                    $this->session->set_flashdata('message', '<p class="ajax_error">Photo upload failed</p>');
                     $this->create();
                     return;
                 }
@@ -224,7 +227,7 @@ class Learner extends Admin_controller{
             $data = [
 				'batch_id' => $this->input->post('batch_id',TRUE),
 				'name' => $this->input->post('name',TRUE),
-				'dob' => $this->input->post('dob',TRUE),
+				'dob' => $this->input->post('dob',TRUE) ? date('Y-m-d', strtotime($this->input->post('dob',TRUE))) : null,
 				'nid' => $this->input->post('nid',TRUE) ? $this->input->post('nid',TRUE) : null,
 				'father' => $this->input->post('father',TRUE),
 				'mother' => $this->input->post('mother',TRUE),
@@ -238,9 +241,12 @@ class Learner extends Admin_controller{
 		    ];
 
             if (!empty($_FILES['photo']['name'])) {
-                $upload = $this->_do_upload();
-                if ($upload['status']) {
-                    $data['photo'] = $upload['file_name'];
+                $this->load->library('File');
+                $path = "uploads/learner/" . date('Y/m/');
+                $photo = File::uploadPhoto($_FILES['photo'], $path);
+                if (!empty($photo)) {
+                    $photo = str_replace('\\', '/', $photo);
+                    $data['photo'] = str_replace('uploads/learner/', '', $photo);
                     
                     // Delete old photo
                     $learner = $this->Learner_model->get_by_id($id);
@@ -248,7 +254,7 @@ class Learner extends Admin_controller{
                         unlink('./uploads/learner/' . $learner->photo);
                     }
                 } else {
-                    $this->session->set_flashdata('message', '<p class="ajax_error">'.$upload['error'].'</p>');
+                    $this->session->set_flashdata('message', '<p class="ajax_error">Photo upload failed</p>');
                     $this->update($id);
                     return;
                 }
@@ -260,22 +266,7 @@ class Learner extends Admin_controller{
         }
     }
 
-    private function _do_upload()
-    {
-        $config['upload_path']          = './uploads/learner/';
-        $config['allowed_types']        = 'gif|jpg|png|jpeg';
-        $config['max_size']             = 2048;
-        $config['file_name']            = 'learner_' . time();
 
-        $this->load->library('upload', $config);
-
-        if (!$this->upload->do_upload('photo')) {
-            return array('status' => FALSE, 'error' => $this->upload->display_errors());
-        } else {
-            $data = $this->upload->data();
-            return array('status' => TRUE, 'file_name' => $data['file_name']);
-        }
-    }
 
     public function delete($id){
         $learner = $this->Learner_model->get_by_id($id);

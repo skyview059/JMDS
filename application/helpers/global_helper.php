@@ -555,3 +555,14 @@ function getBloodGroupOptions($selected = '') {
     }
     return $options;
 }
+
+function getPhoto($photo = '')
+{
+    $filter   = trim_fk($photo);
+    $filename = dirname(APPPATH) . "/{$filter}";
+    if (!empty($filter) && file_exists($filename)) {
+        return site_url(stripslashes($filter));
+    } else {
+        return site_url('assets/admin/dist/img/avatar.png');
+    }
+}

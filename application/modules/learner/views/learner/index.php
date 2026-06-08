@@ -69,11 +69,7 @@
                                 <td><?php echo ++$start ?></td>
                                 <td><?php echo $learner->batch_name; ?></td>                                
                                 <td>
-                                    <?php if ($learner->photo && file_exists('./uploads/learner/' . $learner->photo)) { ?>
-                                        <img src="<?php echo base_url('uploads/learner/' . $learner->photo); ?>" alt="Photo" style="width:50px;height:50px;object-fit:cover;border-radius:4px;border-radius: 50%;">
-                                    <?php } else { ?>
-                                        <img src="<?php echo base_url('assets/admin/dist/img/avatar.png'); ?>" alt="Default" style="width:50px;height:50px;object-fit:cover;border-radius:4px;border-radius: 50%;">
-                                    <?php } ?>
+                                    <img src="<?php echo getPhoto($learner->photo ? 'uploads/learner/' . $learner->photo : ''); ?>" alt="Photo" style="width:50px;height:50px;object-fit:cover;border-radius:50%;">
                                 </td>
                                 <td><?php echo $learner->name; ?></td>
                                 <td><?php echo rand(18, 40); ?> years</td>

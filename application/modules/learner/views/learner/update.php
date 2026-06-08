@@ -168,14 +168,14 @@
                 <label class="tx-label">Photo :</label>
                 <div class="tx-ctrl">
                     <div class="tx-dropzone" id="photo_dropzone">
-                        <?php if ($photo && file_exists('./uploads/learner/' . $photo)) { ?>
-                            <img id="photo_preview" src="<?php echo base_url('uploads/learner/' . $photo); ?>" alt="Preview">
+                        <?php if ($photo) { ?>
+                            <img id="photo_preview" src="<?php echo getPhoto('uploads/learner/' . $photo); ?>" alt="Preview">
                             <div class="tx-up-ico" style="display:none;"><i class="fa fa-cloud-upload"></i></div>
                             <div class="tx-dz-txt" style="display:none;">Click to change photo</div>
                         <?php } else { ?>
                             <div class="tx-up-ico"><i class="fa fa-cloud-upload"></i></div>
                             <div class="tx-dz-txt">Click to upload photo</div>
-                            <img id="photo_preview" src="#" alt="Preview" style="display:none;">
+                            <img id="photo_preview" src="<?php echo getPhoto(''); ?>" alt="Preview" style="display:none;">
                         <?php } ?>
                         <input type="file" name="photo" id="photo_input" accept="image/*" onchange="previewImage(this)">
                     </div>
