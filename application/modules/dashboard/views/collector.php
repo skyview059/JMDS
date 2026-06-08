@@ -11,6 +11,7 @@
 </section>
 
 <section class="content">
+    <?php echo $this->session->flashdata('message'); ?>
     <div class="row">
         <div class="col-md-6">
             <div class="box">

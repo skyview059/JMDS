@@ -5,6 +5,7 @@ $route['admin']                 = 'dashboard';
 $route['login']                 = 'auth/login';
 $route['stmt/(:num)']           = 'stmt/index/$1';
 $route['logout']                = 'auth/logout';
+$route['cache_clear']           = 'dashboard/cache_clear';
 $route['404_override']          = 'tool/not_found';
 
 $route['translate_uri_dashes'] 	= FALSE;
