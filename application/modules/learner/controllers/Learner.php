@@ -7,7 +7,7 @@
 class Learner extends Admin_controller{
     function __construct(){
         parent::__construct();
-        $this->load->model('Learner_model');
+        $this->load->model('learner/Learner_model');
         $this->load->model('batch/Batch_model');
         $this->load->model('district/District_model');
         $this->load->helper('learner');
@@ -17,6 +17,8 @@ class Learner extends Admin_controller{
     public function index(){
         $q = urldecode_fk($this->input->get('q', TRUE));
         $batch_id = $this->input->get('batch_id', TRUE);
+        $district_id = $this->input->get('district_id', TRUE);
+        $is_resident = $this->input->get('is_resident', TRUE);
         $start = intval($this->input->get('start'));
         
         $config['base_url'] = build_pagination_url( Backend_URL . 'learner', 'start');
@@ -24,8 +26,8 @@ class Learner extends Admin_controller{
 
         $config['per_page'] = 25;
         $config['page_query_string'] = TRUE;
-        $config['total_rows'] = $this->Learner_model->total_rows($q, $batch_id);
-        $learners = $this->Learner_model->get_limit_data($config['per_page'], $start, $q, $batch_id);
+        $config['total_rows'] = $this->Learner_model->total_rows($q, $batch_id, $district_id, $is_resident);
+        $learners = $this->Learner_model->get_limit_data($config['per_page'], $start, $q, $batch_id, $district_id, $is_resident);
 
         $this->load->library('pagination');
         $this->pagination->initialize($config);
@@ -35,12 +37,24 @@ class Learner extends Admin_controller{
         foreach($batches as $batch) {
             $batch_list[$batch->id] = $batch->name;
         }
+        
+        $districts = $this->District_model->get_all();
+        $district_list = array('' => '-- Select District --');
+        foreach($districts as $district) {
+            $district_list[$district->id] = $district->bn_name;
+        }
+        
+        $resident_list = array('' => '-- Select Resident --', 'Yes' => 'Yes', 'No' => 'No');
 
         $data = [
             'learners' => $learners,
             'q' => $q,
             'batch_id' => $batch_id,
             'batch_list' => $batch_list,
+            'district_id' => $district_id,
+            'district_list' => $district_list,
+            'is_resident' => $is_resident,
+            'resident_list' => $resident_list,
             'pagination' => $this->pagination->create_links(),
             'total_rows' => $config['total_rows'],
             'start' => $start,
@@ -386,6 +400,34 @@ class Learner extends Admin_controller{
             $this->session->set_flashdata('message', '<p class="ajax_error">Document Not Found</p>');
         }
         redirect(site_url(Backend_URL . 'learner/document/' . $id));
+    }
+
+    public function print($id = null) {
+        if ($id) {
+            $learner = $this->Learner_model->get_by_id($id);
+            if ($learner) {
+                $data = ['learner' => $learner];
+                $this->load->view('learner/learner/print_single', $data);
+            } else {
+                $this->session->set_flashdata('message', '<p class="ajax_error">Learner Not Found</p>');
+                redirect(site_url(Backend_URL . 'learner'));
+            }
+        } else {
+            $learners = $this->Learner_model->get_all();
+            $data = ['learners' => $learners];
+            $this->load->view('learner/learner/print_all', $data);
+        }
+    }
+
+    public function certificate($id) {
+        $learner = $this->Learner_model->get_by_id($id);
+        if ($learner) {
+            $data = ['learner' => $learner];
+            $this->load->view('learner/learner/certificate', $data);
+        } else {
+            $this->session->set_flashdata('message', '<p class="ajax_error">Learner Not Found</p>');
+            redirect(site_url(Backend_URL . 'learner'));
+        }
     }
 
     public function _rules(){
