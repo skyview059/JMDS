@@ -84,7 +84,7 @@ class Auth extends MX_Controller {
         $this->session->unset_userdata('expire'); 
         $this->session->unset_userdata('secure');                        
 
-        $this->load->view('auth/logout');
+        redirect(site_url('login'));
     }
 
     public function login() {

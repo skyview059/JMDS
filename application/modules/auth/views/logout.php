@@ -15,7 +15,7 @@
         <div class="row">
             <div class="col-md-4 col-md-offset-4">
                 <h1><?php echo getSettingItem( 'comName' ) ?></h1>                
-                <img class="img-responsive img-thumbnail text-center" src="assets/theme/images/logout.jpg" alt="Image"/>
+                
                 <p><br/>You are successfully log-out.</p>
                 <p><a href="login" class="btn btn-primary">Click here to Log-in again</a></p>
             </div>

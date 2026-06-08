@@ -13,6 +13,7 @@
 <?php load_module_asset('dashboard', 'css'); ?>
 
 <section class="content">
+    <?php echo $this->session->flashdata('message'); ?>
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
 

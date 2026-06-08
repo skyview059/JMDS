@@ -116,6 +116,12 @@
                     <div class="navbar-custom-menu">
                         <ul class="nav navbar-nav">                                                        
                             <li>
+                                <a href="cache_clear">
+                                    <i class="fa fa-refresh"></i>
+                                    Cache Clear
+                                </a>                                
+                            </li>                                                                  
+                            <li>
                                 <a href="learner/create">
                                     <i class="fa fa-edit"></i>
                                     Learner / Student Registration 

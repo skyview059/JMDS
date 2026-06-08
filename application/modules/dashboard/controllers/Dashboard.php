@@ -40,6 +40,12 @@ class Dashboard extends Admin_controller {
         echo json_encode($data);
     }
 
+    public function cache_clear() {
+        $this->db->cache_delete_all();
+        $this->session->set_flashdata('message', '<p class="ajax_success">Cache cleared successfully</p>');
+        redirect(site_url('dashboard'));
+    }
+
     private function collectors_collections( $setDate ){
 
         $sql_dr = $this->getTransAmount( $setDate, 'Dr' );  
