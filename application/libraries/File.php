@@ -56,6 +56,7 @@ class File
             return stripslashes($photo);
         } else {
             return 'uploads/no-photo.jpg';
+            // assets/admin/dist/img/avatar.png
         }
     }
 
