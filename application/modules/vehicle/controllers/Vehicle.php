@@ -10,6 +10,7 @@ class Vehicle extends Admin_controller{
         $this->load->model('Vehicle_model');
         $this->load->helper('vehicle');
         $this->load->library('form_validation');
+        $this->load->library('File');
     }
 
     public function index(){
@@ -79,12 +80,26 @@ class Vehicle extends Admin_controller{
         } else {
             $data = [
                 'name' => $this->input->post('name',TRUE),
-				'photo' => $this->input->post('photo',TRUE),
+				'photo' => '',
 				'number' => $this->input->post('number',TRUE),
 				'purchased_date' => $this->input->post('purchased_date',TRUE) ? $this->input->post('purchased_date',TRUE) : null,
 				'amount' => $this->input->post('amount',TRUE) ? $this->input->post('amount',TRUE) : null,
 				'remark' => $this->input->post('remark',TRUE),
-			    ];
+		    ];
+
+            if (!empty($_FILES['photo']['name'])) {
+               
+                $path = "uploads/vehicle/" . date('Y/m/');
+                $photo = File::uploadPhoto($_FILES['photo'], $path);
+                if (!empty($photo)) {
+                    $photo = str_replace('\\', '/', $photo);
+                    $data['photo'] = str_replace('uploads/vehicle/', '', $photo);
+                } else {
+                    $this->session->set_flashdata('message', '<p class="ajax_error">Photo upload failed</p>');
+                    $this->create();
+                    return;
+                }
+            }
 
             $this->Vehicle_model->insert($data);
             $this->session->set_flashdata('message', '<p class="ajax_success">Vehicle Added Successfully</p>');
@@ -119,16 +134,33 @@ class Vehicle extends Admin_controller{
 
         $id = $this->input->post('id', TRUE);
         if ($this->form_validation->run() == FALSE) {
-            $this->update( $id );
+            $this->update($id);
         } else {
+            $current_photo = $this->input->post('photo', TRUE);
             $data = [
 				'name' => $this->input->post('name',TRUE),
-				'photo' => $this->input->post('photo',TRUE),
+				'photo' => $current_photo,
 				'number' => $this->input->post('number',TRUE),
 				'purchased_date' => $this->input->post('purchased_date',TRUE) ? $this->input->post('purchased_date',TRUE) : null,
 				'amount' => $this->input->post('amount',TRUE) ? $this->input->post('amount',TRUE) : null,
 				'remark' => $this->input->post('remark',TRUE),
 		    ];
+
+            if (!empty($_FILES['photo']['name'])) {
+                $path = "uploads/vehicle/" . date('Y/m/');
+                $photo = File::uploadPhoto($_FILES['photo'], $path);
+                if (!empty($photo)) {
+                    $photo = str_replace('\\', '/', $photo);
+                    $data['photo'] = str_replace('uploads/vehicle/', '', $photo);
+                    if ($current_photo && file_exists('./uploads/vehicle/' . $current_photo)) {
+                        unlink('./uploads/vehicle/' . $current_photo);
+                    }
+                } else {
+                    $this->session->set_flashdata('message', '<p class="ajax_error">Photo upload failed</p>');
+                    $this->update($id);
+                    return;
+                }
+            }
 
             $this->Vehicle_model->update($id, $data);
             $this->session->set_flashdata('message', '<p class="ajax_success">Vehicle Updated Successlly</p>');
@@ -160,6 +192,9 @@ class Vehicle extends Admin_controller{
         $vehicle = $this->Vehicle_model->get_by_id($id);
 
         if ($vehicle) {
+            if ($vehicle->photo && file_exists('./uploads/vehicle/' . $vehicle->photo)) {
+                unlink('./uploads/vehicle/' . $vehicle->photo);
+            }
             $this->Vehicle_model->delete($id);
             $this->session->set_flashdata('message', '<p class="ajax_success">Vehicle Deleted Successfully</p>');
             redirect(site_url( Backend_URL. 'vehicle'));

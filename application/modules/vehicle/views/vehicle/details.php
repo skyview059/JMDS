@@ -18,7 +18,7 @@
             <?php echo $this->session->flashdata('message'); ?>
         </div>
         <table class="table table-striped">
-	    <tr><td width="150">Photo</td><td width="5">:</td><td><?php echo $photo; ?></td></tr>
+	    <tr><td width="150">Photo</td><td width="5">:</td><td><img src="<?php echo getPhoto($photo ? 'uploads/vehicle/' . $photo : ''); ?>" alt="Vehicle Photo" style="max-width:250px;max-height:250px;object-fit:cover;" /></td></tr>
 	    <tr><td width="150">Number</td><td width="5">:</td><td><?php echo $number; ?></td></tr>
 	    <tr><td width="150">Purchased Date</td><td width="5">:</td><td><?php echo bdDateFormat($purchased_date); ?></td></tr>
 	    <tr><td width="150">Amount</td><td width="5">:</td><td><?php echo $amount; ?></td></tr>

@@ -185,7 +185,7 @@ class Learner extends Admin_controller{
 				'second_contact_mobile' => $this->input->post('second_contact_mobile',TRUE),
 				'is_resident' => $this->input->post('is_resident',TRUE),
 				'remarks' => $this->input->post('remarks',TRUE),
-			    ];
+            ];
 
             $address_data = [
                 'cu_village' => $this->input->post('cu_village', TRUE),

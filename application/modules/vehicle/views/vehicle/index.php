@@ -47,7 +47,9 @@
                             <tr>
                                 <td><?php echo ++$start ?></td>
                                 <td><?php echo $vehicle->name; ?></td>
-                                <td><?php echo $vehicle->photo; ?></td>
+                                <td>
+                                    <img src="<?php echo getPhoto($vehicle->photo ? 'uploads/vehicle/' . $vehicle->photo : ''); ?>" alt="Vehicle Image" style="width:50px;height:50px;object-fit:cover;border-radius:50%;" />
+                                </td>
                                 <td><?php echo $vehicle->number; ?></td>
                                 <td><?php echo is_null($vehicle->purchased_date) ? 'N/A' : bdDateFormat($vehicle->purchased_date); ?></td>
                                 <td><?php echo $vehicle->amount; ?></td>
