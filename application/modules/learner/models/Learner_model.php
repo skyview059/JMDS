@@ -12,23 +12,23 @@ class Learner_model extends Fm_model{
     }    
     
     // get total rows
-    function total_rows($q = NULL, $batch_id = NULL, $district_id = NULL, $is_resident = NULL) {    
+function total_rows($q = NULL, $batch_id = NULL, $district_id = NULL, $is_resident = NULL, $gender = NULL, $blood_group = NULL) {    
         if($q){
             $this->db->group_start();
-        	$this->db->like('learners.id', $q);
-			$this->db->or_like('learners.batch_id', $q);
-			$this->db->or_like('learners.name', $q);
-			$this->db->or_like('learners.dob', $q);
-			$this->db->or_like('learners.nid', $q);
-			$this->db->or_like('learners.father', $q);
-			$this->db->or_like('learners.mother', $q);
-			$this->db->or_like('learner_addresses.cu_dist_id', $q);
-			$this->db->or_like('learners.primary_mobile', $q);
-			$this->db->or_like('learners.blood_group', $q);
-			$this->db->or_like('learners.is_resident', $q);
-			$this->db->or_like('learners.remarks', $q);
+            $this->db->like('learners.id', $q);
+            $this->db->or_like('learners.batch_id', $q);
+            $this->db->or_like('learners.name', $q);
+            $this->db->or_like('learners.dob', $q);
+            $this->db->or_like('learners.nid', $q);
+            $this->db->or_like('learners.father', $q);
+            $this->db->or_like('learners.mother', $q);
+            $this->db->or_like('learner_addresses.cu_dist_id', $q);
+            $this->db->or_like('learners.primary_mobile', $q);
+            $this->db->or_like('learners.blood_group', $q);
+            $this->db->or_like('learners.is_resident', $q);
+            $this->db->or_like('learners.remarks', $q);
             $this->db->group_end();
-		}
+        }
 
         if($batch_id){
             $this->db->where('learners.batch_id', $batch_id);
@@ -40,6 +40,14 @@ class Learner_model extends Fm_model{
         
         if($is_resident){
             $this->db->where('learners.is_resident', $is_resident);
+        }
+        
+        if($gender){
+            $this->db->where('learners.gender', $gender);
+        }
+        
+        if($blood_group){
+            $this->db->where('learners.blood_group', $blood_group);
         }
 
 		$this->db->from($this->table);
@@ -57,7 +65,7 @@ class Learner_model extends Fm_model{
         $this->db->where('learners.'.$this->id, $id);
         return $this->db->get($this->table)->row();
     }
-    function get_limit_data($limit, $start = 0, $q = NULL, $batch_id = NULL, $district_id = NULL, $is_resident = NULL) {
+function get_limit_data($limit, $start = 0, $q = NULL, $batch_id = NULL, $district_id = NULL, $is_resident = NULL, $gender = NULL, $blood_group = NULL) {
         $this->db->select('learners.*, batches.name as batch_name, cu_dist.bn_name as district_name');
         $this->db->join('batches', 'batches.id = learners.batch_id', 'left');   
         $this->db->join('learner_addresses', 'learner_addresses.learner_id = learners.id', 'left');
@@ -66,20 +74,20 @@ class Learner_model extends Fm_model{
         $this->db->order_by('learners.'.$this->id, $this->order);
         if($q){
             $this->db->group_start();
-        	$this->db->like('learners.id', $q);
-			$this->db->or_like('learners.batch_id', $q);
-			$this->db->or_like('learners.name', $q);
-			$this->db->or_like('learners.dob', $q);
-			$this->db->or_like('learners.nid', $q);
-			$this->db->or_like('learners.father', $q);
-			$this->db->or_like('learners.mother', $q);
-			$this->db->or_like('learner_addresses.cu_dist_id', $q);
-			$this->db->or_like('learners.primary_mobile', $q);
-			$this->db->or_like('learners.blood_group', $q);
-			$this->db->or_like('learners.is_resident', $q);
-			$this->db->or_like('learners.remarks', $q);
+            $this->db->like('learners.id', $q);
+            $this->db->or_like('learners.batch_id', $q);
+            $this->db->or_like('learners.name', $q);
+            $this->db->or_like('learners.dob', $q);
+            $this->db->or_like('learners.nid', $q);
+            $this->db->or_like('learners.father', $q);
+            $this->db->or_like('learners.mother', $q);
+            $this->db->or_like('learner_addresses.cu_dist_id', $q);
+            $this->db->or_like('learners.primary_mobile', $q);
+            $this->db->or_like('learners.blood_group', $q);
+            $this->db->or_like('learners.is_resident', $q);
+            $this->db->or_like('learners.remarks', $q);
             $this->db->group_end();
-		}
+        }
 
         if($batch_id){
             $this->db->where('learners.batch_id', $batch_id);
@@ -91,6 +99,14 @@ class Learner_model extends Fm_model{
         
         if($is_resident){
             $this->db->where('learners.is_resident', $is_resident);
+        }
+        
+        if($gender){
+            $this->db->where('learners.gender', $gender);
+        }
+        
+        if($blood_group){
+            $this->db->where('learners.blood_group', $blood_group);
         }
 
 		$this->db->limit($limit, $start);

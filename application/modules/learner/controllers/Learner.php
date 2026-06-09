@@ -17,6 +17,8 @@ class Learner extends Admin_controller{
     public function index(){
         $q = urldecode_fk($this->input->get('q', TRUE));
         $batch_id = $this->input->get('batch_id', TRUE);
+        $gender = $this->input->get('gender', TRUE);
+        $blood_group = $this->input->get('blood_group', TRUE);
         $district_id = $this->input->get('district_id', TRUE);
         $is_resident = $this->input->get('is_resident', TRUE);
         $start = intval($this->input->get('start'));
@@ -26,8 +28,8 @@ class Learner extends Admin_controller{
 
         $config['per_page'] = 25;
         $config['page_query_string'] = TRUE;
-        $config['total_rows'] = $this->Learner_model->total_rows($q, $batch_id, $district_id, $is_resident);
-        $learners = $this->Learner_model->get_limit_data($config['per_page'], $start, $q, $batch_id, $district_id, $is_resident);
+        $config['total_rows'] = $this->Learner_model->total_rows($q, $batch_id, $district_id, $is_resident, $gender, $blood_group);
+        $learners = $this->Learner_model->get_limit_data($config['per_page'], $start, $q, $batch_id, $district_id, $is_resident, $gender, $blood_group);
 
         $this->load->library('pagination');
         $this->pagination->initialize($config);
@@ -45,12 +47,28 @@ class Learner extends Admin_controller{
         }
         
         $resident_list = array('' => '-- Select Resident --', 'Yes' => 'Yes', 'No' => 'No');
+        $gender_list = array('' => '-- Select Gender --', 'Male' => 'Male', 'Female' => 'Female', 'Other' => 'Other');
+        $blood_group_list = array(
+            '' => '-- Select Blood Group --',
+            'A+' => 'A+',
+            'A-' => 'A-',
+            'B+' => 'B+',
+            'B-' => 'B-',
+            'AB+' => 'AB+',
+            'AB-' => 'AB-',
+            'O+' => 'O+',
+            'O-' => 'O-',
+        );
 
         $data = [
             'learners' => $learners,
             'q' => $q,
             'batch_id' => $batch_id,
             'batch_list' => $batch_list,
+            'gender' => $gender,
+            'gender_list' => $gender_list,
+            'blood_group' => $blood_group,
+            'blood_group_list' => $blood_group_list,
             'district_id' => $district_id,
             'district_list' => $district_list,
             'is_resident' => $is_resident,
