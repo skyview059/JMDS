@@ -26,16 +26,18 @@ class Head_model extends Fm_model{
 
     // get data with limit and search
     function get_limit_data($limit, $start = 0, $q = NULL) {
-        $this->db->order_by($this->id, $this->order);
-        if($q){
-        	$this->db->like('id', $q);
-			$this->db->or_like('type', $q);
-			$this->db->or_like('name', $q);
-			$this->db->or_like('status', $q);
-		}
-		$this->db->limit($limit, $start);
+        $this->db->select('trans_heads.*, COUNT(transactions.id) AS trans_qty, SUM(transactions.amount) AS amount');
+        $this->db->join('transactions', 'transactions.head_id = trans_heads.id', 'left');
+        if ($q) {
+            $this->db->group_start();
+            $this->db->or_like('trans_heads.name', $q);
+
+            $this->db->group_end();
+        }
+        $this->db->group_by('trans_heads.id');
+        $this->db->order_by('trans_heads.' . $this->id, $this->order);
+        $this->db->limit($limit, $start);
+
         return $this->db->get($this->table)->result();
     }
-    
-
 }
