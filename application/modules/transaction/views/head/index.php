@@ -33,27 +33,35 @@
                 <thead>
                     <tr>
                     	<th width="40">S/L</th>
-		<th>Type</th>
-		<th>Name</th>
-		<th>Status</th>
-		<th class="text-center" width="160">Action</th>
+                        <th>Type</th>
+                        <th>Name</th>
+                        <th>Trans Qty</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th class="text-center" width="160">Action</th>
                     </tr>
                 </thead>
 
                 <tbody>
-	<?php foreach ($heads as $head) { ?>
+	                <?php foreach ($heads as $head) { ?>
                     <tr>
-		<td><?php echo ++$start ?></td>
-		<td><?php echo $head->type; ?></td>
-		<td><?php echo $head->name; ?></td>
-		<td><?php echo $head->status; ?></td>
-		<td>
-			<?php 
-			echo anchor(site_url(Backend_URL .'transaction/head/details/'.$head->id),'<i class="fa fa-fw fa-external-link"></i> View', 'class="btn btn-xs btn-success"'); 
-			echo anchor(site_url(Backend_URL .'transaction/head/update/'.$head->id),'<i class="fa fa-fw fa-edit"></i> Edit',  'class="btn btn-xs btn-warning"'); 
-			echo anchor(site_url(Backend_URL .'transaction/head/delete/'.$head->id),'<i class="fa fa-fw fa-times"></i>', 'class="btn btn-xs btn-danger"'); 
-			?>
-		</td>
+                        <td><?php echo ++$start ?></td>
+                        <td><?php echo $head->type; ?></td>
+                        <td><?php echo $head->name; ?></td>
+                        <td><?php echo ($head->trans_qty !== null ? $head->trans_qty : 0); ?></td>
+                        <td><?php echo ($head->amount !== null ? $head->amount : '0.00'); ?></td>           
+                        <td><?php echo $head->status; ?></td>
+                        <td>
+                            <?php                              
+                            echo anchor(site_url(Backend_URL .'transaction/head/update/'.$head->id),'<i class="fa fa-fw fa-edit"></i> Edit',  'class="btn btn-xs btn-warning"');                         
+                            ?>
+
+                            <?php if ($head->trans_qty == 0) { ?>
+                            <button type="button" class="btn btn-danger btn-xs" onclick="if(confirm('Are You Sure?')){ location.href='<?php echo site_url(Backend_URL .'transaction/head/delete/'.$head->id); ?>' }">
+                                <i class="fa fa-fw fa-times"></i>                                            
+                            </button>
+                            <?php } ?>
+                        </td>
                     </tr>
                 <?php } ?>
                     </tbody>

@@ -11,12 +11,21 @@
     <div class="box">
         <div class="box-header with-border">
             <div class="row">
-                <div class="col-md-8">
+                <div class="col-md-12">
                     <form method="get" action="<?php echo site_url(Backend_URL . 'learner'); ?>" class="form-inline">
                         <div class="form-group">
                             <label>Batch:</label>
                             <?php echo form_dropdown('batch_id', $batch_list, $batch_id, 'class="form-control input-sm"'); ?>
                         </div>
+                        <div class="form-group">
+                            <label>Gender:</label>
+                            <?php echo form_dropdown('gender', $gender_list, $gender, 'class="form-control input-sm"'); ?>
+                        </div>
+                        <div class="form-group">
+                            <label>Blood Group:</label>
+                            <?php echo form_dropdown('blood_group', $blood_group_list, $blood_group, 'class="form-control input-sm"'); ?>
+                        </div>
+
                         <div class="form-group">
                             <label>District:</label>
                             <?php echo form_dropdown('district_id', $district_list, $district_id, 'class="form-control input-sm"'); ?>
@@ -29,16 +38,16 @@
                         <a href="<?php echo site_url(Backend_URL . 'learner'); ?>" class="btn btn-sm btn-default">Reset</a>
                     </form>
                 </div>
-                <div class="col-md-4 text-right">
-                    <form action="<?php echo site_url(Backend_URL . 'learner'); ?>" class="form-inline" method="get">
+               <!--  <div class="col-md-2 text-right">
+                    <form action="<?php // echo site_url(Backend_URL . 'learner'); ?>" class="form-inline" method="get">
                         <div class="input-group">
-                            <input type="text" class="form-control input-sm" name="q" value="<?php echo $q; ?>" placeholder="Search...">
+                            <input type="text" class="form-control input-sm" name="q" value="<?php //echo $q; ?>" placeholder="Search...">
                             <span class="input-group-btn">
                                 <button class="btn btn-success btn-sm" type="submit">Search</button>
                             </span>
                         </div>
                     </form>
-                </div>
+                </div> -->
             </div>
         </div>
 

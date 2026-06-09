@@ -9,14 +9,23 @@
     </ol>
 </section>
 
-<section class="content"><?php echo vehicleTabs($id, 'update'); ?><div class="box no-border">
+<section class="content">
+    <style>
+        .tx-dropzone{border:2px dashed #c5cdd6;border-radius:8px;padding:22px 18px;text-align:center;background:#fafbfc;cursor:pointer;max-width:240px;transition:border-color .15s,background .15s;position:relative;}
+        .tx-dropzone:hover{border-color:#4d8af0;background:#f5f9ff;}
+        .tx-dropzone input[type="file"]{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;cursor:pointer;}
+        .tx-dropzone .tx-up-ico{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:6px;background:#e7f7ee;color:#2ecc71;font-size:22px;margin-bottom:8px;}
+        .tx-dropzone .tx-dz-txt{color:#6c757d;font-size:13px;margin:2px 0;}
+        .tx-dropzone img{max-width:100%;max-height:150px;margin-top:10px;border-radius:4px;}
+    </style>
+    <?php echo vehicleTabs($id, 'update'); ?><div class="box no-border">
         <div class="box-header with-border">
             <h3 class="box-title">Update Vehicle</h3>
             <?php echo $this->session->flashdata('message'); ?>
         </div>
 
         <div class="box-body">
-            <form class="form-horizontal" action="<?php echo $action; ?>" method="post">
+            <form class="form-horizontal" action="<?php echo $action; ?>" method="post" enctype="multipart/form-data">
                 <div class="form-group">
                     <label for="name" class="col-sm-2 control-label"><sup>*</sup> Name :</label>
                     <div class="col-sm-10">
@@ -26,10 +35,22 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="photo" class="col-sm-2 control-label">Photo :</label>
+                    <label class="col-sm-2 control-label">Photo :</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" name="photo" id="photo" placeholder="Photo" value="<?php echo $photo; ?>" />
+                        <div class="tx-dropzone" id="photo_dropzone">
+                            <?php if ($photo) { ?>
+                                <img id="photo_preview" src="<?php echo getPhoto('uploads/vehicle/' . $photo); ?>" alt="Preview" />
+                                <div class="tx-up-ico" style="display:none;"><i class="fa fa-cloud-upload"></i></div>
+                                <div class="tx-dz-txt" style="display:none;">Click to change photo</div>
+                            <?php } else { ?>
+                                <div class="tx-up-ico"><i class="fa fa-cloud-upload"></i></div>
+                                <div class="tx-dz-txt">Click to upload photo</div>
+                                <img id="photo_preview" src="<?php echo getPhoto(''); ?>" alt="Preview" style="display:none;" />
+                            <?php } ?>
+                            <input type="file" name="photo" id="photo_input" accept="image/*" onchange="previewImage(this)">
+                        </div>
                         <?php echo form_error('photo') ?>
+                        <input type="hidden" name="photo" value="<?php echo $photo; ?>" />
                     </div>
                 </div>
                 <div class="form-group">
@@ -70,7 +91,25 @@
                         <a href="<?php echo site_url(Backend_URL . 'vehicle') ?>" class="btn btn-default">Cancel</a>
                     </div>
                 </div>
-                <?php echo form_close(); ?>
+                <?php echo form_close(); ?>            
         </div>
     </div>
 </section>
+
+<script>
+    function previewImage(input) {
+        var preview = document.getElementById('photo_preview');
+        var dzTxt = document.querySelector('.tx-dz-txt');
+        var dzIco = document.querySelector('.tx-up-ico');
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+                if (dzTxt) dzTxt.style.display = 'none';
+                if (dzIco) dzIco.style.display = 'none';
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>
