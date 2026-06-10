@@ -27,28 +27,56 @@
             display: inline-block;
             background-color: #FFF;
             padding: 15px;
-            border: 2px solid #333; /* Container border */
+            border: 2px solid #333; 
             border-radius: 8px;
         }
 
         .IDCard, .Backside {
-            background-color: #FFF; border: 1px solid #CCC; margin: 10px; text-align: center; padding: 15px;
-            width: 2.63in; height: 3.88in; position: relative; float: left; border-radius: 8px; box-shadow: 0 0 5px rgba(0,0,0,0.1);
-            box-sizing: border-box;
+            width: 2.63in; 
+            height: 3.88in; 
+            margin: 10px; 
+            position: relative; 
+            float: left; 
+            border-radius: 8px; 
+            box-sizing: border-box;          
+            overflow: hidden;
         }
-        .IDCard { border-top: 5px solid #ff9d27; }
-        .photo { margin-top: 15px; }
-        .photo img.radius {
-            border-radius: 50%; height: 90px; background-color: #fff; border: 3px solid #ff9d27; width: 90px; object-fit: cover;
+
+        /* Front Side image background setup */
+        .IDCard { 
+            background-image: url('<?= base_url("uploads/id_card.png") ?>'); 
+            background-size: 100% 100%;
+            background-repeat: no-repeat;
+            background-position: center;
         }
-        .name { font-size: 13pt; font-weight: 600; margin-top: 10px; }
-        .designation { font-size: 10pt; color: #555; }
-        .blood { font-size: 9pt; margin-top: 5px; font-weight: bold; color: #d9534f; }
-        .auth_sign { position: absolute; right: 15px; bottom: 10px; left: 15px; font-size: 8pt; text-align: right; }
-        .auth_sign hr { border-top: 1px solid #000; margin: 0 0 2px 0; width: 80px; display: inline-block; }
+
+        /* Center-aligned container over the hexagon */
+        .id-display-container {
+            position: absolute;
+            top: 53%; /* ষড়ভুজ ফ্রেমটির ঠিক মাঝখানে পজিশন করার জন্য */
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            text-align: center;
+        }
+
+        .learner-id {
+            font-size: 6rem; 
+            font-weight: bold;
+            color: #1a4f8a;
+            margin: 0;
+            padding: 0;
+            font-family: fantasy; 
+            letter-spacing: 3px;
+        }
         
-        /* Back side */
-        .Backside { padding: 20px 15px; }
+        /* Back side styling */
+        .Backside { 
+            background-color: #FFF; 
+            border: 1px solid #CCC; 
+            text-align: center; 
+            padding: 20px 15px; 
+        }
         .note { font-size: 9pt; line-height: 1.3; }
         .company { font-size: 11pt; border: 1px solid #444; margin: 10px auto 0; font-weight: bold; padding: 5px; }
         .address { text-align: right; font-size: 8pt; margin-top: 15px; line-height: 1.4; }
@@ -83,24 +111,11 @@
     <div class="card-container clearfix">
         
         <div class="IDCard">
-            <div style="color:#ff9d27; font-weight:bold; font-size:16pt; font-style:italic; line-height: 1;">JMDS</div>
-            <div style="font-size:7pt; color:#555; margin-bottom: 5px;">INNOVATION IN LEARNING</div>
-
-            <div class="photo">
-                <?php if(!empty($learner->photo)): ?>
-                    <img class="radius" src="<?= base_url('uploads/learner/' . $learner->photo) ?>">
-                <?php else: ?>
-                    <div style="height: 90px; width: 90px; border-radius: 50%; background: #ccc; display: inline-block; border: 3px solid #ff9d27;"></div>
-                <?php endif; ?>
+            <div class="id-display-container">
+                <div class="learner-id">
+                    <?= htmlspecialchars((string)($learner->id ?? '')) ?>
+                </div>
             </div>
-            <div class="name"><?= htmlspecialchars((string)($learner->name ?? '')) ?></div>
-            <div class="designation">Batch: <?= htmlspecialchars((string)($learner->batch_name ?? '')) ?></div>
-            <div class="blood">Blood: <?= htmlspecialchars((string)($learner->blood_group ?? '')) ?></div>  
-            
-            <div class="auth_sign">
-                <hr/><br/>
-                Authorized Signatory
-            </div>  
         </div> 
                 
         <div class="Backside">
