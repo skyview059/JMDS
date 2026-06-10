@@ -103,6 +103,8 @@ class Learner extends Admin_controller{
 				'pa_ps' => isset($learner->pa_ps) ? $learner->pa_ps : '',
 				'primary_mobile' => $learner->primary_mobile,
 				'blood_group' => $learner->blood_group,
+				'has_driving_license' => isset($learner->has_driving_license) ? $learner->has_driving_license : 'No',
+				'shirt_size' => isset($learner->shirt_size) ? $learner->shirt_size : '',
 				'second_contact_person' => $learner->second_contact_person,
 				'second_contact_mobile' => $learner->second_contact_mobile,
 				'is_resident' => $learner->is_resident,
@@ -156,6 +158,8 @@ class Learner extends Admin_controller{
 			'pa_dist_id' => set_value('pa_dist_id'),
 			'primary_mobile' => set_value('primary_mobile'),
 			'blood_group' => set_value('blood_group'),
+			'has_driving_license' => set_value('has_driving_license', 'No'),
+			'shirt_size' => set_value('shirt_size'),
 			'second_contact_person' => set_value('second_contact_person'),
 			'second_contact_mobile' => set_value('second_contact_mobile'),
 			'is_resident' => set_value('is_resident', 'No'),
@@ -181,6 +185,8 @@ class Learner extends Admin_controller{
 				'mother' => $this->input->post('mother',TRUE),
 				'primary_mobile' => $this->input->post('primary_mobile',TRUE),
 				'blood_group' => $this->input->post('blood_group',TRUE),
+				'has_driving_license' => $this->input->post('has_driving_license',TRUE),
+				'shirt_size' => $this->input->post('shirt_size',TRUE) ?: null,
 				'second_contact_person' => $this->input->post('second_contact_person',TRUE),
 				'second_contact_mobile' => $this->input->post('second_contact_mobile',TRUE),
 				'is_resident' => $this->input->post('is_resident',TRUE),
@@ -262,28 +268,34 @@ class Learner extends Admin_controller{
 				'pa_dist_id' => set_value('pa_dist_id', isset($learner->pa_dist_id) ? $learner->pa_dist_id : ''),
 				'primary_mobile' => set_value('primary_mobile', $learner->primary_mobile),
 				'blood_group' => set_value('blood_group', $learner->blood_group),
+				'has_driving_license' => set_value('has_driving_license', isset($learner->has_driving_license) ? $learner->has_driving_license : 'No'),
+				'shirt_size' => set_value('shirt_size', isset($learner->shirt_size) ? $learner->shirt_size : ''),
 				'second_contact_person' => set_value('second_contact_person', $learner->second_contact_person),
 				'second_contact_mobile' => set_value('second_contact_mobile', $learner->second_contact_mobile),
 				'is_resident' => set_value('is_resident', $learner->is_resident),
 				'photo' => set_value('photo', $learner->photo),
 				'remarks' => set_value('remarks', $learner->remarks),
 		    ];
-
             $this->viewAdminContent('learner/learner/update', $data);
         } else {
             $this->session->set_flashdata('message', '<p class="ajax_error">Learner Not Found</p>');
             redirect(site_url( Backend_URL. 'learner'));
         }
     }
-    
+
     public function update_action(){
-
         $this->_rules();
+        $id = $this->input->post('id', TRUE);
 
-        $id = $this->input->post('id', TRUE);        
         if ($this->form_validation->run() == FALSE) {
-            $this->update( $id );
+            $this->update($id);
         } else {
+            $learner = $this->Learner_model->get_by_id($id);
+            if (!$learner) {
+                $this->session->set_flashdata('message', '<p class="ajax_error">Learner Not Found</p>');
+                redirect(site_url( Backend_URL. 'learner'));
+            }
+
             $data = [
 				'batch_id' => $this->input->post('batch_id',TRUE),
 				'name' => $this->input->post('name',TRUE),
@@ -294,6 +306,8 @@ class Learner extends Admin_controller{
 				'mother' => $this->input->post('mother',TRUE),
 				'primary_mobile' => $this->input->post('primary_mobile',TRUE),
 				'blood_group' => $this->input->post('blood_group',TRUE),
+				'has_driving_license' => $this->input->post('has_driving_license',TRUE),
+				'shirt_size' => $this->input->post('shirt_size',TRUE) ?: null,
 				'second_contact_person' => $this->input->post('second_contact_person',TRUE),
 				'second_contact_mobile' => $this->input->post('second_contact_mobile',TRUE),
 				'is_resident' => $this->input->post('is_resident',TRUE),
@@ -320,10 +334,8 @@ class Learner extends Admin_controller{
                 if (!empty($photo)) {
                     $photo = str_replace('\\', '/', $photo);
                     $data['photo'] = str_replace('uploads/learner/', '', $photo);
-                    
-                    // Delete old photo
-                    $learner = $this->Learner_model->get_by_id($id);
-                    if ($learner && $learner->photo && file_exists('./uploads/learner/' . $learner->photo)) {
+
+                    if ($learner->photo && file_exists('./uploads/learner/' . $learner->photo)) {
                         unlink('./uploads/learner/' . $learner->photo);
                     }
                 } else {
@@ -334,7 +346,7 @@ class Learner extends Admin_controller{
             }
 
             $this->Learner_model->update($id, $data, $address_data);
-            $this->session->set_flashdata('message', '<p class="ajax_success">Learner Updated Successlly</p>');
+            $this->session->set_flashdata('message', '<p class="ajax_success">Learner Updated Successfully</p>');
             redirect(site_url( Backend_URL. 'learner/update/'. $id ));
         }
     }
@@ -356,6 +368,8 @@ class Learner extends Admin_controller{
 				'cu_district_name' => isset($learner->district_name) ? $learner->district_name : '',
 				'primary_mobile' => $learner->primary_mobile,
 				'blood_group' => $learner->blood_group,
+				'has_driving_license' => isset($learner->has_driving_license) ? $learner->has_driving_license : 'No',
+				'shirt_size' => isset($learner->shirt_size) ? $learner->shirt_size : '',
 				'second_contact_person' => $learner->second_contact_person,
 				'second_contact_mobile' => $learner->second_contact_mobile,
 				'is_resident' => $learner->is_resident,
@@ -507,6 +521,8 @@ class Learner extends Admin_controller{
 		$this->form_validation->set_rules('cu_dist_id', 'Current District', 'trim|required|numeric');
 		$this->form_validation->set_rules('primary_mobile', 'primary mobile', 'trim|required');
 		$this->form_validation->set_rules('blood_group', 'blood group', 'trim');
+		$this->form_validation->set_rules('has_driving_license', 'driving license status', 'trim|required|in_list[Yes,No,Learner/Permit]');
+		$this->form_validation->set_rules('shirt_size', 'shirt size', 'trim|in_list[S,M,L,XL,XXL]');
 		$this->form_validation->set_rules('second_contact_person', 'second contact person', 'trim');
 		$this->form_validation->set_rules('second_contact_mobile', 'second contact mobile', 'trim');
 		$this->form_validation->set_rules('is_resident', 'is resident', 'trim|required');

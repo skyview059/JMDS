@@ -211,6 +211,31 @@
             </div>
 
             <div class="tx-row">
+                <label class="tx-label" for="has_driving_license"><span class="req">*</span> Driving License :</label>
+                <div class="tx-ctrl">
+                    <select class="tx-select" name="has_driving_license" id="has_driving_license">
+                        <?php foreach (array('No' => 'No', 'Yes' => 'Yes', 'Learner/Permit' => 'Learner/Permit') as $value => $label) { ?>
+                            <option value="<?php echo $value; ?>" <?php echo ($has_driving_license == $value) ? 'selected' : ''; ?>><?php echo $label; ?></option>
+                        <?php } ?>
+                    </select>
+                    <?php echo form_error('has_driving_license') ?>
+                </div>
+            </div>
+
+            <div class="tx-row">
+                <label class="tx-label" for="shirt_size">Shirt Size :</label>
+                <div class="tx-ctrl">
+                    <select class="tx-select" name="shirt_size" id="shirt_size">
+                        <option value="">-- Select Shirt Size --</option>
+                        <?php foreach (array('S', 'M', 'L', 'XL', 'XXL') as $size) { ?>
+                            <option value="<?php echo $size; ?>" <?php echo ($shirt_size == $size) ? 'selected' : ''; ?>><?php echo $size; ?></option>
+                        <?php } ?>
+                    </select>
+                    <?php echo form_error('shirt_size') ?>
+                </div>
+            </div>
+
+            <div class="tx-row">
                 <label class="tx-label" for="second_contact_person">Second Contact :</label>
                 <div class="tx-ctrl">
                     <input type="text" class="tx-input" name="second_contact_person" id="second_contact_person" placeholder="e.g John Doe" value="<?php echo $second_contact_person; ?>" />

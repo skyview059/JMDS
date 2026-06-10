@@ -65,6 +65,8 @@
                             <th>Age</th>
                             <th>Primary Mobile</th>
                             <th>Blood Group</th>
+                            <th>Driving License</th>
+                            <th>Shirt Size</th>
                             <th>Is Resident</th>
                             
                             <th>Remarks</th>
@@ -85,6 +87,8 @@
                                 <td><?php echo rand(18, 40); ?> years</td>                                
                                 <td><?php echo $learner->primary_mobile; ?></td>
                                 <td><?php echo $learner->blood_group; ?></td>
+                                <td><?php echo isset($learner->has_driving_license) ? $learner->has_driving_license : ''; ?></td>
+                                <td><?php echo isset($learner->shirt_size) ? $learner->shirt_size : ''; ?></td>
                                 <td><?php echo $learner->is_resident; ?></td>
                                 <td><?php echo $learner->remarks; ?></td>
                                 <td width="120">
