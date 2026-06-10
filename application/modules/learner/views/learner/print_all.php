@@ -16,7 +16,7 @@
             margin-bottom: 20px;
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: center;            
         }
 
         /* Container styling with border for page */
@@ -38,17 +38,21 @@
         }
         
         .IDCard {
-            background-image: url('<?= base_url("uploads/id_card.png") ?>'); /* Update with your actual image path */
-            background-size: 100% 100%;
-            background-repeat: no-repeat;
-            background-position: center;
+            background-color: #FFF;
             text-align: center; 
             box-sizing: border-box;
-            /* Swapped dimensions to perfectly match standard vertical ID card aspect ratios inside Landscape grid */
             height: 3.88in; 
             position: relative; 
             border-radius: 8px; 
             overflow: hidden;
+        }
+
+    
+        .card-bg-img {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: fill;
         }
 
         /* Center-aligned container over the hexagon */
@@ -59,16 +63,17 @@
             transform: translate(-50%, -50%);
             width: 100%;
             text-align: center;
+            z-index: 10; 
         }
 
         .learner-id {            
-            font-size: 6rem;
+            font-size: 6rem; 
             font-weight: bold;
-            color: #1a4f8a;
+            color: #e30713;
             margin: 0;
             padding: 0;
             font-family: fantasy;
-            letter-spacing: 4px;
+            letter-spacing: 4px;            
         }
         
         /* Color adjustment rule for standard colors during print */
@@ -90,10 +95,17 @@
                 margin: 0;
                 page-break-after: always;
             }
+
+            .learner-id {
+                color: #e30713 !important; /* প্রিন্ট করার সময়ও জোরপূর্বক এই কালারটিই পাবে */
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
         }
     </style>
+
 </head>
-<body>
+<body onload="window.print()">
 
 <div class="no-print-header">
     <h4 style="margin: 0; color: #333;">ID Card Print Preview</h4>
@@ -106,6 +118,8 @@
     <div class="id-card-grid">
         <?php foreach($learners as $learner): ?>
             <div class="IDCard">
+                <img class="card-bg-img" src="<?= base_url('uploads/id_card.png') ?>" alt="ID Card Background">
+                
                 <div class="id-display-container">
                     <div class="learner-id">
                         <?= htmlspecialchars((string)($learner->id ?? '')) ?>

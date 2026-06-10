@@ -38,35 +38,41 @@
             position: relative; 
             float: left; 
             border-radius: 8px; 
-            box-sizing: border-box;          
+            box-sizing: border-box;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
             overflow: hidden;
         }
 
-        /* Front Side image background setup */
         .IDCard { 
-            background-image: url('<?= base_url("uploads/id_card.png") ?>'); 
-            background-size: 100% 100%;
-            background-repeat: no-repeat;
-            background-position: center;
+            border: 1px solid #CCC; 
+            background-color: #FFF;
+        }
+
+        .card-bg-img {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: fill;
         }
 
         /* Center-aligned container over the hexagon */
         .id-display-container {
             position: absolute;
-            top: 53%; /* ষড়ভুজ ফ্রেমটির ঠিক মাঝখানে পজিশন করার জন্য */
+            top: 53%; 
             left: 50%;
             transform: translate(-50%, -50%);
             width: 100%;
             text-align: center;
+            z-index: 10; 
         }
 
         .learner-id {
             font-size: 6rem; 
             font-weight: bold;
-            color: #1a4f8a;
+            color: #e30713; 
             margin: 0;
             padding: 0;
-            font-family: fantasy; 
+            font-family: fantasy;
             letter-spacing: 3px;
         }
         
@@ -95,6 +101,12 @@
             
             .A4Landscape { padding: 0; margin: 0; width: 100%; }
             .card-container { border: 2px solid #333 !important; box-shadow: none; }
+
+            .learner-id {
+                color: #e30713 !important; /* প্রিন্ট করার সময়ও জোরপূর্বক এই কালারটিই পাবে */
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
         }
     </style>
 </head>
@@ -111,6 +123,8 @@
     <div class="card-container clearfix">
         
         <div class="IDCard">
+            <img class="card-bg-img" src="<?= base_url('uploads/id_card.png') ?>" alt="ID Card BG">
+            
             <div class="id-display-container">
                 <div class="learner-id">
                     <?= htmlspecialchars((string)($learner->id ?? '')) ?>
