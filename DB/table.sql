@@ -162,7 +162,12 @@ CREATE TABLE `learner_addresses` (
 
 
 
+ALTER TABLE `batches` 
+  CHANGE `status` `status` ENUM('Running','Closed','Upcoming') NOT NULL DEFAULT 'Upcoming',
+  CHANGE `date_start` `date_start` DATE NULL DEFAULT NULL, 
+  CHANGE `date_end` `date_end` DATE NULL DEFAULT NULL;
 
+UPDATE `batches` SET `status` = 'Closed' WHERE `id` IN (1,3,7);
 
 
 

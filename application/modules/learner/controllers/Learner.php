@@ -124,7 +124,7 @@ class Learner extends Admin_controller{
         $batches = $this->Batch_model->get_all();
         $batch_list = array('' => '-- Select Batch --');
         foreach($batches as $batch) {
-            $batch_list[$batch->id] = $batch->name . ' (ID: ' . $batch->id . ')';
+            $batch_list[$batch->id] = "{$batch->name} ({$batch->status})";
         }
         
         $districts = $this->District_model->get_all();
