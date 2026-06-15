@@ -541,9 +541,8 @@ function getBatchTimeline($date1, $date2) {
     }
     
     $endStr = date('jS M Y', strtotime($date2));
-    $weeks = get_difference_in_weeks($date1, $date2);
-    
-    return "{$startStr} ~ {$endStr} ( {$weeks} )";
+
+    return "{$startStr} ~ {$endStr} ";
 }
 
 function bdMoneyFormat($amount = 0, $currency = '৳ ', $sufix = '') {

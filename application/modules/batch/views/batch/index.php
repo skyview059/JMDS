@@ -28,19 +28,33 @@
         <div class="box-body">
             <?php echo $this->session->flashdata('message'); ?>
 
+            
             <div class="table-responsive">
                 <table class="table table-hover table-striped table-bordered table-condensed" style="vertical-align: middle;">
                     <thead>
                         <tr>
-                            <th width="30" class="text-center">S/L</th>
-                            <th width="250">Batch & Course Details</th>                                        
-                            <th>Timeline & Duration</th>
-                            <th class="text-center" width="130">Seats Status</th>
-                            <th class="text-center" width="130">Book Status</th>
-                            <th class="text-right text-success bg-success">Income</th>
-                            <th class="text-right text-danger bg-danger">Expenses</th>   
-                            <th  class="text-right text-info">Profit</th>                     
-                            <th class="text-center" width="130">Action</th>
+                            <th width="30" class="text-center" style="vertical-align: middle;">S/L</th>
+                            <th width="200" style="vertical-align: middle;">Batch & Course Type</th>                                        
+                            <th width="220" style="vertical-align: middle;">Timeline</th>
+                            <th width="50" style="vertical-align: middle;">Duration</th>
+                            <th class="text-center" width="130" style="padding: 8px 0; vertical-align: middle;">
+                                <div style="margin-bottom: 4px;">Seat</div>
+                                <div class="row" style="margin: 0; border-top: 1px solid #ccc; padding-top: 4px; font-size: 13px;">
+                                    <div class="col-xs-6" style="border-right: 1px solid #ccc; padding: 0;">Booked</div>
+                                    <div class="col-xs-6" style="padding: 0;">Left</div>
+                                </div>
+                            </th>
+                            <th class="text-center" width="130" style="padding: 8px 0; vertical-align: middle;">
+                                <div style="margin-bottom: 4px;">Gender</div>
+                                <div class="row" style="margin: 0; border-top: 1px solid #ccc; padding-top: 4px; font-size: 13px;">
+                                    <div class="col-xs-6" style="border-right: 1px solid #ccc; padding: 0;">Male</div>
+                                    <div class="col-xs-6" style="padding: 0;">Female</div>
+                                </div>
+                            </th>
+                            <th class="text-right text-success bg-success" style="vertical-align: middle;">Income</th>
+                            <th class="text-right text-danger bg-danger" style="vertical-align: middle;">Expenses</th>   
+                            <th  class="text-right text-info " style="vertical-align: middle;">Profit</th>                     
+                            <th class="text-center" width="130" style="vertical-align: middle;">Action</th>
                         </tr>
                     </thead>
 
@@ -66,35 +80,30 @@
                                     </div>
                                 </td>                                
                                 <td style="vertical-align: middle; font-size: 14px;">
-                                    <span class="text-muted"><i class="fa fa-calendar"></i> <?php echo getBatchTimeline($batch->date_start, $batch->date_end); ?></span>
+                                    <span class="text-muted"> <?php echo getBatchTimeline($batch->date_start, $batch->date_end); ?></span>
                                 </td>
-                                <td style="vertical-align: middle; line-height: 1.6;">
-                                    <div style="margin-bottom: 5px;">
-                                        <span class="label label-default" style="display: inline-block; width: 100%; font-size: 13px; padding: 4px 0;">Total: <?php echo $batch->seat; ?></span>
-                                    </div>
-                                    <div>
-                                        <span class="label <?php echo ($available_seat > 0) ? 'label-success' : 'label-danger'; ?>" style="display: inline-block; width: 100%; font-size: 13px; padding: 4px 0;">
-                                            Available: <?php echo $available_seat; ?>
-                                        </span>
-                                    </div>
+                                <td style="vertical-align: middle; font-size: 14px;">
+                                    <span class="text-muted"><?php echo get_difference_in_weeks($batch->date_start, $batch->date_end); ?></span>
                                 </td>
-                                <td style="vertical-align: middle; line-height: 1.6;">
-                                    <div style="margin-bottom: 5px;">
-                                        <span class="label label-primary" style="display: inline-block; width: 100%; font-size: 13px; padding: 4px 0;">Booked: <?php echo $booked_seat; ?></span>
-                                    </div>
-                                    <!-- Gender Breakdown Badge -->
-                                    <div style="background: #f1f3f5; padding: 5px 8px; border-radius: 4px; font-size: 13px; font-weight: 600; text-align: center; border: 1px solid #e2e8f0;">
-                                        <span style="color: #0284c7;" title="Male Bookings"><i class="fa fa-mars"></i> M: <?php echo (int)$male_count; ?></span>
-                                        <span style="color: #d946ef; margin-left: 8px;" title="Female Bookings"><i class="fa fa-venus"></i> F: <?php echo (int)$female_count; ?></span>
+                                <td class="text-center" style="vertical-align: middle; padding: 8px 0;">
+                                    <div class="row" style="margin: 0; font-size: 14px;">
+                                        <div class="col-xs-6" style="border-right: 1px solid #ddd; padding: 0; font-weight: bold;"><?php echo $booked_seat; ?></div>
+                                        <div class="col-xs-6" style="padding: 0; font-weight: bold;"><?php echo $available_seat; ?></div>
                                     </div>
                                 </td>
-                                <td class="text-right text-success" style="vertical-align: middle; font-weight: bold; background-color: #f8fff9;">
+                                <td class="text-center" style="vertical-align: middle; padding: 8px 0;">
+                                    <div class="row" style="margin: 0; font-size: 14px;">
+                                        <div class="col-xs-6" style="border-right: 1px solid #ddd; padding: 0; font-weight: bold; color: #0284c7;"><?php echo (int)$male_count; ?></div>
+                                        <div class="col-xs-6" style="padding: 0; font-weight: bold; color: #d946ef;"><?php echo (int)$female_count; ?></div>
+                                    </div>
+                                </td>
+                                <td class="text-right text-success bg-success" style="vertical-align: middle; font-weight: bold; ">
                                     <?php echo bdMoneyFormat($total_income); ?>
                                 </td>
-                                <td class="text-right text-danger" style="vertical-align: middle; font-weight: bold; background-color: #fff8f8;">
+                                <td class="text-right text-danger bg-danger" style="vertical-align: middle; font-weight: bold; ">
                                     <?php echo bdMoneyFormat($total_expenses); ?>
                                 </td>  
-                                <td class="text-right" style="vertical-align: middle; font-weight: bold; color: #28a745; background-color: #f8fff9;">
+                                <td class="text-right" style="vertical-align: middle; font-weight: bold; ">
                                     <?php echo bdMoneyFormat($total_income - $total_expenses); ?>
                                 </td>                                    
                                 <td class="text-center" style="vertical-align: middle;">
