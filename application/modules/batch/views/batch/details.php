@@ -20,11 +20,11 @@
         <?php 
             $booked_seat = $this->Batch_model->get_booked_seat($id);
             $available_seat = $seat - $booked_seat;
-            $male_count = 20; 
-            $female_count = 15;
+            $male_count = $this->Batch_model->get_male_count($id); 
+            $female_count = $this->Batch_model->get_female_count($id);
             $income = $this->Batch_model->get_total_income($id);
             $expenses = $this->Batch_model->get_total_expenses($id);
-            $profit = 0;
+            $profit = $income - $expenses;
         ?>
         <table class="table table-striped">
             <tr><td width="150">Name</td><td width="5">:</td>
@@ -71,9 +71,9 @@
 			<i class="fa fa-edit"></i> 
 				Edit 
 			</a>            
-            
-		    <?php echo anchor(site_url(Backend_URL .'batch/delete_action/'.$id),'<i class="fa fa-fw fa-trash"></i> Delete ', 'class="btn btn-danger" onclick="javasciprt: return confirm(\'Are You Sure ?\')"'); ?>
-	    
+		    <?php if ($booked_seat == 0): ?>
+		        <?php echo anchor(site_url(Backend_URL .'batch/delete_action/'.$id),'<i class="fa fa-fw fa-trash"></i> Delete ', 'class="btn btn-danger" onclick="javasciprt: return confirm(\'Are You Sure ?\')"'); ?>
+            <?php endif; ?>
 		</td></tr>
 	</table>
 	</div></section>

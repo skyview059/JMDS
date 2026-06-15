@@ -528,6 +528,18 @@ class Learner extends Admin_controller{
 		$this->form_validation->set_rules('is_resident', 'is resident', 'trim|required');
 		$this->form_validation->set_rules('remarks', 'remarks', 'trim');
 
+        $this->form_validation->set_rules('cu_village', 'Current Village', 'trim');
+        $this->form_validation->set_rules('cu_dist_id', 'Current District', 'trim|numeric');
+        $this->form_validation->set_rules('cu_postcode', 'Current Post Code', 'trim|numeric');
+        $this->form_validation->set_rules('cu_police', 'Current Police Station', 'trim');
+        $this->form_validation->set_rules('cu_upazila', 'Current Upazila', 'trim');
+
+        $this->form_validation->set_rules('pa_village', 'Permanent Village', 'trim');
+        $this->form_validation->set_rules('pa_dist_id', 'Permanent District', 'trim|numeric');
+        $this->form_validation->set_rules('pa_postcode', 'Permanent Post Code', 'trim|numeric');
+        $this->form_validation->set_rules('pa_police', 'Permanent Police Station', 'trim');
+        $this->form_validation->set_rules('pa_upazila', 'Permanent Upazila', 'trim');
+
 		$this->form_validation->set_rules('id', 'id', 'trim');
 		$this->form_validation->set_error_delimiters('<span class="text-danger">', '</span>');
     }

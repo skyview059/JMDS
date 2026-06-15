@@ -46,12 +46,15 @@
 
                     <tbody>
                         <?php foreach ($batchs as $batch) { 
-                            $booked_seat = $this->Batch_model->get_booked_seat($batch->id);
+                            $booked_seat = isset($batch->booked_seat) ? $batch->booked_seat : $this->Batch_model->get_booked_seat($batch->id);
                             $available_seat = $batch->seat - $booked_seat;   
                             
                             // Fetching gender breakdown from your model
-                            $male_count = 20; 
-                            $female_count = 15;
+                            $male_count = isset($batch->male_count) ? $batch->male_count : 0; 
+                            $female_count = isset($batch->female_count) ? $batch->female_count : 0;
+
+                            $total_income = isset($batch->total_income) ? $batch->total_income : $this->Batch_model->get_total_income($batch->id);
+                            $total_expenses = isset($batch->total_expenses) ? $batch->total_expenses : $this->Batch_model->get_total_expenses($batch->id);
                         ?>
                             <tr>
                                 <td class="text-center" style="vertical-align: middle;"><?php echo ++$start ?></td>
@@ -84,13 +87,13 @@
                                     </div>
                                 </td>
                                 <td class="text-right text-success" style="vertical-align: middle; font-weight: bold; background-color: #f8fff9;">
-                                    <?php echo bdMoneyFormat($this->Batch_model->get_total_income($batch->id)); ?>
+                                    <?php echo bdMoneyFormat($total_income); ?>
                                 </td>
                                 <td class="text-right text-danger" style="vertical-align: middle; font-weight: bold; background-color: #fff8f8;">
-                                    <?php echo bdMoneyFormat($this->Batch_model->get_total_expenses($batch->id)); ?>
+                                    <?php echo bdMoneyFormat($total_expenses); ?>
                                 </td>  
                                 <td class="text-right" style="vertical-align: middle; font-weight: bold; color: #28a745; background-color: #f8fff9;">
-                                    0
+                                    <?php echo bdMoneyFormat($total_income - $total_expenses); ?>
                                 </td>                                    
                                 <td class="text-center" style="vertical-align: middle;">
                                     <div style="display: flex; gap: 4px; justify-content: center;">

@@ -149,14 +149,17 @@
                             <div class="tx-address-field">
                                 <label for="cu_postoffice">Post Office</label>
                                 <input type="text" class="tx-input" name="cu_postoffice" id="cu_postoffice" value="<?php echo $cu_postoffice; ?>" />
+                                <?php echo form_error('cu_postoffice') ?>
                             </div>
                             <div class="tx-address-field">
                                 <label for="cu_postcode">Post Code</label>
                                 <input type="text" class="tx-input" name="cu_postcode" id="cu_postcode" value="<?php echo $cu_postcode; ?>" />
+                                <?php echo form_error('cu_postcode') ?>
                             </div>
                             <div class="tx-address-field">
                                 <label for="cu_ps">Police Station</label>
                                 <input type="text" class="tx-input" name="cu_ps" id="cu_ps" value="<?php echo $cu_ps; ?>" />
+                                <?php echo form_error('cu_ps') ?>
                             </div>
                         </div>
                         <div class="tx-address-panel">
@@ -178,14 +181,17 @@
                             <div class="tx-address-field">
                                 <label for="pa_postoffice">Post Office</label>
                                 <input type="text" class="tx-input" name="pa_postoffice" id="pa_postoffice" value="<?php echo $pa_postoffice; ?>" />
+                                <?php echo form_error('pa_postoffice') ?>
                             </div>
                             <div class="tx-address-field">
                                 <label for="pa_postcode">Post Code</label>
                                 <input type="text" class="tx-input" name="pa_postcode" id="pa_postcode" value="<?php echo $pa_postcode; ?>" />
+                                <?php echo form_error('pa_postcode') ?>
                             </div>
                             <div class="tx-address-field">
                                 <label for="pa_ps">Police Station</label>
                                 <input type="text" class="tx-input" name="pa_ps" id="pa_ps" value="<?php echo $pa_ps; ?>" />
+                                <?php echo form_error('pa_ps') ?>
                             </div>
                         </div>
                     </div>
