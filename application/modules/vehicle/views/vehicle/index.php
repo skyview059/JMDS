@@ -32,11 +32,11 @@
                     <thead>
                         <tr>
                             <th width="40">S/L</th>
-                            <th width="80">Name</th>
-                            <th>Photo</th>
+                            <th width="80" class="text-center">Photo</th>
+                            <th width="120">Name</th>                            
                             <th>Number</th>
                             <th>Purchased Date</th>
-                            <th>Amount</th>
+                            <th width="100" class="text-right">Amount</th>
                             <th>Remark</th>
                             <th class="text-center" width="160">Action</th>
                         </tr>
@@ -45,14 +45,14 @@
                     <tbody>
                         <?php foreach ($vehicles as $vehicle) { ?>
                             <tr>
-                                <td><?php echo ++$start ?></td>
-                                <td><?php echo $vehicle->name; ?></td>
-                                <td>
-                                    <img src="<?php echo getPhoto($vehicle->photo ? 'uploads/vehicle/' . $vehicle->photo : ''); ?>" alt="Vehicle Image" style="width:50px;height:50px;object-fit:cover;border-radius:50%;" />
+                                <td><?php echo ++$start ?></td>                                
+                                <td  class="text-center">
+                                    <img src="<?php echo getVehiclePhoto($vehicle->photo ? 'uploads/vehicle/' . $vehicle->photo : ''); ?>" alt="Vehicle Image" style="width:50px;height:50px;object-fit:cover;border-radius:50%;" />
                                 </td>
+                                <td><?php echo $vehicle->name; ?></td>
                                 <td><?php echo $vehicle->number; ?></td>
                                 <td><?php echo is_null($vehicle->purchased_date) ? 'N/A' : bdDateFormat($vehicle->purchased_date); ?></td>
-                                <td><?php echo $vehicle->amount; ?></td>
+                                <td class="text-right"><?php echo $vehicle->amount; ?></td>
                                 <td><?php echo $vehicle->remark; ?></td>
                                 <td>
                                     <?php

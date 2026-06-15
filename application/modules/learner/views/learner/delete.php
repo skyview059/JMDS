@@ -26,6 +26,8 @@
 	    <tr><td width="150">District</td><td width="5">:</td><td><?php echo isset($cu_district_name) ? $cu_district_name : ''; ?></td></tr>
 	    <tr><td width="150">Primary Mobile</td><td width="5">:</td><td><?php echo $primary_mobile; ?></td></tr>
 	    <tr><td width="150">Blood Group</td><td width="5">:</td><td><?php echo $blood_group; ?></td></tr>
+	    <tr><td width="150">Driving License</td><td width="5">:</td><td><?php echo $has_driving_license; ?></td></tr>
+	    <tr><td width="150">Shirt Size</td><td width="5">:</td><td><?php echo $shirt_size; ?></td></tr>
 	    <tr><td width="150">Second Contact Person</td><td width="5">:</td><td><?php echo $second_contact_person; ?></td></tr>
 	    <tr><td width="150">Second Contact Mobile</td><td width="5">:</td><td><?php echo $second_contact_mobile; ?></td></tr>
 	    <tr><td width="150">Is Resident</td><td width="5">:</td><td><?php echo $is_resident; ?></td></tr>
