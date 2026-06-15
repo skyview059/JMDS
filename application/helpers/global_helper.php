@@ -527,6 +527,25 @@ function get_difference_in_weeks($date1, $date2, $absolute = true) {
     return (int) floor($days / 7) . ' weeks';
 }
 
+function getBatchTimeline($date1, $date2) {
+    if (!$date1 || !$date2 || $date1 == '0000-00-00' || $date2 == '0000-00-00') {
+        return 'Unknown';
+    }
+    
+    $start_year = date('Y', strtotime($date1));
+    $end_year = date('Y', strtotime($date2));
+    
+    $startStr = date('jS F', strtotime($date1));
+    if ($start_year !== $end_year) {
+        $startStr .= ' ' . $start_year;
+    }
+    
+    $endStr = date('jS M Y', strtotime($date2));
+    $weeks = get_difference_in_weeks($date1, $date2);
+    
+    return "{$startStr} ~ {$endStr} ( {$weeks} )";
+}
+
 function bdMoneyFormat($amount = 0, $currency = '৳ ', $sufix = '') {
     if (is_null($amount) or empty($amount)) {
         return 0 . $sufix;
