@@ -25,6 +25,18 @@
                     </div>
                 </div>
                 <div class="form-group">
+                    <label for="course_type" class="col-sm-2 control-label">Course Type :</label>
+                    <div class="col-sm-10">
+                        <select class="form-control" name="course_type" id="course_type">
+                            <option value="">Select Course Type</option>
+                            <option value="Light" <?php echo ($course_type == 'Light') ? 'selected' : ''; ?>>Light</option>
+                            <option value="Medium" <?php echo ($course_type == 'Medium') ? 'selected' : ''; ?>>Medium</option>
+                            <option value="Havy" <?php echo ($course_type == 'Havy') ? 'selected' : ''; ?>>Havy</option>
+                        </select>
+                        <?php echo form_error('course_type') ?>
+                    </div>
+                </div>
+                <div class="form-group">
                     <label for="seat" class="col-sm-2 control-label">Seat :</label>
                     <div class="col-sm-10">
                         <input type="number" class="form-control" name="seat" id="seat" placeholder="Seat" value="<?php echo $seat; ?>" />

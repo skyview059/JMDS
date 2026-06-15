@@ -33,6 +33,7 @@
                         <tr>
                             <th width="40">S/L</th>
                             <th>Name</th>                            
+                            <th>Course Type</th>                            
                             <th>Date Start</th>
                             <th>Date End</th>
                             <th>Duration</th>
@@ -54,6 +55,7 @@
                             <tr>
                                 <td><?php echo ++$start ?></td>
                                 <td><?php echo $batch->name; ?></td>
+                                <td><?php echo $batch->course_type; ?></td>
                                 <td><?php echo bdDateFormat($batch->date_start); ?></td>
                                 <td><?php echo bdDateFormat($batch->date_end); ?></td>
                                 <td><?php echo get_difference_in_weeks($batch->date_start, $batch->date_end); ?></td>

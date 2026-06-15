@@ -17,6 +17,7 @@ class Batch_model extends Fm_model{
         if($q){
             $this->db->like('id', $q);
             $this->db->or_like('name', $q);
+            $this->db->or_like('course_type', $q);
             $this->db->or_like('seat', $q);
             $this->db->or_like('date_start', $q);
             $this->db->or_like('date_end', $q);
@@ -33,6 +34,7 @@ class Batch_model extends Fm_model{
         if($q){
             $this->db->like('id', $q);
             $this->db->or_like('name', $q);
+            $this->db->or_like('course_type', $q);
             $this->db->or_like('seat', $q);
             $this->db->or_like('date_start', $q);
             $this->db->or_like('date_end', $q);

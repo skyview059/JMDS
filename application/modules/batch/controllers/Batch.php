@@ -43,6 +43,7 @@ class Batch extends Admin_controller{
             $data = [
                 'id' => $batch->id,
                 'name' => $batch->name,
+                'course_type' => $batch->course_type,
                 'seat' => $batch->seat,
                 'date_start' => date('Y-m-d', strtotime($batch->date_start)),
                 'date_end' => date('Y-m-d', strtotime($batch->date_end)),
@@ -62,6 +63,7 @@ class Batch extends Admin_controller{
             'button' => 'Create',
             'action' => site_url( Backend_URL . 'batch/create_action'),
             'name' => set_value('name'),
+            'course_type' => set_value('course_type'),
             'seat' => set_value('seat'),
             'date_start' => set_value('date_start'),
             'date_end' => set_value('date_end'),
@@ -79,6 +81,7 @@ class Batch extends Admin_controller{
         } else {
             $data = [
                 'name' => $this->input->post('name',TRUE),
+                'course_type' => $this->input->post('course_type',TRUE),
                 'seat' => $this->input->post('seat',TRUE),
                 'date_start' => $this->input->post('date_start',TRUE),
                 'date_end' => $this->input->post('date_end',TRUE),
@@ -102,6 +105,7 @@ class Batch extends Admin_controller{
                 'action' => site_url( Backend_URL . 'batch/update_action'),
                 'id' => set_value('id', $batch->id),
                 'name' => set_value('name', $batch->name),
+                'course_type' => set_value('course_type', $batch->course_type),
                 'seat' => set_value('seat', $batch->seat),
                 'date_start' => set_value('date_start', date('Y-m-d', strtotime($batch->date_start))),
                 'date_end' => set_value('date_end', date('Y-m-d', strtotime($batch->date_end))),
@@ -124,6 +128,7 @@ class Batch extends Admin_controller{
         } else {
             $data = [
                 'name' => $this->input->post('name',TRUE),
+                'course_type' => $this->input->post('course_type',TRUE),
                 'seat' => $this->input->post('seat',TRUE),
                 'date_start' => $this->input->post('date_start',TRUE),
                 'date_end' => $this->input->post('date_end',TRUE),
@@ -143,6 +148,7 @@ class Batch extends Admin_controller{
             $data = [
                 'id' => $batch->id,
                 'name' => $batch->name,
+                'course_type' => $batch->course_type,
                 'seat' => $batch->seat,
                 'date_start' => date('Y-m-d', strtotime($batch->date_start)),
                 'date_end' => date('Y-m-d', strtotime($batch->date_end)),
@@ -174,11 +180,12 @@ class Batch extends Admin_controller{
 
     public function _rules(){
 		$this->form_validation->set_rules('name', 'name', 'trim|required');
+		$this->form_validation->set_rules('course_type', 'course type', 'trim|required');
 		$this->form_validation->set_rules('date_start', 'date start', 'trim|required');
 		$this->form_validation->set_rules('date_end', 'date end', 'trim|required');
 		$this->form_validation->set_rules('status', 'status', 'trim|required');
 		$this->form_validation->set_rules('seat', 'seat', 'trim|required|integer');
-		$this->form_validation->set_rules('remarks', 'remarks', 'trim|required');
+		$this->form_validation->set_rules('remarks', 'remarks', 'trim');
 
 		$this->form_validation->set_rules('id', 'id', 'trim');
 		$this->form_validation->set_error_delimiters('<span class="text-danger">', '</span>');
