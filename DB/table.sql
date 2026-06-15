@@ -137,7 +137,27 @@ INSERT INTO designations (name, short_name) VALUES
  
 
 
+ALTER TABLE `learners` ADD `gender` ENUM('Male','Female','Ignored') NULL DEFAULT NULL AFTER `name`;
 
+ALTER TABLE `learners` DROP `district_id`;
+
+
+CREATE TABLE `learner_addresses` (
+  `id` bigint NOT NULL,
+  `learner_id` bigint UNSIGNED NOT NULL,
+  `cu_village` varchar(255) DEFAULT NULL,
+  `cu_postoffice` varchar(100) DEFAULT NULL,
+  `cu_postcode` varchar(10) DEFAULT NULL,
+  `cu_ps` varchar(100) DEFAULT NULL,
+  `cu_dist_id` bigint DEFAULT NULL,
+  `pa_village` varchar(255) DEFAULT NULL,
+  `pa_postoffice` varchar(100) DEFAULT NULL,
+  `pa_postcode` varchar(10) DEFAULT NULL,
+  `pa_ps` varchar(100) DEFAULT NULL,
+  `pa_dist_id` bigint DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
 
 
 
