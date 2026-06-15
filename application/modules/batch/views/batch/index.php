@@ -59,31 +59,33 @@
                             <tr>
                                 <td class="text-center" style="vertical-align: middle;"><?php echo ++$start ?></td>
                                 <td style="vertical-align: middle;">
-                                    <strong style="color: #333; font-size: 14px;"><?php echo $batch->name; ?></strong>
+                                    <strong style="color: #333; font-size: 16px;"><?php echo $batch->name; ?></strong>
                                     <br>
-                                    <span class="label label-info" style="font-size: 10px; padding: 2px 6px;"><?php echo $batch->course_type; ?></span>
+                                    <div style="margin-top: 5px;">
+                                        <span class="label label-info" style="font-size: 12px; padding: 4px 8px;"><?php echo $batch->course_type; ?></span>
+                                    </div>
                                 </td>                                
-                                <td style="vertical-align: middle;">
-                                    <small class="text-muted"><i class="fa fa-calendar"></i> <?php echo getBatchTimeline($batch->date_start, $batch->date_end); ?></small>
+                                <td style="vertical-align: middle; font-size: 14px;">
+                                    <span class="text-muted"><i class="fa fa-calendar"></i> <?php echo getBatchTimeline($batch->date_start, $batch->date_end); ?></span>
                                 </td>
-                                <td style="vertical-align: middle; font-size: 12px; line-height: 1.5;">
-                                    <div style="margin-bottom: 4px;">
-                                        <span class="label label-default" style="display: inline-block; width: 100%;">Total: <?php echo $batch->seat; ?></span>
+                                <td style="vertical-align: middle; line-height: 1.6;">
+                                    <div style="margin-bottom: 5px;">
+                                        <span class="label label-default" style="display: inline-block; width: 100%; font-size: 13px; padding: 4px 0;">Total: <?php echo $batch->seat; ?></span>
                                     </div>
                                     <div>
-                                        <span class="label <?php echo ($available_seat > 0) ? 'label-success' : 'label-danger'; ?>" style="display: inline-block; width: 100%;">
+                                        <span class="label <?php echo ($available_seat > 0) ? 'label-success' : 'label-danger'; ?>" style="display: inline-block; width: 100%; font-size: 13px; padding: 4px 0;">
                                             Available: <?php echo $available_seat; ?>
                                         </span>
                                     </div>
                                 </td>
-                                <td style="vertical-align: middle; font-size: 12px; line-height: 1.5;">
-                                    <div style="margin-bottom: 4px;">
-                                        <span class="label label-primary" style="display: inline-block; width: 100%;">Booked: <?php echo $booked_seat; ?></span>
+                                <td style="vertical-align: middle; line-height: 1.6;">
+                                    <div style="margin-bottom: 5px;">
+                                        <span class="label label-primary" style="display: inline-block; width: 100%; font-size: 13px; padding: 4px 0;">Booked: <?php echo $booked_seat; ?></span>
                                     </div>
                                     <!-- Gender Breakdown Badge -->
-                                    <div style="background: #f1f3f5; padding: 3px 6px; border-radius: 4px; font-size: 11px; font-weight: 600; text-align: center; margin-bottom: 4px; border: 1px solid #e2e8f0;">
-                                        <span style="color: #0284c7;" title="Male Bookings"><i class="fa fa-mars"></i> M-<?php echo (int)$male_count; ?></span>
-                                        <span style="color: #d946ef; margin-left: 8px;" title="Female Bookings"><i class="fa fa-venus"></i> F-<?php echo (int)$female_count; ?></span>
+                                    <div style="background: #f1f3f5; padding: 5px 8px; border-radius: 4px; font-size: 13px; font-weight: 600; text-align: center; border: 1px solid #e2e8f0;">
+                                        <span style="color: #0284c7;" title="Male Bookings"><i class="fa fa-mars"></i> M: <?php echo (int)$male_count; ?></span>
+                                        <span style="color: #d946ef; margin-left: 8px;" title="Female Bookings"><i class="fa fa-venus"></i> F: <?php echo (int)$female_count; ?></span>
                                     </div>
                                 </td>
                                 <td class="text-right text-success" style="vertical-align: middle; font-weight: bold; background-color: #f8fff9;">
